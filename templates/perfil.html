@@ -738,6 +738,28 @@
     const TXT_DELETE_OK = '{% trans "Publicacion eliminada correctamente." %}';
     const TXT_SHOW_DETAIL = '{% trans "Ver detalle completo" %}';
     const TXT_HIDE_DETAIL = '{% trans "Ocultar detalle" %}';
+    const TXT_ORDER = '{% trans "Pedido" %}';
+    const TXT_TOTAL_TO_PAY = '{% trans "Total a pagar" %}';
+    const TXT_PHONE = '{% trans "Telefono" %}';
+    const TXT_LOCATION = '{% trans "Ubicacion" %}';
+    const TXT_GENERAL_LOCATION = '{% trans "Ubicacion general" %}';
+    const TXT_AVAILABLE = '{% trans "Disponible" %}';
+    const TXT_UNAVAILABLE = '{% trans "No disponible" %}';
+    const TXT_QUICK_SUMMARY = '{% trans "Resumen rapido del plato. Haz click si quieres ver mas opciones." %}';
+    const TXT_BASIC_CHANGES_NOTE = '{% trans "Aqui puedes hacer cambios basicos del plato sin mostrar demasiada informacion al mismo tiempo." %}';
+    const TXT_SALES = '{% trans "Ventas" %}';
+    const TXT_DISH_TITLE = '{% trans "Titulo del plato" %}';
+    const TXT_PRICE = '{% trans "Precio" %}';
+    const TXT_STOCK_AVAILABLE = '{% trans "Stock disponible" %}';
+    const TXT_MAX_PER_SALE = '{% trans "Maximo por venta" %}';
+    const TXT_STATE = '{% trans "Estado" %}';
+    const TXT_STATE_ACTIVE = '{% trans "Activa" %}';
+    const TXT_STATE_PAUSED = '{% trans "Pausada" %}';
+    const TXT_INGREDIENTS = '{% trans "Ingredientes" %}';
+    const TXT_INGREDIENTS_PLACEHOLDER = '{% trans "Ej: tortilla, carne, cebolla, cilantro" %}';
+    const TXT_MENU_INFO = '{% trans "Informacion del menu" %}';
+    const TXT_DELETE_PUBLICATION = '{% trans "Eliminar publicacion" %}';
+    const TXT_SAVE_CHANGES = '{% trans "Guardar cambios" %}';
     const TXT_DEMO_TRANSFER = '{% trans "Transferencia iniciada en modo demo. En una integracion real aqui conectariamos la pasarela o payout." %}';
     const TXT_PROFILE_LOAD_ERROR = '{% trans "No se pudo cargar el perfil." %}';
     const out = document.getElementById('out');
@@ -930,7 +952,7 @@
           <button class="history-item ${active ? 'is-active' : ''}" type="button" data-pedido-id="${pedido.id}">
             <div class="history-main">
               <div>
-                <strong>Pedido #${pedido.id}</strong>
+                <strong>${TXT_ORDER} #${pedido.id}</strong>
                 <div class="meta-line">${formatDate(pedido.fecha_creacion)}</div>
               </div>
               <div class="history-total">${formatMoney(pedido.total)}</div>
@@ -974,14 +996,14 @@
       orderDetail.innerHTML = `
         <div class="section-head">
           <div>
-            <h3>Pedido #${pedido.id}</h3>
+            <h3>${TXT_ORDER} #${pedido.id}</h3>
             <div class="field-help">${formatDate(pedido.fecha_creacion)}</div>
           </div>
           <span class="status-pill ${statusClass(estado)}" data-detail-status>${escapeHtml(estado)}</span>
         </div>
         <div class="detail-grid">
-          <div class="detail-kv"><span>Total a pagar</span><strong>${formatMoney(pedido.total)}</strong></div>
-          <div class="detail-kv"><span>Teléfono</span><strong>${escapeHtml(pedido.telefono || '-')}</strong></div>
+          <div class="detail-kv"><span>${TXT_TOTAL_TO_PAY}</span><strong>${formatMoney(pedido.total)}</strong></div>
+          <div class="detail-kv"><span>${TXT_PHONE}</span><strong>${escapeHtml(pedido.telefono || '-')}</strong></div>
           <div class="detail-kv"><span>ETA</span><strong data-detail-eta>${escapeHtml(eta || TXT_PENDING)}</strong></div>
         </div>
         <div>
@@ -998,11 +1020,11 @@
       const ingredientesTexto = Array.isArray(publicacion.ingredientes) ? publicacion.ingredientes.join(', ') : '';
       const estado = String(publicacion.estado || 'ACTIVA').trim().toUpperCase();
       const stock = Math.max(0, Number(publicacion.stock || 0));
-      const disponibilidad = stock > 0 && estado === 'ACTIVA' ? 'Disponible' : 'No disponible';
+      const disponibilidad = stock > 0 && estado === 'ACTIVA' ? TXT_AVAILABLE : TXT_UNAVAILABLE;
       const direccionCompleta = String(publicacion?.ubicacion?.direccion_texto || '').trim();
       const direccionCorta = direccionCompleta
         ? direccionCompleta.split(',').map((item) => item.trim()).filter(Boolean).slice(0, 2).join(', ')
-        : 'Ubicación general';
+        : TXT_GENERAL_LOCATION;
       return `
         <article class="publication-card" data-publicacion-id="${publicacion.id}">
           <button
@@ -1014,69 +1036,69 @@
           >
             <div class="publication-head">
               <div>
-                <h3>${escapeHtml(publicacion.titulo || 'Publicación')}</h3>
-                <div class="publication-meta">Resumen rápido del plato. Haz click si quieres ver más opciones.</div>
+                <h3>${escapeHtml(publicacion.titulo || TXT_PUBLICATION)}</h3>
+                <div class="publication-meta">${TXT_QUICK_SUMMARY}</div>
               </div>
               <span class="status-pill ${statusClass(publicacion.estado)}">${escapeHtml(publicacion.estado || 'ACTIVA')}</span>
             </div>
 
             <div class="publication-summary">
-              <div><span>Precio</span><strong>${formatMoney(publicacion.precio)}</strong></div>
-              <div><span>Stock</span><strong>${Number(publicacion.stock || 0)}</strong></div>
-              <div><span>Estado</span><strong>${escapeHtml(disponibilidad)}</strong></div>
+              <div><span>${TXT_PRICE}</span><strong>${formatMoney(publicacion.precio)}</strong></div>
+              <div><span>${TXT_STOCK_AVAILABLE}</span><strong>${Number(publicacion.stock || 0)}</strong></div>
+              <div><span>${TXT_STATE}</span><strong>${escapeHtml(disponibilidad)}</strong></div>
             </div>
 
-            <span class="publication-collapser">Ver detalle completo</span>
+            <span class="publication-collapser">${TXT_SHOW_DETAIL}</span>
           </button>
 
           <div class="publication-body" id="publication-body-${publicacion.id}" hidden>
-            <div class="publication-compact-note">Aquí puedes hacer cambios básicos del plato sin mostrar demasiada información al mismo tiempo.</div>
+            <div class="publication-compact-note">${TXT_BASIC_CHANGES_NOTE}</div>
 
             <div class="inline-meta">
-              <div><span>Ventas</span><strong>${Number(publicacion.total_vendido || 0)}</strong></div>
-              <div><span>Ubicación</span><strong>${escapeHtml(direccionCorta)}</strong></div>
+              <div><span>${TXT_SALES}</span><strong>${Number(publicacion.total_vendido || 0)}</strong></div>
+              <div><span>${TXT_LOCATION}</span><strong>${escapeHtml(direccionCorta)}</strong></div>
             </div>
 
             <div class="publication-grid">
               <label>
-                Título del plato
+                ${TXT_DISH_TITLE}
                 <input name="titulo" value="${escapeHtml(publicacion.titulo || '')}" />
               </label>
               <label>
-                Precio
+                ${TXT_PRICE}
                 <input name="precio" type="number" min="0.01" step="any" inputmode="decimal" value="${Number(publicacion.precio || 0)}" />
               </label>
               <label>
-                Stock disponible
+                ${TXT_STOCK_AVAILABLE}
                 <input name="stock" type="number" min="0" step="1" value="${Number(publicacion.stock || 0)}" />
               </label>
               <label>
-                Máximo por venta
+                ${TXT_MAX_PER_SALE}
                 <input name="maximo_por_venta" type="number" min="1" step="1" value="${Number(publicacion.maximo_por_venta || 5)}" />
               </label>
               <label>
-                Estado
+                ${TXT_STATE}
                 <select name="estado">
-                  <option value="ACTIVA" ${String(publicacion.estado || '').toUpperCase() === 'ACTIVA' ? 'selected' : ''}>ACTIVA</option>
-                  <option value="PAUSADA" ${String(publicacion.estado || '').toUpperCase() === 'PAUSADA' ? 'selected' : ''}>PAUSADA</option>
+                  <option value="ACTIVA" ${String(publicacion.estado || '').toUpperCase() === 'ACTIVA' ? 'selected' : ''}>${TXT_STATE_ACTIVE}</option>
+                  <option value="PAUSADA" ${String(publicacion.estado || '').toUpperCase() === 'PAUSADA' ? 'selected' : ''}>${TXT_STATE_PAUSED}</option>
                 </select>
               </label>
             </div>
 
             <div class="publication-full">
               <label>
-                Ingredientes
-                <input name="ingredientes" value="${escapeHtml(ingredientesTexto)}" placeholder="Ej: tortilla, carne, cebolla, cilantro" />
+                ${TXT_INGREDIENTS}
+                <input name="ingredientes" value="${escapeHtml(ingredientesTexto)}" placeholder="${TXT_INGREDIENTS_PLACEHOLDER}" />
               </label>
               <label>
-                Información del menú
+                ${TXT_MENU_INFO}
                 <textarea name="descripcion">${escapeHtml(publicacion.descripcion || '')}</textarea>
               </label>
             </div>
 
             <div class="card-actions">
-              <button class="btn btn-secondary" type="button" data-delete-publicacion="${publicacion.id}">Eliminar publicación</button>
-              <button class="btn btn-primary" type="button" data-save-publicacion="${publicacion.id}">Guardar cambios</button>
+              <button class="btn btn-secondary" type="button" data-delete-publicacion="${publicacion.id}">${TXT_DELETE_PUBLICATION}</button>
+              <button class="btn btn-primary" type="button" data-save-publicacion="${publicacion.id}">${TXT_SAVE_CHANGES}</button>
             </div>
           </div>
         </article>

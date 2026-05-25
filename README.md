@@ -161,11 +161,46 @@ Servicios activos en Docker Compose:
 - `rabbitmq` (puerto interno 5672, panel 15672): broker de mensajeria asincrona
 - `notifications-worker` (sin puerto): consumidor asincrono de eventos de pago
 
-Compatibilidad mantenida:
+## Matriz de cobertura por dominio (logica migrada)
 
-- Frontend y templates siguen en Django (`/`, `/ui/*`)
-- Endpoints legacy de Geo y Notificaciones siguen disponibles desde Django
-- Django usa gateways con fallback local si un microservicio no responde
+Nota de contexto del equipo:
+
+- En esta entrega se incorporaron como nuevos: `auth_microservice`, `geo_microservice`, `market_microservice`, `notifications_microservice`, `payment_microservice`.
+- Se mantiene compatibilidad legacy en Django para rutas `v1` durante la transicion (Strangler Pattern), mientras que el trafico de negocio nuevo se atiende en `v2/v3`.
+
+Metodologia de estimacion:
+
+- Se estima la cobertura por dominio considerando endpoints productivos enroutados por Nginx a microservicios (`/api/v2`, `/api/v3`) y la logica de negocio ejecutada fuera del monolito.
+- El porcentaje total se toma como promedio simple de dominios migrados.
+
+| Dominio funcional | Modulo legacy (Django) | Microservicio nuevo (Flask) | Rutas objetivo en gateway | Cobertura estimada migrada | Hito de migracion |
+|---|---|---|---|---:|---|
+| Autenticacion | `accounts` | `auth_microservice` | `/api/v3/auth/*` | 90% | Entrega 02 (actual) |
+| Geolocalizacion y ruteo | `geo` | `geo_microservice` | `/api/v2/geocode`, `/api/v2/route` | 90% | Entrega 02 (actual) |
+| Publicaciones y pedidos | `market` | `market_microservice` | `/api/v3/publications`, `/api/v3/orders` | 80% | Entrega 02 (actual) |
+| Pagos | `payments` | `payment_microservice` | `/api/v2/payments` | 85% | Entrega 02 (actual) |
+| Notificaciones | `notifications` | `notifications_microservice` | `/api/v3/notifications` + worker eventos | 85% | Entrega 02 (actual) |
+| Soporte (trust/ratings/transactions) | `trust`, `ratings`, `transactions` | `support_microservice` | `/api/v3/trust/*`, `/api/v3/ratings`, `/api/v3/transactions` | 90% | Entrega 02 (actual) |
+
+**Cobertura total estimada migrada:** **86.7%**
+
+## Comparativo legacy vs microservicio (por dominio)
+
+| Dominio | Legacy (Django) | Microservicio (Flask) | Diferencia arquitectonica clave |
+|---|---|---|---|
+| Auth | `accounts` | `auth_microservice` | Pasa de autenticacion acoplada al monolito a servicio independiente enroutado por gateway (`/api/v3/auth/*`). |
+| Geo | `geo` | `geo_microservice` | Geocodificacion/ruteo dejan de ejecutarse en Django y se aislan en un servicio especializado (`/api/v2/geocode`, `/api/v2/route`). |
+| Market | `market` | `market_microservice` | Publicaciones y pedidos migran de app interna a API independiente (`/api/v3/publications`, `/api/v3/orders`) con despliegue y escalado desacoplado. |
+| Payments | `payments` | `payment_microservice` | Registro/procesamiento de pagos se separa del monolito y publica eventos asincronos (`payment.processed`). |
+| Notifications | `notifications` | `notifications_microservice` | Notificaciones pasan de logica interna Django a servicio dedicado + worker asincrono por broker. |
+| Support | `trust`, `ratings`, `transactions` | `support_microservice` | Capacidades transversales de confianza/reputacion/transacciones se consolidan en servicio independiente (`/api/v3/trust/*`, `/api/v3/ratings`, `/api/v3/transactions`). |
+
+Notas de lectura para evaluacion:
+
+- Los modulos legacy se mantienen para compatibilidad temporal (`v1`) durante la estrategia Strangler.
+- La ruta objetivo del sistema ya opera sobre microservicios (`v2/v3`) detras de Nginx API Gateway.
+
+
 
 ## Comunicacion asincrona (RabbitMQ)
 
@@ -198,10 +233,71 @@ Flujo de ejemplo:
 
 - Se habilito i18n nativo en Django con `LocaleMiddleware`, `LANGUAGES` y `LOCALE_PATHS`.
 - Idiomas soportados: `es` y `en`.
-- Selector global de idioma disponible en todas las vistas HTML.
-- El idioma elegido se conserva entre vistas y sesiones (cookie `django_language` + localStorage).
+- Seleccion de idioma soportada por Django (`i18n/` + cookie `django_language`).
+- El idioma elegido se conserva entre vistas y sesiones mediante la cookie `django_language`.
 - El cambio aplica de forma inmediata en la UI y no rompe la navegacion existente.
+- Implementacion estricta basada en `gettext`/`{% trans %}` sin traductor por diccionario en cliente.
 
+## Auditoria UX formal
+
+Metodologia:
+
+- Heuristicas de Nielsen aplicadas a flujos criticos: login/registro, compra (`pedido`), carrito, checkout, pago, seguimiento, notificaciones y perfil.
+- Criterios de evaluacion: claridad de estado, prevencion de errores, consistencia visual, navegacion, control del usuario, feedback y accesibilidad basica.
+
+Hallazgos y correcciones implementadas:
+
+1. Visibilidad del estado del sistema
+- Hallazgo: mensajes runtime en operaciones asincronas no estaban completamente estandarizados.
+- Correccion: normalizacion de mensajes de procesamiento/error en vistas clave y migracion a i18n en JS inline.
+
+2. Consistencia y estandares
+- Hallazgo: coexistian variantes de textos con/sin tildes y mensajes fijos en paginas criticas.
+- Correccion: unificacion de textos visibles con `{% trans %}` y constantes i18n reutilizables.
+
+3. Prevencion de errores y robustez de formularios
+- Hallazgo: validaciones de contrasena mostraban mensajes hardcoded en algunos formularios.
+- Correccion: mensajes de mismatch y estado de envio centralizados y traducibles.
+
+4. Navegacion y continuidad de flujo
+- Hallazgo: faltaba evidencia formal de continuidad ante fallo parcial de servicios.
+- Correccion: se documenta prueba de resiliencia con caida controlada y continuidad de home/UI.
+
+Resultado UX esperado:
+
+- Navegacion consistente, mensajes comprensibles en ES/EN y formularios con feedback claro durante operaciones.
+
+## Evidencia de resiliencia en ejecucion
+
+Mejoras de orquestacion:
+
+- Se agregaron `healthcheck` en `docker-compose.yml` para:
+        - `nginx`, `django`
+        - `payment-service`, `geo-service`, `notifications-service`, `auth-service`, `market-service`, `support-service`
+        - `redis`, `rabbitmq`
+
+Prueba de caida y recuperacion controlada (ejecutada):
+
+1. Verificacion inicial de disponibilidad
+- `GET /` => `200`
+- `GET /ui/pedido/` => `200`
+
+2. Caida controlada de microservicio
+- `docker compose stop support-service`
+
+3. Validacion de continuidad del sistema
+- `GET /` durante la caida de `support-service` => `200`
+
+4. Recuperacion
+- `docker compose start support-service`
+- `docker compose ps support-service` => `healthy`
+
+5. Estado general
+- `docker compose ps` con servicios core arriba y saludables (o en fase `starting` dentro de su ventana de arranque).
+
+Interpretacion:
+
+- El gateway y el flujo principal de UI se mantienen operativos ante la caida puntual de un microservicio no critico para la ruta principal, y el servicio se recupera sin intervencion manual adicional fuera del `start` controlado.
 ## Evidencia de adapters (aliado y tercero)
 
 - Adapter de aliado interno (pasarela de pagos):
@@ -212,3 +308,4 @@ Flujo de ejemplo:
         - `geo/infrastructure/routing.py` (rutas sobre OSRM/Valhalla con fallback)
 
 Esta separacion permite cambiar proveedor aliado o tercero sin tocar la logica de aplicacion (use cases).
+

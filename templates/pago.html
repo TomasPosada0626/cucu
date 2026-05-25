@@ -39,7 +39,7 @@
 
       <div id="summary" class="summary" hidden>
         <div><strong>{% trans "Subtotal:" %}</strong> <span id="pedidoSubtotal">-</span></div>
-        <div><strong>Delivery:</strong> <span id="pedidoDelivery">-</span></div>
+        <div><strong>{% trans "Delivery:" %}</strong> <span id="pedidoDelivery">-</span></div>
         <div><strong>{% trans "Total del pedido:" %}</strong> <span id="pedidoTotal">-</span></div>
         <div><strong>{% trans "Items:" %}</strong></div>
         <ul id="pedidoItems" class="items"></ul>
@@ -47,7 +47,7 @@
 
       <div class="note">
         {% trans "El Pedido ID y el monto se toman del carrito automaticamente." %}
-        {% trans "Metodos soportados (demo):" %} <code>efectivo</code> {% trans "o" %} <code>tarjeta</code>.
+        {% trans "Metodos soportados (demo):" %} <code>{% trans "efectivo" %}</code> {% trans "o" %} <code>{% trans "tarjeta" %}</code>.
       </div>
 
       <div class="actions" id="actions" hidden>

@@ -1509,6 +1509,7 @@
   </style>
 </head>
 <body>
+  {% include "partials/language_fab.html" %}
   <header class="topbar">
     <div class="shell nav">
       <a class="brand" href="/">
@@ -1835,6 +1836,9 @@
     const TXT_PROFILE = '{% trans "Perfil" %}';
     const TXT_NOT_STOCK_FOR_CART = '{% trans "Este producto no tiene stock disponible para agregarlo al carrito." %}';
     const TXT_PRODUCT_ADDED = '{% trans "Producto agregado al carrito." %}';
+    const TXT_EMPTY_START = '{% trans "Usa tu ubicacion o escribe una direccion para empezar a ver platos cercanos." %}';
+    const TXT_ADJUST_FILTERS = '{% trans "Ajusta tus filtros o tu ubicacion." %}';
+    const TXT_NO_FILTER_RESULTS = '{% trans "No encontramos platos con esos filtros. Prueba otro tipo de comida o amplia el rango." %}';
     const IMAGE_POOL = [
       '{% static "images/bowl.png" %}',
       '{% static "images/carnitas.png" %}',
@@ -2723,8 +2727,8 @@
       if (!publicaciones.length) {
         catalog.innerHTML = '';
         emptyState.hidden = false;
-        emptyState.textContent = 'Usa tu ubicación o escribe una dirección para empezar a ver platos cercanos.';
-        catalogHint.textContent = 'Ajusta tus filtros o tu ubicación.';
+        emptyState.textContent = TXT_EMPTY_START;
+        catalogHint.textContent = TXT_ADJUST_FILTERS;
         renderPagination(1);
         return;
       }
@@ -2732,7 +2736,7 @@
       if (!pageItems.length) {
         catalog.innerHTML = '';
         emptyState.hidden = false;
-        emptyState.textContent = 'No encontramos platos con esos filtros. Prueba otro tipo de comida o amplía el rango.';
+        emptyState.textContent = TXT_NO_FILTER_RESULTS;
         catalogHint.textContent = TXT_NO_MATCH;
         renderPagination(totalPages);
         return;

@@ -33,6 +33,18 @@
 
     * { box-sizing: border-box; }
 
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
     body {
       margin: 0;
       color: var(--ink);
@@ -133,6 +145,66 @@
       font-weight: 800;
       font-size: 14px;
       box-shadow: 0 8px 20px rgba(31, 36, 48, 0.04);
+    }
+
+    .lang-form {
+      margin: 0;
+    }
+
+    .lang-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 52px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #fff;
+      box-shadow: 0 8px 20px rgba(31, 36, 48, 0.04);
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .lang-toggle input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+    }
+
+    .lang-track {
+      position: relative;
+      width: 38px;
+      height: 22px;
+      border-radius: 999px;
+      background: #e8e3dc;
+      transition: background 160ms ease;
+    }
+
+    .lang-track::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(31, 36, 48, 0.2);
+      transition: transform 160ms ease;
+    }
+
+    .lang-toggle input:checked + .lang-track {
+      background: rgba(255, 106, 26, 0.4);
+    }
+
+    .lang-toggle input:checked + .lang-track::after {
+      transform: translateX(16px);
     }
 
     .tool-link.icon-only {
@@ -656,6 +728,18 @@
         <a class="nav-link" data-nav="vende" href="/ui/publicar/">{% trans "Vende" %}</a>
       </nav>
       <div class="nav-tools">
+        <form class="lang-form" action="/i18n/setlang/" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.get_full_path|default:'/' }}" />
+          {% get_current_language as CURRENT_LANGUAGE %}
+          <input type="hidden" name="language" value="{% if CURRENT_LANGUAGE == 'en' %}en{% else %}es{% endif %}" />
+          <label class="lang-toggle" aria-label="{% trans 'Idioma' %}">
+            <span>ES</span>
+            <input type="checkbox" {% if CURRENT_LANGUAGE == 'en' %}checked{% endif %} onchange="this.form.language.value = this.checked ? 'en' : 'es'; this.form.submit();" />
+            <span class="lang-track" aria-hidden="true"></span>
+            <span>EN</span>
+          </label>
+        </form>
         <a class="tool-link icon-only" id="cartLink" href="/ui/carrito/" aria-label="{% trans 'Carrito' %}">
           <svg class="tool-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 8h10l-1 9H9L8 8Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 8a2 2 0 1 1 4 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9.5 20a1 1 0 1 0 0 .01M16.5 20a1 1 0 1 0 0 .01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
           <span class="tool-badge" id="cartCount">0</span>

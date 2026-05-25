@@ -351,6 +351,11 @@
   const itemsList = document.getElementById('itemsList');
   const out = document.getElementById('out');
   const geoHint = document.getElementById('geoHint');
+  const TXT_GEO_UNSUPPORTED = '{% trans "Tu navegador no soporta geolocalizacion." %}';
+  const TXT_GEO_GETTING = '{% trans "Obteniendo tu ubicacion..." %}';
+  const TXT_GEO_FAILED = '{% trans "No se pudo obtener tu ubicacion. Activa permisos de ubicacion para ver la distancia." %}';
+  const TXT_GEO_LOCATING_ADDRESS = '{% trans "Ubicando tu direccion de entrega:" %}';
+  const TXT_GEO_FALLBACK = '{% trans "No se pudo ubicar tu direccion. Usando tu ubicacion actual como respaldo." %}';
 
   const tipInput = document.getElementById('tipInput');
   const applyTipBtn = document.getElementById('applyTipBtn');
@@ -677,19 +682,19 @@
   async function getDestinationFromGeolocation() {
     return new Promise((resolve) => {
       if (!navigator.geolocation) {
-        geoHint.textContent = 'Tu navegador no soporta geolocalización.';
+        geoHint.textContent = TXT_GEO_UNSUPPORTED;
         resolve(null);
         return;
       }
 
-      geoHint.textContent = 'Obteniendo tu ubicación...';
+      geoHint.textContent = TXT_GEO_GETTING;
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           geoHint.textContent = '';
           resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude });
         },
         () => {
-          geoHint.textContent = 'No se pudo obtener tu ubicación. Activa permisos de ubicación para ver la distancia.';
+          geoHint.textContent = TXT_GEO_FAILED;
           resolve(null);
         },
         { enableHighAccuracy: true, maximumAge: 10000, timeout: 8000 }
@@ -713,13 +718,13 @@
 
     const display = details ? `${base} (${details})` : base;
 
-    geoHint.textContent = `Ubicando tu dirección de entrega: ${display}`;
+    geoHint.textContent = `${TXT_GEO_LOCATING_ADDRESS} ${display}`;
     const dest = await geocodeAddressToLatLng(base);
     if (dest) {
       geoHint.textContent = '';
       return dest;
     }
-    geoHint.textContent = 'No se pudo ubicar tu dirección. Usando tu ubicación actual como respaldo.';
+    geoHint.textContent = TXT_GEO_FALLBACK;
     return null;
   }
 

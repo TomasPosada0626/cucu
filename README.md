@@ -202,18 +202,6 @@ Flujo de ejemplo:
 - El idioma elegido se conserva entre vistas y sesiones (cookie `django_language` + localStorage).
 - El cambio aplica de forma inmediata en la UI y no rompe la navegacion existente.
 
-Archivos relevantes:
-
-- `config/settings.py`
-- `config/urls.py` (ruta `i18n/`)
-- `common/middleware.py` (inyecta script global)
-- `static/js/cucu-i18n.js` (selector y traduccion inmediata)
-- `locale/en/LC_MESSAGES/django.po`
-- `locale/en/LC_MESSAGES/django.mo`
-- `locale/es/LC_MESSAGES/django.po`
-- `locale/es/LC_MESSAGES/django.mo`
-
-
 ## Evidencia de adapters (aliado y tercero)
 
 - Adapter de aliado interno (pasarela de pagos):
@@ -224,42 +212,3 @@ Archivos relevantes:
         - `geo/infrastructure/routing.py` (rutas sobre OSRM/Valhalla con fallback)
 
 Esta separacion permite cambiar proveedor aliado o tercero sin tocar la logica de aplicacion (use cases).
-
-# Despliegue en AWS EC2 (Ubuntu)
-
-1. Abrir puertos del Security Group:
-- `22` (SSH)
-- `80` (HTTP)
-
-2. Instalar Docker + Compose plugin en la instancia.
-
-3. Clonar el repositorio y entrar al proyecto:
-
-```bash
-git clone <repo-url>
-cd entregas
-```
-
-4. (Opcional) crear `.env.local` para Google Maps:
-
-```bash
-echo "GOOGLE_MAPS_API_KEY=tu_api_key" > .env.local
-```
-
-5. Levantar stack:
-
-```bash
-docker compose up --build -d
-docker compose ps
-```
-
-6. Verificar:
-
-- `http://<EC2_PUBLIC_IP>/health`
-- `http://<EC2_PUBLIC_IP>/`
-
-7. Logs:
-
-```bash
-docker compose logs -f
-```

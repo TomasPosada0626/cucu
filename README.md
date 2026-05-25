@@ -298,8 +298,6 @@ Prueba de caida y recuperacion controlada (ejecutada):
 Interpretacion:
 
 - El gateway y el flujo principal de UI se mantienen operativos ante la caida puntual de un microservicio no critico para la ruta principal, y el servicio se recupera sin intervencion manual adicional fuera del `start` controlado.
-
-
 ## Evidencia de adapters (aliado y tercero)
 
 - Adapter de aliado interno (pasarela de pagos):

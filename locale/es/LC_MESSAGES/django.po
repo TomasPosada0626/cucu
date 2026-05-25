@@ -1,0 +1,129 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: CUCU\n"
+"POT-Creation-Date: 2026-05-25 00:00+0000\n"
+"PO-Revision-Date: 2026-05-25 00:00+0000\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Navegacion principal"
+msgstr "Navegacion principal"
+
+msgid "Inicio"
+msgstr "Inicio"
+
+msgid "Compra"
+msgstr "Compra"
+
+msgid "Vende"
+msgstr "Vende"
+
+msgid "Carrito"
+msgstr "Carrito"
+
+msgid "Perfil"
+msgstr "Perfil"
+
+msgid "Iniciar sesion"
+msgstr "Iniciar sesion"
+
+msgid "Inicia sesion"
+msgstr "Inicia sesion"
+
+msgid "Bienvenido a CUCU"
+msgstr "Bienvenido a CUCU"
+
+msgid "Ilustracion de inicio de sesion"
+msgstr "Ilustracion de inicio de sesion"
+
+msgid "Correo electronico"
+msgstr "Correo electronico"
+
+msgid "Contrasena"
+msgstr "Contrasena"
+
+msgid "Mostrar u ocultar contrasena"
+msgstr "Mostrar u ocultar contrasena"
+
+msgid "Olvidaste tu contrasena?"
+msgstr "Olvidaste tu contrasena?"
+
+msgid "Recuerdame"
+msgstr "Recuerdame"
+
+msgid "Eres nuevo en CUCU?"
+msgstr "Eres nuevo en CUCU?"
+
+msgid "Registrate"
+msgstr "Registrate"
+
+msgid "Terminos"
+msgstr "Terminos"
+
+msgid "Privacidad"
+msgstr "Privacidad"
+
+msgid "Soporte"
+msgstr "Soporte"
+
+msgid "Todos los derechos reservados."
+msgstr "Todos los derechos reservados."
+
+msgid "Crear cuenta"
+msgstr "Crear cuenta"
+
+msgid "Crea tu cuenta"
+msgstr "Crea tu cuenta"
+
+msgid "Unete a CUCU hoy mismo"
+msgstr "Unete a CUCU hoy mismo"
+
+msgid "Ilustracion de registro"
+msgstr "Ilustracion de registro"
+
+msgid "Nombre completo"
+msgstr "Nombre completo"
+
+msgid "Confirma tu contrasena"
+msgstr "Confirma tu contrasena"
+
+msgid "Mostrar u ocultar confirmacion de contrasena"
+msgstr "Mostrar u ocultar confirmacion de contrasena"
+
+msgid "Al registrarte, aceptas nuestros"
+msgstr "Al registrarte, aceptas nuestros"
+
+msgid "Terminos y Condiciones"
+msgstr "Terminos y Condiciones"
+
+msgid "Ya tienes cuenta?"
+msgstr "Ya tienes cuenta?"
+
+msgid "Recuperar contrasena"
+msgstr "Recuperar contrasena"
+
+msgid "Recupera tu acceso"
+msgstr "Recupera tu acceso"
+
+msgid "Escribe tu correo y te enviaremos un enlace para cambiar la contrasena."
+msgstr "Escribe tu correo y te enviaremos un enlace para cambiar la contrasena."
+
+msgid "Enviar enlace"
+msgstr "Enviar enlace"
+
+msgid "Volver al login"
+msgstr "Volver al login"
+
+msgid "Restablecer contrasena"
+msgstr "Restablecer contrasena"
+
+msgid "Nueva contrasena"
+msgstr "Nueva contrasena"
+
+msgid "Ingresa una contrasena nueva para recuperar tu cuenta."
+msgstr "Ingresa una contrasena nueva para recuperar tu cuenta."
+
+msgid "Guardar contrasena"
+msgstr "Guardar contrasena"

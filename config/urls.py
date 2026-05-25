@@ -40,6 +40,7 @@ from .web_views import (
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('i18n/', include('django.conf.urls.i18n')),
     path('', ui_index, name='ui-index'),
     path('ui/registro/', ui_registro, name='ui-registro'),
     path('ui/login/', ui_login, name='ui-login'),

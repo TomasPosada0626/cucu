@@ -1,0 +1,129 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: CUCU\n"
+"POT-Creation-Date: 2026-05-25 00:00+0000\n"
+"PO-Revision-Date: 2026-05-25 00:00+0000\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Navegacion principal"
+msgstr "Main navigation"
+
+msgid "Inicio"
+msgstr "Home"
+
+msgid "Compra"
+msgstr "Buy"
+
+msgid "Vende"
+msgstr "Sell"
+
+msgid "Carrito"
+msgstr "Cart"
+
+msgid "Perfil"
+msgstr "Profile"
+
+msgid "Iniciar sesion"
+msgstr "Sign in"
+
+msgid "Inicia sesion"
+msgstr "Sign in"
+
+msgid "Bienvenido a CUCU"
+msgstr "Welcome to CUCU"
+
+msgid "Ilustracion de inicio de sesion"
+msgstr "Sign-in illustration"
+
+msgid "Correo electronico"
+msgstr "Email"
+
+msgid "Contrasena"
+msgstr "Password"
+
+msgid "Mostrar u ocultar contrasena"
+msgstr "Show or hide password"
+
+msgid "Olvidaste tu contrasena?"
+msgstr "Forgot your password?"
+
+msgid "Recuerdame"
+msgstr "Remember me"
+
+msgid "Eres nuevo en CUCU?"
+msgstr "New to CUCU?"
+
+msgid "Registrate"
+msgstr "Sign up"
+
+msgid "Terminos"
+msgstr "Terms"
+
+msgid "Privacidad"
+msgstr "Privacy"
+
+msgid "Soporte"
+msgstr "Support"
+
+msgid "Todos los derechos reservados."
+msgstr "All rights reserved."
+
+msgid "Crear cuenta"
+msgstr "Create account"
+
+msgid "Crea tu cuenta"
+msgstr "Create your account"
+
+msgid "Unete a CUCU hoy mismo"
+msgstr "Join CUCU today"
+
+msgid "Ilustracion de registro"
+msgstr "Registration illustration"
+
+msgid "Nombre completo"
+msgstr "Full name"
+
+msgid "Confirma tu contrasena"
+msgstr "Confirm your password"
+
+msgid "Mostrar u ocultar confirmacion de contrasena"
+msgstr "Show or hide password confirmation"
+
+msgid "Al registrarte, aceptas nuestros"
+msgstr "By signing up, you accept our"
+
+msgid "Terminos y Condiciones"
+msgstr "Terms and Conditions"
+
+msgid "Ya tienes cuenta?"
+msgstr "Already have an account?"
+
+msgid "Recuperar contrasena"
+msgstr "Recover password"
+
+msgid "Recupera tu acceso"
+msgstr "Recover access"
+
+msgid "Escribe tu correo y te enviaremos un enlace para cambiar la contrasena."
+msgstr "Enter your email and we will send you a link to change your password."
+
+msgid "Enviar enlace"
+msgstr "Send link"
+
+msgid "Volver al login"
+msgstr "Back to login"
+
+msgid "Restablecer contrasena"
+msgstr "Reset password"
+
+msgid "Nueva contrasena"
+msgstr "New password"
+
+msgid "Ingresa una contrasena nueva para recuperar tu cuenta."
+msgstr "Enter a new password to recover your account."
+
+msgid "Guardar contrasena"
+msgstr "Save password"

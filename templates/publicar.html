@@ -1,9 +1,10 @@
+{% load i18n %}
 <!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Publicar un platillo | CUCU</title>
+  <title>{% trans "Publicar un platillo" %} | CUCU</title>
   <meta name="color-scheme" content="light" />
   <link
     rel="stylesheet"
@@ -650,17 +651,17 @@
         <span class="brand-mark" aria-hidden="true"></span>
         <span>CUCU</span>
       </a>
-      <nav class="nav-links" aria-label="Navegación principal">
-        <a class="nav-link" href="/">Inicio</a>
-        <a class="nav-link" href="/ui/pedido/">Compra</a>
-        <a class="nav-link active" href="/ui/publicar/">Vende</a>
+      <nav class="nav-links" aria-label="{% trans 'Navegacion principal' %}">
+        <a class="nav-link" href="/">{% trans "Inicio" %}</a>
+        <a class="nav-link" href="/ui/pedido/">{% trans "Compra" %}</a>
+        <a class="nav-link active" href="/ui/publicar/">{% trans "Vende" %}</a>
       </nav>
       <div class="nav-tools">
-        <a class="tool-link icon-only" id="cartLink" href="/ui/carrito/" aria-label="Carrito">
+        <a class="tool-link icon-only" id="cartLink" href="/ui/carrito/" aria-label="{% trans 'Carrito' %}">
           <svg class="tool-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 8h10l-1 9H9L8 8Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 8a2 2 0 1 1 4 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9.5 20a1 1 0 1 0 0 .01M16.5 20a1 1 0 1 0 0 .01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
           <span class="tool-badge" id="cartCount">0</span>
         </a>
-        <a class="tool-link" id="profileLink" href="/ui/perfil/">Perfil</a>
+        <a class="tool-link" id="profileLink" href="/ui/perfil/">{% trans "Perfil" %}</a>
       </div>
     </div>
   </header>
@@ -668,115 +669,115 @@
   <main class="page shell">
     <section class="editor">
       <div class="editor-top">
-        <h1 class="editor-title">Publicar un platillo</h1>
-        <p class="editor-lead">Esta es la primera vista donde se fija la ubicación real del producto. Desde aquí el sistema podrá comparar la posición del vendedor con la del comprador y mostrar distancias reales dentro del flujo de CUCU.</p>
+        <h1 class="editor-title">{% trans "Publicar un platillo" %}</h1>
+        <p class="editor-lead">{% trans "Esta es la primera vista donde se fija la ubicacion real del producto. Desde aqui el sistema podra comparar la posicion del vendedor con la del comprador y mostrar distancias reales dentro del flujo de CUCU." %}</p>
       </div>
 
       <form id="form" class="editor-body">
         <section class="panel">
           <div class="helper-card">
-            <strong>Cómo ubicar tu punto de venta</strong>
-            <span>Escribe una dirección (o un lugar) como “EAFIT”, pulsa “Ubicar dirección”, o mueve el marcador directamente sobre el mapa para guardar una ubicación más exacta.</span>
+            <strong>{% trans "Como ubicar tu punto de venta" %}</strong>
+            <span>{% trans "Escribe una direccion (o un lugar) como EAFIT, pulsa Ubicar direccion, o mueve el marcador directamente sobre el mapa para guardar una ubicacion mas exacta." %}</span>
           </div>
 
           <div>
-            <div class="field-label"><span>Ubicación del punto de entrega</span><small>*</small></div>
+            <div class="field-label"><span>{% trans "Ubicacion del punto de entrega" %}</span><small>*</small></div>
             <div class="map-panel">
-              <div id="publishMap" aria-label="Mapa para ubicar el producto"></div>
+              <div id="publishMap" aria-label="{% trans 'Mapa para ubicar el producto' %}"></div>
               <div class="map-toolbar">
-                <span id="mapSummary">Puedes escribir, hacer clic en el mapa, arrastrar el pin o usar tu ubicación actual.</span>
+                <span id="mapSummary">{% trans "Puedes escribir, hacer clic en el mapa, arrastrar el pin o usar tu ubicacion actual." %}</span>
                 <div class="location-actions">
-                  <button class="add-chip" id="locateAddressButton" type="button">Ubicar dirección</button>
-                  <button class="add-chip" id="geolocateBtn" type="button">Usar mi ubicación</button>
+                  <button class="add-chip" id="locateAddressButton" type="button">{% trans "Ubicar direccion" %}</button>
+                  <button class="add-chip" id="geolocateBtn" type="button">{% trans "Usar mi ubicacion" %}</button>
                 </div>
               </div>
             </div>
           </div>
 
           <div>
-            <div class="field-label"><span>Imagen del platillo</span></div>
+            <div class="field-label"><span>{% trans "Imagen del platillo" %}</span></div>
             <div class="image-tools">
-              <label class="upload-button" for="imageInput">+ Añadir imagen</label>
-              <button class="add-chip" id="removeImageButton" type="button" hidden>Quitar imagen</button>
+              <label class="upload-button" for="imageInput">{% trans "+ Anadir imagen" %}</label>
+              <button class="add-chip" id="removeImageButton" type="button" hidden>{% trans "Quitar imagen" %}</button>
               <input class="hidden-input" id="imageInput" type="file" accept="image/*" />
             </div>
           </div>
 
           <div class="empty-preview" id="emptyPreview">
             <div>
-              <strong>Aún no has añadido imagen</strong>
-              <span>Cuando subas una foto, aquí aparecerá la vista previa del platillo.</span>
+              <strong>{% trans "Aun no has anadido imagen" %}</strong>
+              <span>{% trans "Cuando subas una foto, aqui aparecera la vista previa del platillo." %}</span>
             </div>
           </div>
 
           <div class="image-preview" id="imagePreview">
-            <img id="previewImage" alt="Vista previa del platillo" src="" />
+            <img id="previewImage" alt="{% trans 'Vista previa del platillo' %}" src="" />
           </div>
         </section>
 
         <section class="panel">
           <div class="split-row">
             <div>
-              <div class="field-label"><span>Nombre del platillo</span><small>*</small></div>
-              <div class="field"><input name="titulo" required maxlength="255" placeholder="Bowl saludable" /></div>
+              <div class="field-label"><span>{% trans "Nombre del platillo" %}</span><small>*</small></div>
+              <div class="field"><input name="titulo" required maxlength="255" placeholder="{% trans 'Bowl saludable' %}" /></div>
             </div>
             <div>
-              <div class="field-label"><span>Precio</span><small>*</small></div>
+              <div class="field-label"><span>{% trans "Precio" %}</span><small>*</small></div>
                 <div class="field"><input name="precio" required type="number" min="0.01" step="any" inputmode="decimal" placeholder="19500" /></div>
             </div>
           </div>
 
           <div class="split-row">
             <div>
-              <div class="field-label"><span>Stock disponible</span><small>*</small></div>
+              <div class="field-label"><span>{% trans "Stock disponible" %}</span><small>*</small></div>
               <div class="field"><input name="stock" required type="number" min="0" step="1" inputmode="numeric" placeholder="10" /></div>
             </div>
             <div>
-              <div class="field-label"><span>Máximo permitido por venta</span><small>*</small></div>
+              <div class="field-label"><span>{% trans "Maximo permitido por venta" %}</span><small>*</small></div>
               <div class="field"><input name="maximo_por_venta" required type="number" min="1" step="1" inputmode="numeric" value="5" /></div>
             </div>
           </div>
 
           <div>
-            <div class="field-label"><span>Tipo de comida</span></div>
+            <div class="field-label"><span>{% trans "Tipo de comida" %}</span></div>
             <div class="field">
               <select id="tipoComidaSelect">
-                <option value="saludable">Saludable</option>
-                <option value="mexicana">Mexicana</option>
-                <option value="italiana">Italiana</option>
-                <option value="postres">Postres</option>
-                <option value="otra">Otra</option>
+                <option value="saludable">{% trans "Saludable" %}</option>
+                <option value="mexicana">{% trans "Mexicana" %}</option>
+                <option value="italiana">{% trans "Italiana" %}</option>
+                <option value="postres">{% trans "Postres" %}</option>
+                <option value="otra">{% trans "Otra" %}</option>
               </select>
             </div>
           </div>
 
           <div>
-            <div class="field-label"><span>Ingredientes incluidos</span></div>
+            <div class="field-label"><span>{% trans "Ingredientes incluidos" %}</span></div>
             <div class="ingredients is-empty" id="ingredientList"></div>
-            <button class="add-chip" id="addIngredientPrimary" type="button">+ Añadir ingrediente</button>
+            <button class="add-chip" id="addIngredientPrimary" type="button">{% trans "+ Anadir ingrediente" %}</button>
           </div>
 
           <div class="split-row">
             <div>
-              <div class="field-label"><span>Dirección</span><small>*</small></div>
+              <div class="field-label"><span>{% trans "Direccion" %}</span><small>*</small></div>
               <div class="field autocomplete">
                 <input name="direccion_texto" id="direccionInput" required maxlength="255" placeholder="Cra 43A #6 Sur-15, El Poblado, Medellín" autocomplete="off" />
-                <div class="suggestions" id="addressSuggestions" aria-label="Sugerencias de dirección"></div>
+                <div class="suggestions" id="addressSuggestions" aria-label="{% trans 'Sugerencias de direccion' %}"></div>
               </div>
             </div>
           </div>
 
           <div>
-            <div class="field-label"><span>Preparación</span><small>*</small></div>
-            <div class="field"><textarea name="descripcion" required placeholder="Describe porciones, ingredientes, presentación y detalles importantes del pedido."></textarea></div>
+            <div class="field-label"><span>{% trans "Preparacion" %}</span><small>*</small></div>
+            <div class="field"><textarea name="descripcion" required placeholder="{% trans 'Describe porciones, ingredientes, presentacion y detalles importantes del pedido.' %}"></textarea></div>
           </div>
 
           <div>
-            <div class="field-label"><span>Disponible ahora</span></div>
+            <div class="field-label"><span>{% trans "Disponible ahora" %}</span></div>
             <div class="field" style="padding: 13px 14px;">
               <label class="toggle">
                 <input id="availableToggle" type="checkbox" checked />
-                <span>Disponible ahora</span>
+                <span>{% trans "Disponible ahora" %}</span>
               </label>
             </div>
           </div>
@@ -785,12 +786,12 @@
           <input name="longitud" id="longitudInput" type="hidden" />
 
           <div class="actions">
-            <button class="btn btn-secondary" id="cancelButton" type="button">Cancelar</button>
-            <button class="btn btn-primary" type="submit">Publicar platillo</button>
+            <button class="btn btn-secondary" id="cancelButton" type="button">{% trans "Cancelar" %}</button>
+            <button class="btn btn-primary" type="submit">{% trans "Publicar platillo" %}</button>
           </div>
 
-          <div class="footnote">Debes cumplir con nuestras normas comunitarias y ubicar correctamente tu punto de venta.</div>
-          <div class="status-note" id="statusBox">El mapa guardará la ubicación exacta del producto para que CUCU calcule distancias reales con respecto al comprador.</div>
+          <div class="footnote">{% trans "Debes cumplir con nuestras normas comunitarias y ubicar correctamente tu punto de venta." %}</div>
+          <div class="status-note" id="statusBox">{% trans "El mapa guardara la ubicacion exacta del producto para que CUCU calcule distancias reales con respecto al comprador." %}</div>
         </section>
       </form>
     </section>
@@ -802,30 +803,30 @@
             <span class="brand-mark" aria-hidden="true"></span>
             <span>CUCU</span>
           </a>
-          <span class="footer-note">Hecho para tu barrio, hecho con amor.</span>
+          <span class="footer-note">{% trans "Hecho para tu barrio, hecho con amor." %}</span>
         </div>
 
         <div class="footer-column">
-          <strong>Explorar</strong>
-          <a class="footer-link" href="/ui/pedido/">Menú</a>
-          <a class="footer-link" href="/">Cómo funciona</a>
+          <strong>{% trans "Explorar" %}</strong>
+          <a class="footer-link" href="/ui/pedido/">{% trans "Menu" %}</a>
+          <a class="footer-link" href="/">{% trans "Como funciona" %}</a>
         </div>
 
         <div class="footer-column">
-          <strong>Vender</strong>
-          <a class="footer-link" href="/ui/publicar/">Cómo funciona</a>
-          <a class="footer-link" href="/ui/publicar/">Mis ventas</a>
+          <strong>{% trans "Vender" %}</strong>
+          <a class="footer-link" href="/ui/publicar/">{% trans "Como funciona" %}</a>
+          <a class="footer-link" href="/ui/publicar/">{% trans "Mis ventas" %}</a>
         </div>
 
         <div class="footer-column">
-          <strong>Legal</strong>
-          <a class="footer-link" href="#">Publicar plato</a>
-          <a class="footer-link" href="#">Privacidad</a>
-          <a class="footer-link" href="#">Contacto</a>
+          <strong>{% trans "Legal" %}</strong>
+          <a class="footer-link" href="#">{% trans "Publicar plato" %}</a>
+          <a class="footer-link" href="#">{% trans "Privacidad" %}</a>
+          <a class="footer-link" href="#">{% trans "Contacto" %}</a>
         </div>
 
         <div class="footer-column">
-          <strong>Síguenos</strong>
+          <strong>{% trans "Siguenos" %}</strong>
           <div class="socials">
             <a href="#">f</a>
             <a href="#">ig</a>
@@ -834,7 +835,7 @@
           </div>
         </div>
       </div>
-      <div class="footer-bottom">© 2025 CUCU. Todos los derechos reservados.</div>
+      <div class="footer-bottom">{% trans "© 2025 CUCU. Todos los derechos reservados." %}</div>
     </footer>
   </main>
 
@@ -846,6 +847,25 @@
   <script>
     const GOOGLE_MAPS_API_KEY = '{{ google_maps_api_key|escapejs }}';
     const MEDELLIN_CENTER = { lat: 6.244203, lng: -75.581212 };
+    const TXT_PROFILE = '{% trans "Perfil" %}';
+    const TXT_REMOVE_INGREDIENT = '{% trans "Eliminar ingrediente" %}';
+    const TXT_ADD_INGREDIENT = '{% trans "Anade un ingrediente" %}';
+    const TXT_SUGGESTIONS_ERROR = '{% trans "No se pudieron cargar sugerencias" %}';
+    const TXT_ADDRESS_RESOLVE_ERROR = '{% trans "No se pudo resolver la direccion" %}';
+    const TXT_ADDRESS_LOOKUP_ERROR = '{% trans "No se pudo ubicar la direccion" %}';
+    const TXT_ADDRESS_FIXED = '{% trans "Direccion ubicada en el mapa." %}';
+    const TXT_LOCATION_FIXED = '{% trans "Ubicacion fijada en" %}';
+    const TXT_MAP_HINT = '{% trans "Ajusta el pin o escribe una direccion exacta." %}';
+    const TXT_ENTER_ADDRESS_FIRST = '{% trans "Escribe primero una direccion para ubicarla en el mapa." %}';
+    const TXT_SEARCHING_ADDRESS = '{% trans "Buscando la direccion en el mapa..." %}';
+    const TXT_NO_GEOLOCATION = '{% trans "Este navegador no soporta geolocalizacion." %}';
+    const TXT_GETTING_LOCATION = '{% trans "Obteniendo tu ubicacion actual..." %}';
+    const TXT_CURRENT_LOCATION_SET = '{% trans "Ubicacion actual fijada en el mapa." %}';
+    const TXT_LOCATION_ERROR_PREFIX = '{% trans "No se pudo obtener la ubicacion" %}';
+    const TXT_FORM_RESET = '{% trans "Formulario reiniciado." %}';
+    const TXT_PUBLISHING = '{% trans "Publicando..." %}';
+    const TXT_PUBLISH_ERROR = '{% trans "No se pudo publicar el platillo." %}';
+    const TXT_PUBLISH_OK = '{% trans "Platillo publicado y sincronizado con el catalogo." %}';
 
     const imageInput = document.getElementById('imageInput');
     const removeImageButton = document.getElementById('removeImageButton');
@@ -1019,8 +1039,8 @@
       if (!result) return;
       const { response, payload } = result;
       if (!response.ok || !payload) return;
-      const label = String(payload.nombre || payload.email || 'Perfil').trim();
-      profileLink.textContent = label.split(/\s+/).slice(0, 1).join(' ') || 'Perfil';
+      const label = String(payload.nombre || payload.email || TXT_PROFILE).trim();
+      profileLink.textContent = label.split(/\s+/).slice(0, 1).join(' ') || TXT_PROFILE;
       profileLink.title = label;
     }
 
@@ -1035,13 +1055,13 @@
       ingredientList.innerHTML = ingredientState.map((ingredient, index) => `
         <span class="chip">
           <span>${ingredient}</span>
-          <button type="button" data-remove-ingredient="${index}" aria-label="Eliminar ingrediente">×</button>
+          <button type="button" data-remove-ingredient="${index}" aria-label="${TXT_REMOVE_INGREDIENT}">×</button>
         </span>
       `).join('');
     }
 
     function addIngredient() {
-      const value = window.prompt('Añade un ingrediente');
+      const value = window.prompt(TXT_ADD_INGREDIENT);
       if (!value) return;
       const trimmed = value.trim();
       if (!trimmed) return;
@@ -1127,7 +1147,7 @@
         headers: { Accept: 'application/json' },
         signal: suggestionAbortController.signal,
       });
-      if (!response.ok) throw new Error('No se pudieron cargar sugerencias');
+      if (!response.ok) throw new Error(TXT_SUGGESTIONS_ERROR);
 
       const payload = await response.json().catch(() => null);
       const items = Array.isArray(payload?.items) ? payload.items : [];
@@ -1146,7 +1166,7 @@
       await placeMarker(Number(suggestion.raw.latitud), Number(suggestion.raw.longitud), {
         addressText,
       });
-      setStatus('Dirección ubicada en el mapa.', 'ok');
+      setStatus(TXT_ADDRESS_FIXED, 'ok');
     }
 
     async function reverseGeocode(lat, lng) {
@@ -1164,7 +1184,7 @@
         headers: { Accept: 'application/json' },
         signal: reverseGeocodeAbortController.signal,
       });
-      if (!response.ok) throw new Error('No se pudo resolver la dirección');
+      if (!response.ok) throw new Error(TXT_ADDRESS_RESOLVE_ERROR);
       return response.json();
     }
 
@@ -1180,7 +1200,7 @@
         signal: searchAbortController.signal,
       });
       const payload = await response.json().catch(() => null);
-      if (!response.ok) throw new Error(typeof payload?.detail === 'string' ? payload.detail : 'No se pudo ubicar la dirección');
+      if (!response.ok) throw new Error(typeof payload?.detail === 'string' ? payload.detail : TXT_ADDRESS_LOOKUP_ERROR);
       return payload;
     }
 
@@ -1197,7 +1217,7 @@
       }
 
       if (!updateAddress) {
-        updateMapSummary(`Ubicación fijada en ${Number(lat).toFixed(5)}, ${Number(lng).toFixed(5)}.`);
+        updateMapSummary(`${TXT_LOCATION_FIXED} ${Number(lat).toFixed(5)}, ${Number(lng).toFixed(5)}.`);
         return;
       }
 
@@ -1209,7 +1229,7 @@
           updateMapSummary(label);
         }
       } catch {
-        updateMapSummary(`Ubicación fijada en ${Number(lat).toFixed(5)}, ${Number(lng).toFixed(5)}.`);
+        updateMapSummary(`${TXT_LOCATION_FIXED} ${Number(lat).toFixed(5)}, ${Number(lng).toFixed(5)}.`);
       }
     }
 
@@ -1242,7 +1262,7 @@
 
       updateCoordinateInputs(MEDELLIN_CENTER.lat, MEDELLIN_CENTER.lng);
       direccionInput.value = '';
-      updateMapSummary('Ajusta el pin o escribe una dirección exacta.');
+      updateMapSummary(TXT_MAP_HINT);
     }
 
     imageInput.addEventListener('change', (event) => {
@@ -1331,38 +1351,38 @@
     locateAddressButton.addEventListener('click', async () => {
       const query = String(direccionInput.value || '').trim();
       if (!query) {
-        setStatus('Escribe primero una dirección para ubicarla en el mapa.', 'err');
+        setStatus(TXT_ENTER_ADDRESS_FIRST, 'err');
         direccionInput.focus();
         return;
       }
 
-      setStatus('Buscando la dirección en el mapa...');
+      setStatus(TXT_SEARCHING_ADDRESS);
       try {
         const result = await geocodeAddress(query);
         await placeMarker(Number(result.latitud), Number(result.longitud), {
           addressText: String(result.direccion_texto || query),
         });
-        setStatus('Dirección ubicada en el mapa.', 'ok');
+        setStatus(TXT_ADDRESS_FIXED, 'ok');
       } catch (error) {
         if (error?.name === 'AbortError') return;
-        setStatus(error instanceof Error ? error.message : 'No se pudo ubicar la dirección.', 'err');
+        setStatus(error instanceof Error ? error.message : TXT_ADDRESS_LOOKUP_ERROR, 'err');
       }
     });
 
     geolocateBtn.addEventListener('click', () => {
       if (!navigator.geolocation) {
-        setStatus('Este navegador no soporta geolocalización.', 'err');
+        setStatus(TXT_NO_GEOLOCATION, 'err');
         return;
       }
 
-      setStatus('Obteniendo tu ubicación actual...');
+      setStatus(TXT_GETTING_LOCATION);
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           await placeMarker(position.coords.latitude, position.coords.longitude);
-          setStatus('Ubicación actual fijada en el mapa.', 'ok');
+          setStatus(TXT_CURRENT_LOCATION_SET, 'ok');
         },
         (error) => {
-          setStatus(`No se pudo obtener la ubicación: ${error.message}.`, 'err');
+          setStatus(`${TXT_LOCATION_ERROR_PREFIX}: ${error.message}.`, 'err');
         },
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
       );
@@ -1380,13 +1400,13 @@
       }
       direccionInput.value = '';
       clearSuggestions();
-      updateMapSummary('Ajusta el pin o escribe una dirección exacta.');
-      setStatus('Formulario reiniciado.');
+      updateMapSummary(TXT_MAP_HINT);
+      setStatus(TXT_FORM_RESET);
     });
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
-      setStatus('Publicando...');
+      setStatus(TXT_PUBLISHING);
 
       const data = Object.fromEntries(new FormData(form).entries());
       const payload = new FormData();
@@ -1420,7 +1440,7 @@
       if (!result) return;
       const { response, payload: json } = result;
       if (!response.ok) {
-        const detail = typeof json?.detail === 'string' ? json.detail : 'No se pudo publicar el platillo.';
+        const detail = typeof json?.detail === 'string' ? json.detail : TXT_PUBLISH_ERROR;
         setStatus(detail, 'err');
         return;
       }
@@ -1437,8 +1457,8 @@
       map.setView([MEDELLIN_CENTER.lat, MEDELLIN_CENTER.lng], 13);
       direccionInput.value = '';
       clearSuggestions();
-      updateMapSummary('Ajusta el pin o escribe una dirección exacta.');
-      setStatus('Platillo publicado y sincronizado con el catálogo.', 'ok');
+      updateMapSummary(TXT_MAP_HINT);
+      setStatus(TXT_PUBLISH_OK, 'ok');
     });
 
     ensureAuthenticatedSession();

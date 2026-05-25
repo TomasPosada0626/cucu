@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   nginx:
     image: nginx:1.27-alpine
@@ -7,6 +5,13 @@ services:
     depends_on:
       - django
       - payment-service
+      - geo-service
+      - notifications-service
+      - auth-service
+      - market-service
+      - support-service
+      - redis
+      - rabbitmq
     ports:
       - "80:80"
     volumes:
@@ -22,10 +27,29 @@ services:
     environment:
       - DEBUG=True
       - DJANGO_SETTINGS_MODULE=config.settings
+      - GEO_SERVICE_URL=http://geo-service:8081
+      - NOTIFICATIONS_SERVICE_URL=http://notifications-service:8082
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+    depends_on:
+      - redis
     volumes:
       - .:/app
     expose:
       - "8000"
+    restart: unless-stopped
+
+  geo-service:
+    build:
+      context: ./geo_microservice
+      dockerfile: Dockerfile
+    container_name: cucu-geo-service
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+      - GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY:-}
+    expose:
+      - "8081"
     restart: unless-stopped
 
   payment-service:
@@ -37,11 +61,154 @@ services:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
       - PAYMENTS_DATABASE_PATH=/app/data/payments.db
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASSWORD=guest
+      - RABBITMQ_PAYMENTS_QUEUE=payments.events
+    depends_on:
+      - rabbitmq
     volumes:
       - payment_data:/app/data
     expose:
       - "8080"
     restart: unless-stopped
 
+  notifications-service:
+    build:
+      context: ./notifications_microservice
+      dockerfile: Dockerfile
+    container_name: cucu-notifications-service
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+      - NOTIFICATIONS_DATABASE_PATH=/app/data/notifications.db
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASSWORD=guest
+      - RABBITMQ_PAYMENTS_QUEUE=payments.events
+    depends_on:
+      - rabbitmq
+    volumes:
+      - notifications_data:/app/data
+    expose:
+      - "8082"
+    restart: unless-stopped
+
+  auth-service:
+    build:
+      context: ./auth_microservice
+      dockerfile: Dockerfile
+    container_name: cucu-auth-service
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+      - AUTH_DATABASE_PATH=/app/data/auth.db
+      - AUTH_JWT_SECRET=${AUTH_JWT_SECRET:-change-me-in-production}
+      - AUTH_ACCESS_TOKEN_TTL_MINUTES=${AUTH_ACCESS_TOKEN_TTL_MINUTES:-15}
+      - AUTH_REFRESH_TOKEN_TTL_DAYS=${AUTH_REFRESH_TOKEN_TTL_DAYS:-30}
+    volumes:
+      - auth_data:/app/data
+    expose:
+      - "8083"
+    restart: unless-stopped
+
+  market-service:
+    build:
+      context: ./market_microservice
+      dockerfile: Dockerfile
+    container_name: cucu-market-service
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+      - MARKET_DATABASE_PATH=/app/data/market.db
+    volumes:
+      - market_data:/app/data
+    expose:
+      - "8084"
+    restart: unless-stopped
+
+  support-service:
+    build:
+      context: ./support_microservice
+      dockerfile: Dockerfile
+    container_name: cucu-support-service
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+      - SUPPORT_DATABASE_PATH=/app/data/support.db
+    volumes:
+      - support_data:/app/data
+    expose:
+      - "8085"
+    restart: unless-stopped
+
+  celery-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cucu-celery-worker
+    command: celery -A config worker --loglevel=info
+    environment:
+      - DEBUG=True
+      - DJANGO_SETTINGS_MODULE=config.settings
+      - GEO_SERVICE_URL=http://geo-service:8081
+      - NOTIFICATIONS_SERVICE_URL=http://notifications-service:8082
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+    depends_on:
+      - redis
+      - django
+    volumes:
+      - .:/app
+    restart: unless-stopped
+
+  notifications-worker:
+    build:
+      context: ./notifications_microservice
+      dockerfile: Dockerfile
+    container_name: cucu-notifications-worker
+    command: python -m app.worker
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+      - NOTIFICATIONS_DATABASE_PATH=/app/data/notifications.db
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASSWORD=guest
+      - RABBITMQ_PAYMENTS_QUEUE=payments.events
+    depends_on:
+      - rabbitmq
+      - notifications-service
+    volumes:
+      - notifications_data:/app/data
+    restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: cucu-rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    expose:
+      - "5672"
+      - "15672"
+    ports:
+      - "15672:15672"
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: cucu-redis
+    expose:
+      - "6379"
+    restart: unless-stopped
+
 volumes:
   payment_data:
+  notifications_data:
+  auth_data:
+  market_data:
+  support_data:

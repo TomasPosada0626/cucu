@@ -1,10 +1,10 @@
-{% load static %}
+{% load static i18n %}
 <!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Iniciar sesión | CUCU</title>
+  <title>{% trans "Iniciar sesion" %} | CUCU</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Manrope:wght@400;500;700;800&display=swap');
 
@@ -263,46 +263,46 @@
     <div class="brand"><span class="brand-mark"></span><span>CUCU</span></div>
 
     <section class="hero">
-      <h1>Inicia sesión</h1>
-      <p>Bienvenido a CUCU</p>
-      <div class="art" aria-hidden="true"><img src="{% static 'images/1.png' %}" alt="Ilustración de inicio de sesión" /></div>
+      <h1>{% trans "Inicia sesion" %}</h1>
+      <p>{% trans "Bienvenido a CUCU" %}</p>
+      <div class="art" aria-hidden="true"><img src="{% static 'images/1.png' %}" alt="{% trans 'Ilustracion de inicio de sesion' %}" /></div>
     </section>
 
     <section class="form-wrap">
       <form id="form">
         <div class="field">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16v10H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m5 8 7 5 7-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <input name="email" type="email" required autocomplete="email" placeholder="Correo electrónico" />
+          <input name="email" type="email" required autocomplete="email" placeholder="{% trans 'Correo electronico' %}" />
         </div>
         <div class="field">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 11h10v9H7z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11V8a3 3 0 1 1 6 0v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          <input name="password" type="password" required autocomplete="current-password" placeholder="Contraseña" />
+          <input name="password" type="password" required autocomplete="current-password" placeholder="{% trans 'Contrasena' %}" />
           <div class="field-actions">
-            <button class="toggle-password" type="button" data-target="password" aria-label="Mostrar u ocultar contraseña">
+            <button class="toggle-password" type="button" data-target="password" aria-label="{% trans 'Mostrar u ocultar contrasena' %}">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/></svg>
             </button>
-            <a class="password-help" href="/ui/recuperar-password/">¿Olvidaste tu contraseña?</a>
+            <a class="password-help" href="/ui/recuperar-password/">{% trans "Olvidaste tu contrasena?" %}</a>
           </div>
         </div>
         <div class="row-between">
-          <label class="remember"><input type="checkbox" name="remember" checked /> <span>Recuérdame</span></label>
+          <label class="remember"><input type="checkbox" name="remember" checked /> <span>{% trans "Recuerdame" %}</span></label>
         </div>
-        <button class="cta" type="submit">Iniciar sesión</button>
+        <button class="cta" type="submit">{% trans "Iniciar sesion" %}</button>
       </form>
 
-      <div class="switch">¿Eres nuevo en CUCU? <a href="/ui/registro/">Regístrate</a></div>
+      <div class="switch">{% trans "Eres nuevo en CUCU?" %} <a href="/ui/registro/">{% trans "Registrate" %}</a></div>
       <pre id="out" class="out" aria-live="polite"></pre>
     </section>
 
     <footer class="footer">
       <div class="footer-links">
-        <a href="#">Términos</a>
+        <a href="#">{% trans "Terminos" %}</a>
         <span>|</span>
-        <a href="#">Privacidad</a>
+        <a href="#">{% trans "Privacidad" %}</a>
         <span>|</span>
-        <a href="#">Soporte</a>
+        <a href="#">{% trans "Soporte" %}</a>
       </div>
-      <div>© 2025 CUCU. Todos los derechos reservados.</div>
+      <div>{% trans "Todos los derechos reservados." %}</div>
     </footer>
   </main>
 

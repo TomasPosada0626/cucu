@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from flask import Flask, jsonify
+from werkzeug.exceptions import HTTPException
 
-from ..errors import ApiError, NotFoundError
+from ..errors import ApiError
 
 
 def register_error_handlers(app: Flask) -> None:
@@ -18,9 +19,19 @@ def register_error_handlers(app: Flask) -> None:
             payload["error"]["details"] = error.details
         return jsonify(payload), error.status_code
 
-    @app.errorhandler(404)
-    def handle_route_not_found(_error):
-        return NotFoundError("Ruta no encontrada").to_response()
+    @app.errorhandler(HTTPException)
+    def handle_http_exception(error: HTTPException):
+        return (
+            jsonify(
+                {
+                    "error": {
+                        "code": str(error.name).lower().replace(" ", "_"),
+                        "message": error.description,
+                    }
+                }
+            ),
+            int(error.code or 500),
+        )
 
     @app.errorhandler(Exception)
     def handle_unexpected_error(error: Exception):

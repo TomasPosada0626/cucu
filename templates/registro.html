@@ -1,10 +1,10 @@
-{% load static %}
+{% load static i18n %}
 <!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Crear cuenta | CUCU</title>
+  <title>{% trans "Crear cuenta" %} | CUCU</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Manrope:wght@400;500;700;800&display=swap');
 
@@ -261,52 +261,52 @@
     <div class="brand"><span class="brand-mark"></span><span>CUCU</span></div>
 
     <section class="hero">
-      <h1>Crea tu cuenta</h1>
-      <p>Únete a CUCU hoy mismo</p>
-      <div class="art" aria-hidden="true"><img src="{% static 'images/2.png' %}" alt="Ilustración de registro" /></div>
+      <h1>{% trans "Crea tu cuenta" %}</h1>
+      <p>{% trans "Unete a CUCU hoy mismo" %}</p>
+      <div class="art" aria-hidden="true"><img src="{% static 'images/2.png' %}" alt="{% trans 'Ilustracion de registro' %}" /></div>
     </section>
 
     <section class="form-wrap">
       <form id="form">
         <div class="field">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" stroke-width="1.8"/><path d="M5 19a7 7 0 0 1 14 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          <input name="nombre" required autocomplete="name" placeholder="Nombre completo" />
+          <input name="nombre" required autocomplete="name" placeholder="{% trans 'Nombre completo' %}" />
         </div>
         <div class="field">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16v10H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m5 8 7 5 7-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <input name="email" type="email" required autocomplete="email" placeholder="Correo electrónico" />
+          <input name="email" type="email" required autocomplete="email" placeholder="{% trans 'Correo electronico' %}" />
         </div>
         <div class="field">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 11h10v9H7z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11V8a3 3 0 1 1 6 0v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          <input name="password" type="password" required autocomplete="new-password" placeholder="Contraseña" />
-          <button class="toggle-password" type="button" data-target="password" aria-label="Mostrar u ocultar contraseña">
+          <input name="password" type="password" required autocomplete="new-password" placeholder="{% trans 'Contrasena' %}" />
+          <button class="toggle-password" type="button" data-target="password" aria-label="{% trans 'Mostrar u ocultar contrasena' %}">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/></svg>
           </button>
         </div>
         <div class="field">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 11h10v9H7z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11V8a3 3 0 1 1 6 0v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          <input name="confirmPassword" type="password" required autocomplete="new-password" placeholder="Confirma tu contraseña" />
-          <button class="toggle-password" type="button" data-target="confirmPassword" aria-label="Mostrar u ocultar confirmación de contraseña">
+          <input name="confirmPassword" type="password" required autocomplete="new-password" placeholder="{% trans 'Confirma tu contrasena' %}" />
+          <button class="toggle-password" type="button" data-target="confirmPassword" aria-label="{% trans 'Mostrar u ocultar confirmacion de contrasena' %}">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/></svg>
           </button>
         </div>
-        <div class="terms">Al registrarte, aceptas nuestros <a href="#">Términos y Condiciones</a>.</div>
-        <button class="cta" type="submit">Crear cuenta</button>
+        <div class="terms">{% trans "Al registrarte, aceptas nuestros" %} <a href="#">{% trans "Terminos y Condiciones" %}</a>.</div>
+        <button class="cta" type="submit">{% trans "Crear cuenta" %}</button>
       </form>
 
-      <div class="switch">¿Ya tienes cuenta? <a href="/ui/login/">Inicia sesión</a></div>
+      <div class="switch">{% trans "Ya tienes cuenta?" %} <a href="/ui/login/">{% trans "Inicia sesion" %}</a></div>
       <pre id="out" class="out" aria-live="polite"></pre>
     </section>
 
     <footer class="footer">
       <div class="footer-links">
-        <a href="#">Términos</a>
+        <a href="#">{% trans "Terminos" %}</a>
         <span>|</span>
-        <a href="#">Privacidad</a>
+        <a href="#">{% trans "Privacidad" %}</a>
         <span>|</span>
-        <a href="#">Soporte</a>
+        <a href="#">{% trans "Soporte" %}</a>
       </div>
-      <div>© 2025 CUCU. Todos los derechos reservados.</div>
+      <div>{% trans "Todos los derechos reservados." %}</div>
     </footer>
   </main>
 

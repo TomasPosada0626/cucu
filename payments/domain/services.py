@@ -1,3 +1,5 @@
+import logging
+
 from django.utils import timezone
 
 from common.exceptions import NotFoundError, ValidationError
@@ -7,6 +9,9 @@ from transactions.domain.builders import ensure_transaccion_for_pedido
 
 from ..infrastructure.gateways import PaymentGatewayFactory
 from ..infrastructure.models import Pago
+
+
+logger = logging.getLogger(__name__)
 
 
 class PaymentService:
@@ -53,6 +58,18 @@ class PaymentService:
 
         if authorized:
             self._ensure_transaccion(pedido)
+
+        try:
+            from notifications.tasks import enqueue_payment_notification
+
+            enqueue_payment_notification.delay(
+                usuario_id=user.id,
+                pago_id=pago.id,
+                pedido_id=pedido.id,
+                estado=pago.estado,
+            )
+        except Exception:
+            logger.exception("No se pudo encolar la notificacion asincrona del pago", extra={"pago_id": pago.id})
 
         return pago
 

@@ -1,12 +1,13 @@
 {% extends "base_app.html" %}
+{% load i18n %}
 
-{% block title %}Seguimiento | CUCU{% endblock %}
-{% block eyebrow %}Pedido{% endblock %}
-{% block page_title %}Seguimiento en <span>tiempo real</span>{% endblock %}
-{% block page_lead %}Confirma tu pedido y mira el recorrido del repartidor.{% endblock %}
+{% block title %}{% trans "Seguimiento" %} | CUCU{% endblock %}
+{% block eyebrow %}{% trans "Pedido" %}{% endblock %}
+{% block page_title %}{% trans "Seguimiento en" %} <span>{% trans "tiempo real" %}</span>{% endblock %}
+{% block page_lead %}{% trans "Confirma tu pedido y mira el recorrido del repartidor." %}{% endblock %}
 {% block hero_actions %}
-  <a class="btn btn-secondary" href="/ui/pedido/">Seguir comprando</a>
-  <a class="btn btn-secondary" href="/ui/carrito/">Carrito</a>
+  <a class="btn btn-secondary" href="/ui/pedido/">{% trans "Seguir comprando" %}</a>
+  <a class="btn btn-secondary" href="/ui/carrito/">{% trans "Carrito" %}</a>
 {% endblock %}
 {% block hero_points %}{% endblock %}
 
@@ -260,48 +261,48 @@
 
 {% block content %}
   <div class="track-layout">
-    <section class="card" aria-label="Mapa de seguimiento">
-      <h3>Mapa</h3>
-      <div id="map" aria-label="Mapa de seguimiento"></div>
+    <section class="card" aria-label="{% trans 'Mapa de seguimiento' %}">
+      <h3>{% trans "Mapa" %}</h3>
+      <div id="map" aria-label="{% trans 'Mapa de seguimiento' %}"></div>
       <p class="hint" id="geoHint"></p>
     </section>
 
-    <aside class="card" aria-label="Detalle del pedido">
-      <h3>Confirmación</h3>
+    <aside class="card" aria-label="{% trans 'Detalle del pedido' %}">
+      <h3>{% trans "Confirmacion" %}</h3>
 
       <div class="kv">
-        <div class="kv-line"><span>Pedido</span><strong id="pedidoIdValue">-</strong></div>
-        <div class="kv-line"><span>Repartidor</span><strong id="courierValue">-</strong></div>
-        <div class="kv-line"><span>Distancia</span><strong id="distanceValue">-</strong></div>
+        <div class="kv-line"><span>{% trans "Pedido" %}</span><strong id="pedidoIdValue">-</strong></div>
+        <div class="kv-line"><span>{% trans "Repartidor" %}</span><strong id="courierValue">-</strong></div>
+        <div class="kv-line"><span>{% trans "Distancia" %}</span><strong id="distanceValue">-</strong></div>
         <div class="kv-line"><span>ETA</span><strong id="etaValue">-</strong></div>
-        <div class="kv-line"><span>Método</span><strong id="methodValue">-</strong></div>
+        <div class="kv-line"><span>{% trans "Metodo" %}</span><strong id="methodValue">-</strong></div>
       </div>
 
       <div class="kv" style="border-bottom: 0; padding-bottom: 0;">
-        <div class="kv-line"><span>Pagaste</span><strong id="paidValue">-</strong></div>
-        <div class="kv-line"><span>Total pedido</span><strong id="orderTotalValue">-</strong></div>
-        <div class="kv-line"><span>Propina</span><strong id="tipValue">-</strong></div>
-        <div class="kv-line"><span>Total con propina</span><strong id="grandTotalValue">-</strong></div>
+        <div class="kv-line"><span>{% trans "Pagaste" %}</span><strong id="paidValue">-</strong></div>
+        <div class="kv-line"><span>{% trans "Total pedido" %}</span><strong id="orderTotalValue">-</strong></div>
+        <div class="kv-line"><span>{% trans "Propina" %}</span><strong id="tipValue">-</strong></div>
+        <div class="kv-line"><span>{% trans "Total con propina" %}</span><strong id="grandTotalValue">-</strong></div>
       </div>
 
-      <div class="status-pill"><span class="dot" aria-hidden="true"></span><span id="statusValue">En camino</span></div>
+      <div class="status-pill"><span class="dot" aria-hidden="true"></span><span id="statusValue">{% trans "En camino" %}</span></div>
 
-      <ol class="timeline" id="timeline" aria-label="Estado del pedido">
-        <li class="timeline-step" data-step="assigned"><span class="timeline-mark" aria-hidden="true">✓</span><div>Repartidor asignado</div></li>
-        <li class="timeline-step" data-step="arrived_pickup"><span class="timeline-mark" aria-hidden="true">✓</span><div>Repartidor ha llegado por tu pedido</div></li>
-        <li class="timeline-step" data-step="left_pickup"><span class="timeline-mark" aria-hidden="true">✓</span><div>Repartidor ha salido con tu pedido</div></li>
-        <li class="timeline-step" data-step="arrived_destination"><span class="timeline-mark" aria-hidden="true">✓</span><div>Tu pedido ha llegado a tu ubicación</div></li>
+      <ol class="timeline" id="timeline" aria-label="{% trans 'Estado del pedido' %}">
+        <li class="timeline-step" data-step="assigned"><span class="timeline-mark" aria-hidden="true">✓</span><div>{% trans "Repartidor asignado" %}</div></li>
+        <li class="timeline-step" data-step="arrived_pickup"><span class="timeline-mark" aria-hidden="true">✓</span><div>{% trans "Repartidor ha llegado por tu pedido" %}</div></li>
+        <li class="timeline-step" data-step="left_pickup"><span class="timeline-mark" aria-hidden="true">✓</span><div>{% trans "Repartidor ha salido con tu pedido" %}</div></li>
+        <li class="timeline-step" data-step="arrived_destination"><span class="timeline-mark" aria-hidden="true">✓</span><div>{% trans "Tu pedido ha llegado a tu ubicacion" %}</div></li>
       </ol>
 
       <div style="margin-top: 14px;">
         <label class="mini-label">
-          Propina (opcional)
-          <input id="tipInput" class="mini-input" inputmode="numeric" placeholder="Ej: 2000" />
+          {% trans "Propina (opcional)" %}
+          <input id="tipInput" class="mini-input" inputmode="numeric" placeholder="{% trans 'Ej: 2000' %}" />
         </label>
         <div class="actions" style="margin-top: 12px;">
-          <button class="btn btn-primary" id="applyTipBtn" type="button">Aplicar propina</button>
+          <button class="btn btn-primary" id="applyTipBtn" type="button">{% trans "Aplicar propina" %}</button>
         </div>
-        <p class="hint">La propina se muestra en el resumen (no se procesa como pago real todavía).</p>
+        <p class="hint">{% trans "La propina se muestra en el resumen (no se procesa como pago real todavia)." %}</p>
       </div>
 
       <ul id="itemsList" class="items"></ul>
@@ -320,6 +321,21 @@
 <script>
   const auth = window.CUCUAuth;
   const tracking = window.CUCUTracking;
+  const TXT_ASSIGNING = '{% trans "Asignando repartidor" %}';
+  const TXT_TO_PICKUP = '{% trans "Repartidor yendo por tu pedido" %}';
+  const TXT_AT_PICKUP = '{% trans "Repartidor ha llegado por tu pedido" %}';
+  const TXT_TO_DESTINATION = '{% trans "Repartidor en camino a tu ubicacion" %}';
+  const TXT_ARRIVED = '{% trans "Tu pedido ha llegado a tu ubicacion" %}';
+  const TXT_PICKUP = '{% trans "Recogida" %}';
+  const TXT_MISSING_POINTS = '{% trans "Faltan puntos de recogida o entrega para construir el mapa del pedido." %}';
+  const TXT_COURIER_START_ERROR = '{% trans "No fue posible ubicar el punto inicial del repartidor." %}';
+  const TXT_ROUTE_LOADING = '{% trans "Calculando ruta real por las calles..." %}';
+  const TXT_ROUTE_ERROR = '{% trans "No fue posible cargar la ruta vial del pedido. Recarga la vista para reintentar." %}';
+  const TXT_MISSING_PEDIDO_ID = '{% trans "Falta pedido_id en la URL." %}';
+  const TXT_DELIVERED = '{% trans "Tu pedido fue entregado" %}';
+  const TXT_DELIVERED_SHORT = '{% trans "Entregado" %}';
+  const TXT_PRODUCT = '{% trans "Producto" %}';
+  const TXT_LOCATING = '{% trans "Ubicando puntos del pedido" %}';
 
   const pedidoIdValue = document.getElementById('pedidoIdValue');
   const courierValue = document.getElementById('courierValue');
@@ -818,7 +834,7 @@
     clearTimeline();
 
     if (stage === 'assigning') {
-      statusValue.textContent = 'Asignando repartidor';
+      statusValue.textContent = TXT_ASSIGNING;
       etaValue.textContent = '—';
       setMarkerVisible(courierMarker, false);
       return stage;
@@ -828,24 +844,24 @@
     setStepDone('assigned', true);
 
     if (stage === 'to_pickup') {
-      statusValue.textContent = 'Repartidor yendo por tu pedido';
+      statusValue.textContent = TXT_TO_PICKUP;
       return stage;
     }
 
     setStepDone('arrived_pickup', true);
     if (stage === 'at_pickup') {
-      statusValue.textContent = 'Repartidor ha llegado por tu pedido';
+      statusValue.textContent = TXT_AT_PICKUP;
       return stage;
     }
 
     setStepDone('left_pickup', true);
     if (stage === 'to_destination') {
-      statusValue.textContent = 'Repartidor en camino a tu ubicación';
+      statusValue.textContent = TXT_TO_DESTINATION;
       return stage;
     }
 
     setStepDone('arrived_destination', true);
-    statusValue.textContent = 'Tu pedido ha llegado a tu ubicación';
+    statusValue.textContent = TXT_ARRIVED;
     return stage;
   }
 
@@ -857,7 +873,7 @@
   function renderTrackingMap() {
     resetPickupMarkers();
     pickups.forEach((p, idx) => {
-      const title = pickups.length === 1 ? 'Recogida' : `Recogida ${idx + 1}`;
+      const title = pickups.length === 1 ? TXT_PICKUP : `${TXT_PICKUP} ${idx + 1}`;
       const marker = L.marker(p, { title, icon: pickupIcon }).addTo(map);
       pickupMarkers.push(marker);
     });
@@ -943,7 +959,7 @@
   async function setupTrackingRoute(startedAtMs) {
     if (!destination || !pickups.length) {
       out.classList.add('err');
-      out.textContent = 'Faltan puntos de recogida o entrega para construir el mapa del pedido.';
+      out.textContent = TXT_MISSING_POINTS;
       return false;
     }
 
@@ -951,16 +967,16 @@
     courierStart = buildCourierStartPoint(firstPickup);
     if (!courierStart) {
       out.classList.add('err');
-      out.textContent = 'No fue posible ubicar el punto inicial del repartidor.';
+      out.textContent = TXT_COURIER_START_ERROR;
       return false;
     }
 
-    geoHint.textContent = 'Calculando ruta real por las calles...';
+    geoHint.textContent = TXT_ROUTE_LOADING;
     const waypoints = [courierStart, ...pickups, destination];
     const route = await fetchRoadRouteWithRetry(waypoints);
     if (!route?.path?.length || !route?.legSeconds?.length) {
       out.classList.add('err');
-      out.textContent = 'No fue posible cargar la ruta vial del pedido. Recarga la vista para reintentar.';
+      out.textContent = TXT_ROUTE_ERROR;
       routeLine.setLatLngs([]);
       return false;
     }
@@ -1016,14 +1032,14 @@
     setStepDone('arrived_destination', progress >= 1);
 
     if (progress >= 1) {
-      statusValue.textContent = 'Tu pedido ha llegado a tu ubicación';
+      statusValue.textContent = TXT_ARRIVED;
       return;
     }
     if (progress > 0.04) {
-      statusValue.textContent = 'Repartidor en camino a tu ubicación';
+      statusValue.textContent = TXT_TO_DESTINATION;
       return;
     }
-    statusValue.textContent = 'Repartidor recogiendo tu pedido';
+    statusValue.textContent = TXT_AT_PICKUP;
   }
 
   async function tickCourier() {
@@ -1051,7 +1067,7 @@
     const pedidoId = safeNumber(getQueryParam('pedido_id'));
     if (!pedidoId) {
       out.classList.add('err');
-      out.textContent = 'Falta pedido_id en la URL.';
+      out.textContent = TXT_MISSING_PEDIDO_ID;
       map.setView([DEFAULT_MAP_CENTER.lat, DEFAULT_MAP_CENTER.lng], 6);
       return;
     }
@@ -1092,8 +1108,8 @@
     const currentEstado = String(pedido?.estado || '').trim().toUpperCase();
     if (currentEstado === 'ENTREGADO' || currentEstado === 'FINALIZADO' || currentEstado === 'COMPLETADO') {
       setActiveOrderStatus(pedidoId, 'delivered');
-      statusValue.textContent = 'Tu pedido fue entregado';
-      etaValue.textContent = 'Entregado';
+      statusValue.textContent = TXT_DELIVERED;
+      etaValue.textContent = TXT_DELIVERED_SHORT;
     } else {
       setActiveOrderStatus(pedidoId, 'active');
     }
@@ -1125,7 +1141,7 @@
 
     itemsList.innerHTML = items.map((it) => {
       const pub = it?.publicacion;
-      const title = pub?.titulo || 'Producto';
+      const title = pub?.titulo || TXT_PRODUCT;
       const qty = Number(it?.cantidad || 0);
       const unit = Number(it?.precio_unitario || 0);
       const u = pub?.ubicacion;
@@ -1152,7 +1168,7 @@
     clearTimeline();
     courierStart = pickups[0] ? buildCourierStartPoint(pickups[0]) : null;
     renderTrackingMap();
-    statusValue.textContent = 'Ubicando puntos del pedido';
+    statusValue.textContent = TXT_LOCATING;
     window.setTimeout(() => {
       try { map.invalidateSize(); } catch {}
     }, 50);

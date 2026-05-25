@@ -1,52 +1,53 @@
 {% extends "base_app.html" %}
+{% load i18n %}
 
-{% block title %}Aceptar pedido | CUCU{% endblock %}
-{% block eyebrow %}Vender{% endblock %}
-{% block page_title %}Acepta un <span>pedido</span>{% endblock %}
-{% block page_lead %}Esta pantalla representa el lado del vendedor dentro de CUCU y mantiene el mismo lenguaje visual del resto del producto.{% endblock %}
+{% block title %}{% trans "Aceptar pedido" %} | CUCU{% endblock %}
+{% block eyebrow %}{% trans "Vender" %}{% endblock %}
+{% block page_title %}{% trans "Acepta un" %} <span>{% trans "pedido" %}</span>{% endblock %}
+{% block page_lead %}{% trans "Esta pantalla representa el lado del vendedor dentro de CUCU y mantiene el mismo lenguaje visual del resto del producto." %}{% endblock %}
 {% block hero_actions %}
-  <a class="btn btn-primary" href="/ui/notificaciones/">Ver notificaciones</a>
-  <a class="btn btn-secondary" href="/">Inicio</a>
+  <a class="btn btn-primary" href="/ui/notificaciones/">{% trans "Ver notificaciones" %}</a>
+  <a class="btn btn-secondary" href="/">{% trans "Inicio" %}</a>
 {% endblock %}
 {% block hero_points %}
-  <div class="hero-point"><span class="hero-point-badge">P</span><div><strong>Pedido pendiente</strong><p>Busca un pedido por ID y valida si corresponde a tu publicación.</p></div></div>
-  <div class="hero-point"><span class="hero-point-badge">A</span><div><strong>Aceptación</strong><p>Solo el dueño de la publicación puede confirmar el pedido.</p></div></div>
-  <div class="hero-point"><span class="hero-point-badge">N</span><div><strong>Notificación</strong><p>El comprador recibe una notificación automática al aceptar.</p></div></div>
+  <div class="hero-point"><span class="hero-point-badge">P</span><div><strong>{% trans "Pedido pendiente" %}</strong><p>{% trans "Busca un pedido por ID y valida si corresponde a tu publicacion." %}</p></div></div>
+  <div class="hero-point"><span class="hero-point-badge">A</span><div><strong>{% trans "Aceptacion" %}</strong><p>{% trans "Solo el dueno de la publicacion puede confirmar el pedido." %}</p></div></div>
+  <div class="hero-point"><span class="hero-point-badge">N</span><div><strong>{% trans "Notificacion" %}</strong><p>{% trans "El comprador recibe una notificacion automatica al aceptar." %}</p></div></div>
 {% endblock %}
-{% block section_title %}Aceptar pedido{% endblock %}
-{% block section_hint %}Desde aquí el vendedor confirma pedidos y continúa el flujo operativo sin salir del estilo visual de CUCU.{% endblock %}
+{% block section_title %}{% trans "Aceptar pedido" %}{% endblock %}
+{% block section_hint %}{% trans "Desde aqui el vendedor confirma pedidos y continua el flujo operativo sin salir del estilo visual de CUCU." %}{% endblock %}
 {% block content %}
       <form id="form">
         <label>
-          Pedido ID
-          <input name="pedido_id" type="number" required inputmode="numeric" placeholder="Ej: 5" />
+          {% trans "Pedido ID" %}
+          <input name="pedido_id" type="number" required inputmode="numeric" placeholder="{% trans 'Ej: 5' %}" />
         </label>
         <div class="actions">
-          <button class="btn btn-primary" type="submit">Buscar pedido</button>
+          <button class="btn btn-primary" type="submit">{% trans "Buscar pedido" %}</button>
         </div>
       </form>
 
       <!-- Confirmación antes de aceptar  -->
       <div id="confirm" class="summary" hidden>
-        <div>¿Aceptar el pedido <strong id="confirmId"></strong>?</div>
-        <button class="btn btn-primary" type="button" id="aceptarBtn">Aceptar pedido</button>
+        <div>{% trans "Aceptar el pedido" %} <strong id="confirmId"></strong>?</div>
+        <button class="btn btn-primary" type="button" id="aceptarBtn">{% trans "Aceptar pedido" %}</button>
       </div>
 
       <!-- Resumen del pedido luego de aceptar -->
       <div id="summary" class="summary" hidden>
-        <div><strong>Estado:</strong> <span id="pedidoEstado">-</span></div>
-        <div><strong>Teléfono:</strong> <span id="pedidoTel">-</span></div>
-        <div><strong>Total:</strong> <span id="pedidoTotal">-</span></div>
+        <div><strong>{% trans "Estado:" %}</strong> <span id="pedidoEstado">-</span></div>
+        <div><strong>{% trans "Telefono:" %}</strong> <span id="pedidoTel">-</span></div>
+        <div><strong>{% trans "Total:" %}</strong> <span id="pedidoTotal">-</span></div>
       </div>
 
       <div class="note">
-        Solo el <strong>dueño de la publicación</strong> puede aceptar el pedido.
-        El comprador recibirá una notificación automáticamente.
+        {% trans "Solo el dueno de la publicacion puede aceptar el pedido." %}
+        {% trans "El comprador recibira una notificacion automaticamente." %}
       </div>
 
       <div class="actions" id="actions" hidden>
-        <a class="btn btn-secondary" href="/">Volver al inicio</a>
-        <a class="btn btn-secondary" href="/ui/notificaciones/">Ver notificaciones</a>
+        <a class="btn btn-secondary" href="/">{% trans "Volver al inicio" %}</a>
+        <a class="btn btn-secondary" href="/ui/notificaciones/">{% trans "Ver notificaciones" %}</a>
       </div>
 
       <pre id="out" class="out" aria-live="polite"></pre>
@@ -54,6 +55,8 @@
 {% block page_scripts %}
   <script>
     const auth = window.CUCUAuth;
+    const TXT_PROCESSING = '{% trans "Procesando..." %}';
+    const TXT_ACCEPTED = '{% trans "ACEPTADO" %}';
     const out = document.getElementById('out');
     const actions = document.getElementById('actions');
     const confirm = document.getElementById('confirm');
@@ -91,7 +94,7 @@
     document.getElementById('aceptarBtn').addEventListener('click', async () => {
       confirm.hidden = true;
       out.classList.remove('ok', 'err');
-      out.textContent = 'Procesando...';
+      out.textContent = TXT_PROCESSING;
 
       const pedidoId = pedidoInput.value;
       const result = await auth.authenticatedFetch(`/api/pedidos/${encodeURIComponent(pedidoId)}/aceptar/`, {
@@ -108,7 +111,7 @@
 
       if (res.ok) {
         actions.hidden = false;
-        const estadoText = (json.estado || 'ACEPTADO').toUpperCase();
+        const estadoText = (json.estado || TXT_ACCEPTED).toUpperCase();
         pedidoEstado.innerHTML = `<span class="badge aceptado">${estadoText}</span>`;
         pedidoTel.textContent = json.telefono || '-';
         pedidoTotal.textContent = formatMoney(json.total);

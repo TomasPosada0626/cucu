@@ -143,3 +143,123 @@ views.py -> Reune los metodos anteriores solo para usarlos de acuerdo al get/pos
 
 
 -->
+
+# Estado actual (microservicios)
+
+Servicios activos en Docker Compose:
+
+- `nginx` (puerto 80): gateway de entrada
+- `django` (puerto interno 8000): UI y rutas legacy
+- `payment-service` (puerto interno 8080): pagos (`/api/v2/payments`)
+- `geo-service` (puerto interno 8081): geocodificacion y rutas (`/api/v2/geocode`, `/api/v2/route`)
+- `notifications-service` (puerto interno 8082): notificaciones (`/api/v3/notifications`)
+- `auth-service` (puerto interno 8083): autenticacion (`/api/v3/auth/*`)
+- `market-service` (puerto interno 8084): publicaciones y pedidos (`/api/v3/publications`, `/api/v3/orders`)
+- `support-service` (puerto interno 8085): trust/ratings/transactions (`/api/v3/trust/*`, `/api/v3/ratings`, `/api/v3/transactions`)
+- `redis` (puerto interno 6379): broker/result backend para tareas Celery en Django
+- `celery-worker` (sin puerto): ejecucion asincrona de tareas de dominio desde Django
+- `rabbitmq` (puerto interno 5672, panel 15672): broker de mensajeria asincrona
+- `notifications-worker` (sin puerto): consumidor asincrono de eventos de pago
+
+Compatibilidad mantenida:
+
+- Frontend y templates siguen en Django (`/`, `/ui/*`)
+- Endpoints legacy de Geo y Notificaciones siguen disponibles desde Django
+- Django usa gateways con fallback local si un microservicio no responde
+
+## Comunicacion asincrona (RabbitMQ)
+
+- Productor: `payment-service` publica el evento `payment.processed` en la cola `payments.events` cada vez que un pago termina en `AUTORIZADO` o `FALLIDO`.
+- Consumidor: `notifications-worker` consume `payments.events` y crea notificaciones tipo `pago` en `notifications-service`.
+- Idempotencia: `notifications-worker` registra `event_id` en la tabla `processed_events` para evitar procesar duplicados.
+
+Flujo de ejemplo:
+
+1. Cliente crea pago por HTTP (`POST /api/v2/payments`).
+2. `payment-service` responde al cliente y publica `payment.processed` en RabbitMQ.
+3. `notifications-worker` consume el evento y guarda la notificacion asociada al usuario.
+4. Cliente consulta `GET /api/v3/notifications?usuario_id=<id>` y ve la notificacion generada asincronamente.
+
+## Comunicacion asincrona (Redis + Celery)
+
+- Productor: `payments/domain/services.py` encola `enqueue_payment_notification.delay(...)` al registrar un pago.
+- Broker: Redis (`CELERY_BROKER_URL=redis://redis:6379/0`).
+- Worker: `celery-worker` ejecuta `notifications/tasks.py` y persiste la notificacion en el modelo Django `Notificacion`.
+- Resultado: la API monolitica de notificaciones refleja eventos de pago procesados fuera del request HTTP.
+
+Flujo de ejemplo:
+
+1. Cliente crea pago (`POST /api/v1/payments`).
+2. El caso de uso de pagos registra el pago y encola una tarea Celery.
+3. `celery-worker` consume la tarea desde Redis y crea la notificacion.
+4. Cliente consulta `GET /api/v1/notificaciones/mias` y ve la notificacion creada asincronamente.
+
+## Internacionalizacion (ES/EN)
+
+- Se habilito i18n nativo en Django con `LocaleMiddleware`, `LANGUAGES` y `LOCALE_PATHS`.
+- Idiomas soportados: `es` y `en`.
+- Selector global de idioma disponible en todas las vistas HTML.
+- El idioma elegido se conserva entre vistas y sesiones (cookie `django_language` + localStorage).
+- El cambio aplica de forma inmediata en la UI y no rompe la navegacion existente.
+
+Archivos relevantes:
+
+- `config/settings.py`
+- `config/urls.py` (ruta `i18n/`)
+- `common/middleware.py` (inyecta script global)
+- `static/js/cucu-i18n.js` (selector y traduccion inmediata)
+- `locale/en/LC_MESSAGES/django.po`
+- `locale/en/LC_MESSAGES/django.mo`
+- `locale/es/LC_MESSAGES/django.po`
+- `locale/es/LC_MESSAGES/django.mo`
+
+
+## Evidencia de adapters (aliado y tercero)
+
+- Adapter de aliado interno (pasarela de pagos):
+        - `payments/infrastructure/gateways.py`
+        - Estrategia `PaymentGatewayFactory` desacopla dominio de pagos del proveedor de autorizacion.
+- Adapter de tercero (servicios de geolocalizacion/ruteo):
+        - `geo/domain/services.py` (geocodificacion sobre proveedores externos)
+        - `geo/infrastructure/routing.py` (rutas sobre OSRM/Valhalla con fallback)
+
+Esta separacion permite cambiar proveedor aliado o tercero sin tocar la logica de aplicacion (use cases).
+
+# Despliegue en AWS EC2 (Ubuntu)
+
+1. Abrir puertos del Security Group:
+- `22` (SSH)
+- `80` (HTTP)
+
+2. Instalar Docker + Compose plugin en la instancia.
+
+3. Clonar el repositorio y entrar al proyecto:
+
+```bash
+git clone <repo-url>
+cd entregas
+```
+
+4. (Opcional) crear `.env.local` para Google Maps:
+
+```bash
+echo "GOOGLE_MAPS_API_KEY=tu_api_key" > .env.local
+```
+
+5. Levantar stack:
+
+```bash
+docker compose up --build -d
+docker compose ps
+```
+
+6. Verificar:
+
+- `http://<EC2_PUBLIC_IP>/health`
+- `http://<EC2_PUBLIC_IP>/`
+
+7. Logs:
+
+```bash
+docker compose logs -f
+```

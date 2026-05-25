@@ -1,3 +1,4 @@
+{% load i18n %}
 <!doctype html>
 <html lang="es">
 <head>
@@ -649,18 +650,18 @@
         <span class="brand-mark" aria-hidden="true"></span>
         <span>CUCU</span>
       </a>
-      <nav class="nav-links" aria-label="Navegación principal">
-        <a class="nav-link" data-nav="inicio" href="/">Inicio</a>
-        <a class="nav-link" data-nav="compra" href="/ui/pedido/">Compra</a>
-        <a class="nav-link" data-nav="vende" href="/ui/publicar/">Vende</a>
+      <nav class="nav-links" aria-label="{% trans 'Navegacion principal' %}">
+        <a class="nav-link" data-nav="inicio" href="/">{% trans "Inicio" %}</a>
+        <a class="nav-link" data-nav="compra" href="/ui/pedido/">{% trans "Compra" %}</a>
+        <a class="nav-link" data-nav="vende" href="/ui/publicar/">{% trans "Vende" %}</a>
       </nav>
       <div class="nav-tools">
-        <a class="tool-link icon-only" id="cartLink" href="/ui/carrito/" aria-label="Carrito">
+        <a class="tool-link icon-only" id="cartLink" href="/ui/carrito/" aria-label="{% trans 'Carrito' %}">
           <svg class="tool-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 8h10l-1 9H9L8 8Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 8a2 2 0 1 1 4 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9.5 20a1 1 0 1 0 0 .01M16.5 20a1 1 0 1 0 0 .01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
           <span class="tool-badge" id="cartCount">0</span>
         </a>
         <a class="tool-link" id="profileLink" href="/ui/perfil/">
-          <span>Perfil</span>
+          <span>{% trans "Perfil" %}</span>
         </a>
       </div>
     </div>

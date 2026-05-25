@@ -1,10 +1,10 @@
-{% load static %}
+{% load static i18n %}
 <!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Comprar | CUCU</title>
+  <title>{% trans "Comprar" %} | CUCU</title>
   <meta name="color-scheme" content="light" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
@@ -1516,23 +1516,23 @@
         <span>CUCU</span>
       </a>
 
-      <nav class="nav-center" aria-label="Navegación principal">
-        <a class="nav-link" href="/">Inicio</a>
-        <a class="nav-link active" href="/ui/pedido/">Compra</a>
-        <a class="nav-link" href="/ui/publicar/">Vende</a>
+      <nav class="nav-center" aria-label="{% trans 'Navegacion principal' %}">
+        <a class="nav-link" href="/">{% trans "Inicio" %}</a>
+        <a class="nav-link active" href="/ui/pedido/">{% trans "Compra" %}</a>
+        <a class="nav-link" href="/ui/publicar/">{% trans "Vende" %}</a>
       </nav>
 
       <div class="nav-actions">
         <div id="guestActions" class="nav-actions hidden">
-          <a class="btn btn-secondary" href="/ui/login/">Iniciar sesión</a>
-          <a class="btn btn-primary" href="/ui/registro/">Regístrate</a>
+          <a class="btn btn-secondary" href="/ui/login/">{% trans "Iniciar sesion" %}</a>
+          <a class="btn btn-primary" href="/ui/registro/">{% trans "Registrate" %}</a>
         </div>
         <div id="userActions" class="nav-actions">
-          <a class="tool-link icon-only" id="cartLink" href="/ui/carrito/" aria-label="Carrito">
+          <a class="tool-link icon-only" id="cartLink" href="/ui/carrito/" aria-label="{% trans 'Carrito' %}">
             <svg class="tool-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 8h10l-1 9H9L8 8Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 8a2 2 0 1 1 4 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9.5 20a1 1 0 1 0 0 .01M16.5 20a1 1 0 1 0 0 .01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
             <span class="tool-badge" id="cartCount">0</span>
           </a>
-          <a class="tool-link" id="profileButton" href="/ui/perfil/">Perfil</a>
+          <a class="tool-link" id="profileButton" href="/ui/perfil/">{% trans "Perfil" %}</a>
         </div>
       </div>
     </div>
@@ -1540,38 +1540,38 @@
 
   <main class="page shell">
     <div class="breadcrumb">
-      <a href="/">Inicio</a>
+      <a href="/">{% trans "Inicio" %}</a>
       <span>/</span>
-      <span>Comprar</span>
+      <span>{% trans "Comprar" %}</span>
     </div>
 
     <section class="heading">
-      <h1>Encuentra comida cerca</h1>
-      <p>Explora los platillos caseros disponibles en tu barrio y ordena tus favoritos.</p>
+      <h1>{% trans "Encuentra comida cerca" %}</h1>
+      <p>{% trans "Explora los platillos caseros disponibles en tu barrio y ordena tus favoritos." %}</p>
     </section>
 
     <section class="filter-shell">
       <div class="filter-row">
-        <label class="search-box" aria-label="Buscar publicaciones">
+        <label class="search-box" aria-label="{% trans 'Buscar publicaciones' %}">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M11 5a6 6 0 1 0 3.9 10.57l3.76 3.76 1.41-1.41-3.76-3.76A6 6 0 0 0 11 5Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <input id="searchInput" placeholder="¿Qué se te antoja hoy?" />
+          <input id="searchInput" placeholder="{% trans 'Que se te antoja hoy?' %}" />
         </label>
 
       </div>
 
       <div class="state-banner" id="stateBanner">
-        <span id="locationStatus">Usa tu ubicación o escribe tu dirección para cargar platos cercanos dentro de 5 km.</span>
+        <span id="locationStatus">{% trans "Usa tu ubicacion o escribe tu direccion para cargar platos cercanos dentro de 5 km." %}</span>
         <div class="state-actions">
-          <button class="btn btn-secondary" type="button" id="bannerLocateBtn">Usar ubicación</button>
-          <button class="btn btn-secondary" type="button" id="bannerAddressBtn">Escribir dirección</button>
+          <button class="btn btn-secondary" type="button" id="bannerLocateBtn">{% trans "Usar ubicacion" %}</button>
+          <button class="btn btn-secondary" type="button" id="bannerAddressBtn">{% trans "Escribir direccion" %}</button>
         </div>
 
-        <div class="address-inline" id="addressInline" aria-label="Buscar por dirección">
-          <label class="search-box address-box" aria-label="Escribir dirección">
+        <div class="address-inline" id="addressInline" aria-label="{% trans 'Buscar por direccion' %}">
+          <label class="search-box address-box" aria-label="{% trans 'Escribir direccion' %}">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s6-5.3 6-11a6 6 0 1 0-12 0c0 5.7 6 11 6 11Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 13.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z" stroke="currentColor" stroke-width="1.8"/></svg>
-            <input id="addressInput" placeholder="Ej: Cra 43A #6 Sur-15, Medellín" autocomplete="off" />
+            <input id="addressInput" placeholder="{% trans 'Ej: Cra 43A #6 Sur-15, Medellin' %}" autocomplete="off" />
           </label>
-          <div class="address-suggestions" id="addressSuggestions" aria-label="Sugerencias de dirección"></div>
+          <div class="address-suggestions" id="addressSuggestions" aria-label="{% trans 'Sugerencias de direccion' %}"></div>
         </div>
       </div>
     </section>
@@ -1579,57 +1579,57 @@
     <section class="catalog-layout">
       <aside class="sidebar" id="sidebarFilters">
         <div class="sidebar-card">
-          <h2 class="sidebar-title large">Filtrar por</h2>
+          <h2 class="sidebar-title large">{% trans "Filtrar por" %}</h2>
           <div class="sidebar-list" id="sidebarCategories">
-            <button class="sidebar-item active" type="button" data-category="all">Todos</button>
-            <button class="sidebar-item" type="button" data-category="mexicana">Mexicana</button>
-            <button class="sidebar-item" type="button" data-category="italiana">Italiana</button>
-            <button class="sidebar-item" type="button" data-category="sana">Saludable</button>
-            <button class="sidebar-item" type="button" data-category="postres">Postres</button>
+            <button class="sidebar-item active" type="button" data-category="all">{% trans "Todos" %}</button>
+            <button class="sidebar-item" type="button" data-category="mexicana">{% trans "Mexicana" %}</button>
+            <button class="sidebar-item" type="button" data-category="italiana">{% trans "Italiana" %}</button>
+            <button class="sidebar-item" type="button" data-category="sana">{% trans "Saludable" %}</button>
+            <button class="sidebar-item" type="button" data-category="postres">{% trans "Postres" %}</button>
           </div>
         </div>
 
         <div class="sidebar-card">
-          <h2 class="sidebar-title">Precio</h2>
+          <h2 class="sidebar-title">{% trans "Precio" %}</h2>
           <div class="sidebar-range">
             <div class="price-range-stack">
               <div class="price-inputs">
                 <label>
-                  <span>Mínimo</span>
+                  <span>{% trans "Minimo" %}</span>
                   <input id="priceMinInput" type="number" min="9000" max="50000" step="1000" value="9000" inputmode="numeric" />
                 </label>
                 <label>
-                  <span>Máximo</span>
+                  <span>{% trans "Maximo" %}</span>
                   <input id="priceMaxInput" type="number" min="9000" max="50000" step="1000" value="50000" inputmode="numeric" />
                 </label>
               </div>
-              <div class="price-slider-wrap" aria-label="Rango de precio">
+              <div class="price-slider-wrap" aria-label="{% trans 'Rango de precio' %}">
                 <div class="price-slider-track"></div>
                 <div class="price-slider-active" id="priceSliderActive"></div>
                 <input id="priceMinRange" type="range" min="9000" max="50000" step="1000" value="9000" />
                 <input id="priceMaxRange" type="range" min="9000" max="50000" step="1000" value="50000" />
               </div>
             </div>
-            <span class="catalog-title"><strong id="priceLabel">$9.000 - $50.000</strong><span>Rango actual</span></span>
+            <span class="catalog-title"><strong id="priceLabel">$9.000 - $50.000</strong><span>{% trans "Rango actual" %}</span></span>
           </div>
         </div>
 
         <div class="sidebar-card">
-          <h2 class="sidebar-title">Distancia</h2>
+          <h2 class="sidebar-title">{% trans "Distancia" %}</h2>
           <div class="sidebar-range">
             <div class="distance-pills" id="distancePills">
               <button class="distance-pill" type="button" data-distance="1">1 km</button>
               <button class="distance-pill" type="button" data-distance="3">3</button>
               <button class="distance-pill active" type="button" data-distance="5">5</button>
             </div>
-            <span class="catalog-title"><strong id="distanceLabel">5 km</strong><span>Radio máximo</span></span>
+            <span class="catalog-title"><strong id="distanceLabel">5 km</strong><span>{% trans "Radio maximo" %}</span></span>
           </div>
         </div>
 
         <div class="sidebar-card">
-          <h2 class="sidebar-title">Tiempo de entrega</h2>
+          <h2 class="sidebar-title">{% trans "Tiempo de entrega" %}</h2>
           <select class="distance-select" id="deliveryTimeSelect">
-            <option value="all">Todos</option>
+            <option value="all">{% trans "Todos" %}</option>
             <option value="under-30">&lt; 30 min</option>
             <option value="30-45">30 - 45 min</option>
             <option value="45-60">45 - 60 min</option>
@@ -1638,24 +1638,24 @@
           <div class="legend-stack" style="margin-top: 12px;">
             <label class="legend-item" style="cursor:pointer;">
               <input id="availableNowToggle" type="checkbox" style="accent-color: var(--accent);" />
-              Disponible ahora
+              {% trans "Disponible ahora" %}
             </label>
           </div>
-          <button class="sidebar-reset" id="resetFiltersButton" type="button" style="margin-top: 14px;">Restablecer filtros</button>
+          <button class="sidebar-reset" id="resetFiltersButton" type="button" style="margin-top: 14px;">{% trans "Restablecer filtros" %}</button>
         </div>
       </aside>
 
       <section>
         <div class="catalog-head">
-          <span class="result-inline" id="catalogHint">Ajusta tus filtros o tu ubicación.</span>
+          <span class="result-inline" id="catalogHint">{% trans "Ajusta tus filtros o tu ubicacion." %}</span>
         </div>
 
         <div class="catalog-grid" id="catalog"></div>
-        <div class="empty-state" id="emptyState">Usa tu ubicación o escribe una dirección para empezar a ver platos cercanos.</div>
+        <div class="empty-state" id="emptyState">{% trans "Usa tu ubicacion o escribe una direccion para empezar a ver platos cercanos." %}</div>
 
         <div class="catalog-footer">
           <div class="pagination" id="pagination"></div>
-          <span class="catalog-title"><span id="resultSummary">0 resultados</span></span>
+          <span class="catalog-title"><span id="resultSummary">{% trans "0 resultados" %}</span></span>
         </div>
         <div class="status-output" id="out" aria-live="polite"></div>
       </section>
@@ -1668,30 +1668,30 @@
             <span class="brand-mark" aria-hidden="true"></span>
             <span>CUCU</span>
           </a>
-          <span class="footer-note">Hecho para tu barrio, hecho con amor.</span>
+          <span class="footer-note">{% trans "Hecho para tu barrio, hecho con amor." %}</span>
         </div>
 
         <div class="footer-column">
-          <strong>Explorar</strong>
-          <a class="footer-link" href="/ui/pedido/">Menú</a>
-          <a class="footer-link" href="/#como-funciona">Cómo funciona</a>
+          <strong>{% trans "Explorar" %}</strong>
+          <a class="footer-link" href="/ui/pedido/">{% trans "Menu" %}</a>
+          <a class="footer-link" href="/#como-funciona">{% trans "Como funciona" %}</a>
         </div>
 
         <div class="footer-column">
-          <strong>Vender</strong>
-          <a class="footer-link" href="/ui/publicar/">Cómo funciona</a>
-          <a class="footer-link" href="/ui/publicar/">Comunidad</a>
+          <strong>{% trans "Vender" %}</strong>
+          <a class="footer-link" href="/ui/publicar/">{% trans "Como funciona" %}</a>
+          <a class="footer-link" href="/ui/publicar/">{% trans "Comunidad" %}</a>
         </div>
 
         <div class="footer-column">
-          <strong>Legal</strong>
-          <a class="footer-link" href="#">Términos</a>
-          <a class="footer-link" href="#">Privacidad</a>
-          <a class="footer-link" href="#">Contrato</a>
+          <strong>{% trans "Legal" %}</strong>
+          <a class="footer-link" href="#">{% trans "Terminos" %}</a>
+          <a class="footer-link" href="#">{% trans "Privacidad" %}</a>
+          <a class="footer-link" href="#">{% trans "Contrato" %}</a>
         </div>
 
         <div class="footer-column">
-          <strong>Síguenos</strong>
+          <strong>{% trans "Siguenos" %}</strong>
           <div class="socials">
             <a href="#">f</a>
             <a href="#">ig</a>
@@ -1700,7 +1700,7 @@
           </div>
         </div>
       </div>
-      <div class="footer-bottom">© 2025 CUCU. Todos los derechos reservados.</div>
+      <div class="footer-bottom">{% trans "© 2025 CUCU. Todos los derechos reservados." %}</div>
     </footer>
   </main>
 
@@ -1708,17 +1708,17 @@
     <section class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
       <div class="detail-shell">
         <div class="breadcrumb" style="padding-top: 20px;">
-          <a href="/">Inicio</a>
+          <a href="/">{% trans "Inicio" %}</a>
           <span>/</span>
-          <a href="/ui/pedido/">Comprar</a>
+          <a href="/ui/pedido/">{% trans "Comprar" %}</a>
         </div>
 
         <div class="detail-head">
           <div class="detail-head-main">
-            <h2 class="detail-title" id="detailTitle">Publicación</h2>
+            <h2 class="detail-title" id="detailTitle">{% trans "Publicacion" %}</h2>
             <div class="detail-type"><span class="detail-type-icon" id="detailTypeIcon">🥗</span><span id="detailTypeLabel">Food</span></div>
           </div>
-          <button class="detail-close" id="detailCloseButton" type="button" aria-label="Cerrar detalle">×</button>
+          <button class="detail-close" id="detailCloseButton" type="button" aria-label="{% trans 'Cerrar detalle' %}">×</button>
         </div>
 
         <div class="detail-grid">
@@ -1729,12 +1729,12 @@
 
             <div class="detail-copy">
               <section class="detail-section">
-                <h3>Ingredientes incluidos</h3>
+                <h3>{% trans "Ingredientes incluidos" %}</h3>
                 <ul class="ingredient-list" id="detailIngredients"></ul>
               </section>
 
               <section class="detail-section">
-                <h3>Preparación</h3>
+                <h3>{% trans "Preparacion" %}</h3>
                 <p class="detail-description" id="detailDescription"></p>
               </section>
             </div>
@@ -1756,31 +1756,31 @@
 
             <div class="detail-qty-box">
               <div class="detail-stepper">
-                <button type="button" data-detail-qty="minus" aria-label="Restar">−</button>
+                <button type="button" data-detail-qty="minus" aria-label="{% trans 'Restar' %}">−</button>
                 <span id="detailQty">1</span>
-                <button type="button" data-detail-qty="plus" aria-label="Sumar">+</button>
+                <button type="button" data-detail-qty="plus" aria-label="{% trans 'Sumar' %}">+</button>
               </div>
-              <div class="detail-stock" id="detailStock">0 disponibles</div>
+              <div class="detail-stock" id="detailStock">{% trans "0 disponibles" %}</div>
             </div>
 
-            <button class="detail-primary-btn" id="detailAddButton" type="button">Agregar al carrito</button>
-            <button class="detail-secondary-btn" id="detailSaveButton" type="button">Guardar</button>
+            <button class="detail-primary-btn" id="detailAddButton" type="button">{% trans "Agregar al carrito" %}</button>
+            <button class="detail-secondary-btn" id="detailSaveButton" type="button">{% trans "Guardar" %}</button>
 
             <div class="detail-info-card">
               <div class="detail-info-line">
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <div><strong>Pago seguro</strong><br><span>Garantía de satisfacción en todas tus compras.</span></div>
+                <div><strong>{% trans "Pago seguro" %}</strong><br><span>{% trans "Garantia de satisfaccion en todas tus compras." %}</span></div>
               </div>
             </div>
 
             <div class="detail-info-line">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.2" stroke="currentColor" stroke-width="1.7"/><path d="M12 8.5v4.2l2.7 1.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <div><strong>Entrega estimada:</strong> <span id="detailDeliveryTime"></span></div>
+              <div><strong>{% trans "Entrega estimada:" %}</strong> <span id="detailDeliveryTime"></span></div>
             </div>
 
             <div class="detail-info-line">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 7.5h8M8 12h8M8 16.5h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><rect x="4.5" y="4.5" width="15" height="15" rx="3" stroke="currentColor" stroke-width="1.7"/></svg>
-              <div><strong>Límite por pedido:</strong> <span id="detailMaxUnits"></span></div>
+              <div><strong>{% trans "Limite por pedido:" %}</strong> <span id="detailMaxUnits"></span></div>
             </div>
 
             <div class="detail-share">
@@ -1797,6 +1797,44 @@
   </div>
 
   <script>
+    const TXT_NO_STOCK = '{% trans "Sin stock disponible" %}';
+    const TXT_STOCK = '{% trans "Stock" %}';
+    const TXT_LIMIT_CURRENT = '{% trans "Limite actual" %}';
+    const TXT_LIMIT_PER_ORDER = '{% trans "Limite por pedido" %}';
+    const TXT_AVAILABLE = '{% trans "disponibles" %}';
+    const TXT_OUT_NOW = '{% trans "Agotado por ahora" %}';
+    const TXT_ADDED = '{% trans "Agregado" %}';
+    const TXT_ADD_CART = '{% trans "Agregar al carrito" %}';
+    const TXT_SOLD_OUT = '{% trans "Agotado" %}';
+    const TXT_AVAILABLE_LABEL = '{% trans "Disponible" %}';
+    const TXT_SAVED = '{% trans "Guardado" %}';
+    const TXT_SAVE = '{% trans "Guardar" %}';
+    const TXT_ADD = '{% trans "Agregar" %}';
+    const TXT_PUBLICATION = '{% trans "Publicacion" %}';
+    const TXT_FROM = '{% trans "A" %}';
+    const TXT_KM_FROM_YOU = '{% trans "km de ti por" %}';
+    const TXT_GEO_UNSUPPORTED = '{% trans "Este navegador no soporta geolocalizacion. Usa la opcion de direccion." %}';
+    const TXT_GETTING_LOCATION = '{% trans "Obteniendo tu ubicacion actual..." %}';
+    const TXT_LOCATION_READY = '{% trans "Ubicacion lista. Mostrando platos dentro de" %}';
+    const TXT_KM_SUFFIX = '{% trans "km." %}';
+    const TXT_LOCATION_ERROR = '{% trans "No se pudo obtener tu ubicacion:" %}';
+    const TXT_USE_MANUAL_ADDRESS = '{% trans "Usa la direccion manual." %}';
+    const TXT_PREP_FALLBACK = '{% trans "Preparacion casera disponible por tiempo limitado." %}';
+    const TXT_REVIEWS = '{% trans "resenas" %}';
+    const TXT_MAX = '{% trans "Maximo" %}';
+    const TXT_UNITS = '{% trans "unidades" %}';
+    const TXT_NO_MATCH = '{% trans "No hay coincidencias con tu busqueda actual." %}';
+    const TXT_SHOWING_NEAR = '{% trans "Mostrando platos cerca de" %}';
+    const TXT_SHOWING_LOCATION = '{% trans "Mostrando platos alrededor de tu ubicacion actual." %}';
+    const TXT_FILTER_HINT = '{% trans "Filtra por lo que mas te antoja hoy." %}';
+    const TXT_NO_DESC = '{% trans "Sin descripcion disponible." %}';
+    const TXT_ESTIMATED_DELIVERY = '{% trans "Entrega estimada" %}';
+    const TXT_QTY = '{% trans "Cantidad" %}';
+    const TXT_SUBTRACT_QTY = '{% trans "Restar cantidad" %}';
+    const TXT_ADD_QTY = '{% trans "Sumar cantidad" %}';
+    const TXT_PROFILE = '{% trans "Perfil" %}';
+    const TXT_NOT_STOCK_FOR_CART = '{% trans "Este producto no tiene stock disponible para agregarlo al carrito." %}';
+    const TXT_PRODUCT_ADDED = '{% trans "Producto agregado al carrito." %}';
     const IMAGE_POOL = [
       '{% static "images/bowl.png" %}',
       '{% static "images/carnitas.png" %}',
@@ -2274,7 +2312,7 @@
         deliveryTime: delivery.label,
         deliveryBucket: delivery.bucket,
         availableNow,
-        statusLabel: availableNow ? 'Disponible' : 'Agotado',
+        statusLabel: availableNow ? TXT_AVAILABLE_LABEL : TXT_SOLD_OUT,
         detailDescription: preset.description || publicacion.descripcion,
       };
     }
@@ -2288,7 +2326,7 @@
     }
 
     function syncSaveButton(pubId) {
-      detailSaveButton.textContent = isSaved(pubId) ? 'Guardado' : 'Guardar';
+      detailSaveButton.textContent = isSaved(pubId) ? TXT_SAVED : TXT_SAVE;
     }
 
     function getEffectiveMaxUnits(publicacion) {
@@ -2305,18 +2343,18 @@
       const stock = Math.max(0, Math.floor(Number(publicacion?.stock || 0)));
       const limit = getEffectiveMaxUnits(publicacion);
       const maximoPorVenta = Math.max(1, Math.floor(Number(publicacion?.maximo_por_venta || 5)));
-      if (stock <= 0 || limit <= 0) return 'Sin stock disponible';
-      if (stock < maximoPorVenta) return `Stock: ${stock} · Límite actual: ${limit}`;
-      return `Stock: ${stock} · Límite por pedido: ${limit}`;
+      if (stock <= 0 || limit <= 0) return TXT_NO_STOCK;
+      if (stock < maximoPorVenta) return `${TXT_STOCK}: ${stock} · ${TXT_LIMIT_CURRENT}: ${limit}`;
+      return `${TXT_STOCK}: ${stock} · ${TXT_LIMIT_PER_ORDER}: ${limit}`;
     }
 
     function syncDetailActions(publicacion) {
       const qty = clampQtyForPublication(publicacion, selectedQty(publicacion.id) || currentDraftQty(publicacion.id) || 1);
       detailQty.textContent = String(qty || 0);
-      detailStock.textContent = publicacion.availableNow ? `${publicacion.stock} disponibles` : 'Agotado por ahora';
+      detailStock.textContent = publicacion.availableNow ? `${publicacion.stock} ${TXT_AVAILABLE}` : TXT_OUT_NOW;
       detailAddButton.textContent = publicacion.availableNow
-        ? (selectedQty(publicacion.id) > 0 ? 'Agregado' : 'Agregar al carrito')
-        : 'Agotado';
+        ? (selectedQty(publicacion.id) > 0 ? TXT_ADDED : TXT_ADD_CART)
+        : TXT_SOLD_OUT;
       detailAddButton.disabled = !publicacion.availableNow;
       if (detailMinusButton) detailMinusButton.disabled = !publicacion.availableNow || qty <= 1;
       if (detailPlusButton) detailPlusButton.disabled = !publicacion.availableNow || qty >= getEffectiveMaxUnits(publicacion);
@@ -2328,20 +2366,20 @@
       if (!publicacion) return;
 
       activeDetailId = Number(pubId);
-      detailTitle.textContent = publicacion.titulo || 'Publicación';
+      detailTitle.textContent = publicacion.titulo || TXT_PUBLICATION;
       detailTypeIcon.textContent = publicacion.detailIcon || '🍽';
       detailTypeLabel.textContent = publicacion.detailType || 'Food';
       detailImage.src = publicacion.image;
-      detailImage.alt = publicacion.titulo || 'Publicación';
+      detailImage.alt = publicacion.titulo || TXT_PUBLICATION;
       detailIngredients.innerHTML = (publicacion.ingredients || []).map((item) => `<li>${escapeHtml(item)}</li>`).join('');
-      detailDescription.textContent = publicacion.detailDescription || publicacion.descripcion || 'Preparación casera disponible por tiempo limitado.';
+      detailDescription.textContent = publicacion.detailDescription || publicacion.descripcion || TXT_PREP_FALLBACK;
       detailPrice.innerHTML = `<small>$</small>${Math.round(Number(publicacion.precio || 0)).toLocaleString('es-CO')}`;
-      detailSeller.textContent = `A ${Number(publicacion.distancia_km || 0).toFixed(1)} km de ti por ${publicacion.seller}`;
+      detailSeller.textContent = `${TXT_FROM} ${Number(publicacion.distancia_km || 0).toFixed(1)} ${TXT_KM_FROM_YOU} ${publicacion.seller}`;
       detailStars.textContent = '★★★★★';
       detailRating.textContent = String(publicacion.rating || 4.8);
-      detailReviews.textContent = `${publicacion.reviews || 0} reseñas`;
+      detailReviews.textContent = `${publicacion.reviews || 0} ${TXT_REVIEWS}`;
       detailDeliveryTime.textContent = publicacion.deliveryTime || '30–45 min';
-      detailMaxUnits.textContent = `Máximo ${getEffectiveMaxUnits(publicacion)} unidades`;
+      detailMaxUnits.textContent = `${TXT_MAX} ${getEffectiveMaxUnits(publicacion)} ${TXT_UNITS}`;
       syncDetailActions(publicacion);
       detailOverlay.classList.remove('hidden');
       detailOverlay.setAttribute('aria-hidden', 'false');
@@ -2695,17 +2733,17 @@
         catalog.innerHTML = '';
         emptyState.hidden = false;
         emptyState.textContent = 'No encontramos platos con esos filtros. Prueba otro tipo de comida o amplía el rango.';
-        catalogHint.textContent = 'No hay coincidencias con tu búsqueda actual.';
+        catalogHint.textContent = TXT_NO_MATCH;
         renderPagination(totalPages);
         return;
       }
 
       emptyState.hidden = true;
       catalogHint.textContent = searchAddress
-        ? `Mostrando platos cerca de ${searchAddress}.`
+        ? `${TXT_SHOWING_NEAR} ${searchAddress}.`
         : userLocation
-          ? 'Mostrando platos alrededor de tu ubicación actual.'
-          : 'Filtra por lo que más te antoja hoy.';
+          ? TXT_SHOWING_LOCATION
+          : TXT_FILTER_HINT;
 
       catalog.innerHTML = pageItems.map((publicacion) => {
         const qty = Math.max(1, selectedQty(publicacion.id) || 1);
@@ -2722,21 +2760,21 @@
             </div>
             <div class="food-body">
               <h3 class="food-title">${escapeHtml(publicacion.titulo)}</h3>
-              <p class="food-desc">${escapeHtml(((publicacion.descripcion || 'Sin descripción disponible.').slice(0, 88)).trim())}</p>
+              <p class="food-desc">${escapeHtml(((publicacion.descripcion || TXT_NO_DESC).slice(0, 88)).trim())}</p>
               <div class="food-meta">
                 <span class="food-price"><small>$</small>${Math.round(Number(publicacion.precio || 0)).toLocaleString('es-CO')}</span>
                 <span class="food-distance">${distance} km</span>
               </div>
-              <div class="food-delivery">Entrega estimada: ${escapeHtml(publicacion.deliveryTime)}</div>
+              <div class="food-delivery">${TXT_ESTIMATED_DELIVERY}: ${escapeHtml(publicacion.deliveryTime)}</div>
               <div class="food-stock-note">${escapeHtml(limitMessage)}</div>
               <div class="food-seller">${escapeHtml(publicacion.seller)}</div>
               <div class="food-actions">
-                <div class="food-stepper" aria-label="Cantidad">
-                  <button type="button" data-action="decrease" aria-label="Restar cantidad" ${publicacion.availableNow ? '' : 'disabled'}>−</button>
+                <div class="food-stepper" aria-label="${TXT_QTY}">
+                  <button type="button" data-action="decrease" aria-label="${TXT_SUBTRACT_QTY}" ${publicacion.availableNow ? '' : 'disabled'}>−</button>
                   <span>${draftQty}</span>
-                  <button type="button" data-action="increase" aria-label="Sumar cantidad" ${publicacion.availableNow && !disableIncrease ? '' : 'disabled'}>+</button>
+                  <button type="button" data-action="increase" aria-label="${TXT_ADD_QTY}" ${publicacion.availableNow && !disableIncrease ? '' : 'disabled'}>+</button>
                 </div>
-                <button class="add-btn ${isSelected ? 'is-selected' : ''}" type="button" data-action="toggle" ${publicacion.availableNow ? '' : 'disabled'}>${publicacion.availableNow ? (isSelected ? 'Agregado' : 'Agregar') : 'Agotado'}</button>
+                <button class="add-btn ${isSelected ? 'is-selected' : ''}" type="button" data-action="toggle" ${publicacion.availableNow ? '' : 'disabled'}>${publicacion.availableNow ? (isSelected ? TXT_ADDED : TXT_ADD) : TXT_SOLD_OUT}</button>
               </div>
             </div>
           </article>
@@ -2751,8 +2789,8 @@
       if (!result) return;
       const { response, payload: user } = result;
       if (!response.ok || !user) return;
-      const label = String(user.nombre || user.email || 'Perfil').trim();
-      profileButton.textContent = label.split(/\s+/).slice(0, 1).join(' ') || 'Perfil';
+      const label = String(user.nombre || user.email || TXT_PROFILE).trim();
+      profileButton.textContent = label.split(/\s+/).slice(0, 1).join(' ') || TXT_PROFILE;
       profileButton.title = label;
     }
 
@@ -2821,11 +2859,11 @@
 
     function requestLocation({ background = false } = {}) {
       if (!navigator.geolocation) {
-        setLocationBanner('Este navegador no soporta geolocalización. Usa la opción de dirección.', true);
+        setLocationBanner(TXT_GEO_UNSUPPORTED, true);
         return;
       }
 
-      if (!background) setLocationBanner('Obteniendo tu ubicación actual...', true);
+      if (!background) setLocationBanner(TXT_GETTING_LOCATION, true);
       navigator.geolocation.getCurrentPosition(
         (position) => {
           userLocation = {
@@ -2834,12 +2872,12 @@
           };
           searchAddress = '';
           writeStorageJson(LAST_USER_LOCATION_KEY, { ts: Date.now(), lat: userLocation.lat, lng: userLocation.lng });
-          setLocationBanner(`Ubicación lista. Mostrando platos dentro de ${radioKm} km.`, false);
+          setLocationBanner(`${TXT_LOCATION_READY} ${radioKm} ${TXT_KM_SUFFIX}`, false);
           loadPublicaciones();
         },
         (error) => {
           if (!background) {
-            setLocationBanner(`No se pudo obtener tu ubicación: ${error.message}. Usa la dirección manual.`, true);
+            setLocationBanner(`${TXT_LOCATION_ERROR} ${error.message}. ${TXT_USE_MANUAL_ADDRESS}`, true);
           }
         },
         { enableHighAccuracy: false, timeout: 4500, maximumAge: 300000 }
@@ -3060,11 +3098,11 @@
       const publicacion = publicationById(Number(activeDetailId));
       const qty = clampQtyForPublication(publicacion, Number(detailQty.textContent || '1'));
       if (qty <= 0) {
-        setStatus('Este producto no tiene stock disponible para agregarlo al carrito.', 'err');
+        setStatus(TXT_NOT_STOCK_FOR_CART, 'err');
         return;
       }
       updateSelection(Number(activeDetailId), qty);
-      setStatus('Producto agregado al carrito.', 'ok');
+      setStatus(TXT_PRODUCT_ADDED, 'ok');
     });
 
     detailSaveButton.addEventListener('click', () => {

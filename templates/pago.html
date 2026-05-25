@@ -1,57 +1,58 @@
 {% extends "base_app.html" %}
+{% load i18n %}
 
-{% block title %}Pago | CUCU{% endblock %}
-{% block eyebrow %}Pago{% endblock %}
-{% block page_title %}Confirma el <span>pago</span>{% endblock %}
-{% block page_lead %}Esta etapa recoge el total del pedido y lo presenta dentro del mismo sistema visual que ya ve el usuario en comprar y vender.{% endblock %}
+{% block title %}{% trans "Pago" %} | CUCU{% endblock %}
+{% block eyebrow %}{% trans "Pago" %}{% endblock %}
+{% block page_title %}{% trans "Confirma el" %} <span>{% trans "pago" %}</span>{% endblock %}
+{% block page_lead %}{% trans "Esta etapa recoge el total del pedido y lo presenta dentro del mismo sistema visual que ya ve el usuario en comprar y vender." %}{% endblock %}
 {% block hero_actions %}
-  <a class="btn btn-primary" href="/ui/carrito/">Volver al carrito</a>
-  <a class="btn btn-secondary" href="/">Inicio</a>
+  <a class="btn btn-primary" href="/ui/carrito/">{% trans "Volver al carrito" %}</a>
+  <a class="btn btn-secondary" href="/">{% trans "Inicio" %}</a>
 {% endblock %}
 {% block hero_points %}
-  <div class="hero-point"><span class="hero-point-badge">1</span><div><strong>Total claro</strong><p>El monto se toma automáticamente del pedido actual.</p></div></div>
-  <div class="hero-point"><span class="hero-point-badge">2</span><div><strong>Método simple</strong><p>La demo acepta pago en efectivo o tarjeta.</p></div></div>
-  <div class="hero-point"><span class="hero-point-badge">3</span><div><strong>Sigue el flujo</strong><p>Después puedes volver al inicio o crear otro pedido.</p></div></div>
+  <div class="hero-point"><span class="hero-point-badge">1</span><div><strong>{% trans "Total claro" %}</strong><p>{% trans "El monto se toma automaticamente del pedido actual." %}</p></div></div>
+  <div class="hero-point"><span class="hero-point-badge">2</span><div><strong>{% trans "Metodo simple" %}</strong><p>{% trans "La demo acepta pago en efectivo o tarjeta." %}</p></div></div>
+  <div class="hero-point"><span class="hero-point-badge">3</span><div><strong>{% trans "Sigue el flujo" %}</strong><p>{% trans "Despues puedes volver al inicio o crear otro pedido." %}</p></div></div>
 {% endblock %}
-{% block section_title %}Registrar pago{% endblock %}
-{% block section_hint %}El pago toma automáticamente el pedido y el total del carrito para que el flujo no se sienta fragmentado.{% endblock %}
+{% block section_title %}{% trans "Registrar pago" %}{% endblock %}
+{% block section_hint %}{% trans "El pago toma automaticamente el pedido y el total del carrito para que el flujo no se sienta fragmentado." %}{% endblock %}
 {% block content %}
       <form id="form">
         <div class="row">
           <label>
-            Pedido ID
-            <input name="pedido_id" type="number" required inputmode="numeric" placeholder="Se asigna automáticamente" readonly />
+            {% trans "Pedido ID" %}
+            <input name="pedido_id" type="number" required inputmode="numeric" placeholder="{% trans 'Se asigna automaticamente' %}" readonly />
           </label>
           <label>
-            Monto
-            <input name="monto" type="number" step="0.01" required inputmode="decimal" placeholder="Ej: 12.50" readonly />
+            {% trans "Monto" %}
+            <input name="monto" type="number" step="0.01" required inputmode="decimal" placeholder="{% trans 'Ej: 12.50' %}" readonly />
           </label>
         </div>
         <label>
-          Método
-          <input name="metodo" placeholder="efectivo | tarjeta" required autocomplete="off" />
+          {% trans "Metodo" %}
+          <input name="metodo" placeholder="{% trans 'efectivo | tarjeta' %}" required autocomplete="off" />
         </label>
         <div class="actions">
-          <button class="btn btn-primary" type="submit">Registrar pago</button>
+          <button class="btn btn-primary" type="submit">{% trans "Registrar pago" %}</button>
         </div>
       </form>
 
       <div id="summary" class="summary" hidden>
-        <div><strong>Subtotal:</strong> <span id="pedidoSubtotal">-</span></div>
+        <div><strong>{% trans "Subtotal:" %}</strong> <span id="pedidoSubtotal">-</span></div>
         <div><strong>Delivery:</strong> <span id="pedidoDelivery">-</span></div>
-        <div><strong>Total del pedido:</strong> <span id="pedidoTotal">-</span></div>
-        <div><strong>Items:</strong></div>
+        <div><strong>{% trans "Total del pedido:" %}</strong> <span id="pedidoTotal">-</span></div>
+        <div><strong>{% trans "Items:" %}</strong></div>
         <ul id="pedidoItems" class="items"></ul>
       </div>
 
       <div class="note">
-        El <strong>Pedido ID</strong> y el <strong>monto</strong> se toman del carrito automáticamente.
-        Métodos soportados (demo): <code>efectivo</code> o <code>tarjeta</code>.
+        {% trans "El Pedido ID y el monto se toman del carrito automaticamente." %}
+        {% trans "Metodos soportados (demo):" %} <code>efectivo</code> {% trans "o" %} <code>tarjeta</code>.
       </div>
 
       <div class="actions" id="actions" hidden>
-        <a class="btn btn-secondary" href="/">Volver al inicio</a>
-        <a class="btn btn-secondary" href="/ui/pedido/">Crear otro pedido</a>
+        <a class="btn btn-secondary" href="/">{% trans "Volver al inicio" %}</a>
+        <a class="btn btn-secondary" href="/ui/pedido/">{% trans "Crear otro pedido" %}</a>
       </div>
 
       <pre id="out" class="out" aria-live="polite"></pre>
@@ -59,6 +60,10 @@
 {% block page_scripts %}
   <script>
     const auth = window.CUCUAuth;
+    const TXT_PUBLICATION = '{% trans "Publicacion" %}';
+    const TXT_NO_ITEMS = '{% trans "Sin items" %}';
+    const TXT_PROCESSING = '{% trans "Procesando..." %}';
+    const TXT_NO_AMOUNT = '{% trans "No se pudo determinar el monto del pedido. Revisa el Pedido ID." %}';
     const out = document.getElementById('out');
     const actions = document.getElementById('actions');
     const summary = document.getElementById('summary');
@@ -120,11 +125,11 @@
       pedidoDelivery.textContent = formatMoney(DELIVERY_FEE);
 
       pedidoItems.innerHTML = items.map((it) => {
-        const title = it?.publicacion?.titulo || `Publicación #${it?.publicacion?.id || ''}`;
+        const title = it?.publicacion?.titulo || `${TXT_PUBLICATION} #${it?.publicacion?.id || ''}`;
         const qty = Number(it?.cantidad || 0);
         const pu = Number(it?.precio_unitario || 0);
         return `<li>${title} — ${qty} × ${formatMoney(pu)}</li>`;
-      }).join('') || '<li>Sin items</li>';
+      }).join('') || `<li>${TXT_NO_ITEMS}</li>`;
 
       summary.hidden = false;
     }
@@ -135,7 +140,7 @@
     document.getElementById('form').addEventListener('submit', async (e) => {
       e.preventDefault();
       out.classList.remove('ok', 'err');
-      out.textContent = 'Procesando...';
+      out.textContent = TXT_PROCESSING;
       actions.hidden = true;
 
       const data = Object.fromEntries(new FormData(e.target).entries());
@@ -145,7 +150,7 @@
 
       if (!data.monto || data.monto <= 0) {
         out.classList.add('err');
-        out.textContent = 'No se pudo determinar el monto del pedido. Revisa el Pedido ID.';
+        out.textContent = TXT_NO_AMOUNT;
         return;
       }
 

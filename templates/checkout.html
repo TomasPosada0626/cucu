@@ -1,12 +1,13 @@
 {% extends "base_app.html" %}
+{% load i18n %}
 
-{% block title %}Checkout | CUCU{% endblock %}
-{% block eyebrow %}Checkout{% endblock %}
-{% block page_title %}Finaliza tu <span>pedido</span>{% endblock %}
-{% block page_lead %}Ingresa tus datos de entrega y el método de pago.{% endblock %}
+{% block title %}{% trans "Checkout" %} | CUCU{% endblock %}
+{% block eyebrow %}{% trans "Checkout" %}{% endblock %}
+{% block page_title %}{% trans "Finaliza tu" %} <span>{% trans "pedido" %}</span>{% endblock %}
+{% block page_lead %}{% trans "Ingresa tus datos de entrega y el metodo de pago." %}{% endblock %}
 {% block hero_actions %}
-  <a class="btn btn-secondary" href="/ui/carrito/">Volver al carrito</a>
-  <a class="btn btn-secondary" href="/ui/pedido/">Seguir comprando</a>
+  <a class="btn btn-secondary" href="/ui/carrito/">{% trans "Volver al carrito" %}</a>
+  <a class="btn btn-secondary" href="/ui/pedido/">{% trans "Seguir comprando" %}</a>
 {% endblock %}
 {% block hero_points %}{% endblock %}
 
@@ -380,47 +381,47 @@
 
 {% block content %}
   <div class="checkout-layout">
-    <section class="panel" aria-label="Datos de checkout">
-      <h3>Datos de entrega</h3>
-      <p class="delivery-note">Confirmas tus datos, tu dirección y el método de pago. Si la dirección se puede resolver rápido o eliges una sugerencia, guardamos coordenadas para que el seguimiento cargue más ágil.</p>
+    <section class="panel" aria-label="{% trans 'Datos de checkout' %}">
+      <h3>{% trans "Datos de entrega" %}</h3>
+      <p class="delivery-note">{% trans "Confirmas tus datos, tu direccion y el metodo de pago. Si la direccion se puede resolver rapido o eliges una sugerencia, guardamos coordenadas para que el seguimiento cargue mas agil." %}</p>
       <form id="checkoutForm">
         <div class="row">
           <label>
-            Nombre
-            <input name="nombre" required autocomplete="given-name" placeholder="Ej: Laura" />
+            {% trans "Nombre" %}
+            <input name="nombre" required autocomplete="given-name" placeholder="{% trans 'Ej: Laura' %}" />
           </label>
           <label>
-            Apellidos
-            <input name="apellidos" required autocomplete="family-name" placeholder="Ej: Indabur" />
+            {% trans "Apellidos" %}
+            <input name="apellidos" required autocomplete="family-name" placeholder="{% trans 'Ej: Indabur' %}" />
           </label>
         </div>
 
         <div class="row">
           <label>
-            Teléfono
-            <input name="telefono" required autocomplete="tel" inputmode="tel" placeholder="Ej: 3001234567" />
+            {% trans "Telefono" %}
+            <input name="telefono" required autocomplete="tel" inputmode="tel" placeholder="{% trans 'Ej: 3001234567' %}" />
           </label>
           <div></div>
         </div>
 
         <div class="delivery-stack">
           <label>
-            Dirección de entrega
+            {% trans "Direccion de entrega" %}
             <div class="address-box">
               <input id="direccionBaseInput" name="direccion_base" required autocomplete="off" placeholder="Ej: Calle 5 #80C-125, Medellín o Eiffel Tower, Paris" />
-              <div class="address-suggestions" id="checkoutAddressSuggestions" aria-label="Sugerencias globales de dirección"></div>
+              <div class="address-suggestions" id="checkoutAddressSuggestions" aria-label="{% trans 'Sugerencias globales de direccion' %}"></div>
             </div>
-            <div class="field-help">Mientras escribes, te mostramos sugerencias globales para que escojas una más precisa.</div>
+            <div class="field-help">{% trans "Mientras escribes, te mostramos sugerencias globales para que escojas una mas precisa." %}</div>
           </label>
 
           <label>
-            Referencias para llegar (opcional)
-            <textarea class="checkout-textarea" name="direccion_detalles" autocomplete="address-line2" placeholder="Ej: Torre 2, apto 1313, portería blanca, al lado de la farmacia"></textarea>
+            {% trans "Referencias para llegar (opcional)" %}
+            <textarea class="checkout-textarea" name="direccion_detalles" autocomplete="address-line2" placeholder="{% trans 'Ej: Torre 2, apto 1313, porteria blanca, al lado de la farmacia' %}"></textarea>
           </label>
         </div>
 
-        <div aria-label="Método de pago">
-          <p class="section-label">Método de pago</p>
+        <div aria-label="{% trans 'Metodo de pago' %}">
+          <p class="section-label">{% trans "Metodo de pago" %}</p>
 
           <div class="payment-list" id="paymentMethodGroup">
             <label class="payment-option" data-method="efectivo">
@@ -428,7 +429,7 @@
               <div class="pay-left">
                 <span class="pay-icon" aria-hidden="true">💵</span>
                 <div>
-                  <div>Efectivo</div>
+                  <div>{% trans "Efectivo" %}</div>
                 </div>
               </div>
               <div class="pay-right">
@@ -438,14 +439,14 @@
             <div id="cashSection" class="payment-expand" hidden>
               <div class="cash-row">
                 <label style="margin:0;">
-                  <span class="section-label" style="text-transform:none; letter-spacing:0; font-size:13px; color:var(--muted);">¿Con cuánto pagas?</span>
+                  <span class="section-label" style="text-transform:none; letter-spacing:0; font-size:13px; color:var(--muted);">{% trans "Con cuanto pagas?" %}</span>
                   <div class="money-field">
                     <span class="money-prefix">$</span>
                     <input id="payWithAmount" inputmode="numeric" placeholder="0" />
                   </div>
                 </label>
                 <label class="toggle">
-                  <span>¿Necesitas cambio?</span>
+                  <span>{% trans "Necesitas cambio?" %}</span>
                   <input type="checkbox" id="needsChange" />
                 </label>
               </div>
@@ -457,8 +458,8 @@
               <div class="pay-left">
                 <span class="pay-icon" aria-hidden="true">💳</span>
                 <div>
-                  <div>Tarjeta</div>
-                  <div class="pay-sub">VISA · Mastercard</div>
+                  <div>{% trans "Tarjeta" %}</div>
+                  <div class="pay-sub">{% trans "VISA · Mastercard" %}</div>
                 </div>
               </div>
               <div class="pay-right">
@@ -468,37 +469,37 @@
             <div id="cardSection" class="payment-expand" hidden>
               <div class="row">
                 <label>
-                  Nombre en la tarjeta
-                  <input name="card_name" autocomplete="cc-name" placeholder="Ej: LAURA INDABUR" />
+                  {% trans "Nombre en la tarjeta" %}
+                  <input name="card_name" autocomplete="cc-name" placeholder="{% trans 'Ej: LAURA INDABUR' %}" />
                 </label>
                 <label>
-                  Número de tarjeta
-                  <input name="card_number" autocomplete="cc-number" inputmode="numeric" placeholder="Ej: 4111 1111 1111 1111" />
+                  {% trans "Numero de tarjeta" %}
+                  <input name="card_number" autocomplete="cc-number" inputmode="numeric" placeholder="{% trans 'Ej: 4111 1111 1111 1111' %}" />
                 </label>
               </div>
               <div class="row">
                 <label>
-                  Fecha de expiración
+                  {% trans "Fecha de expiracion" %}
                   <input name="card_exp" autocomplete="cc-exp" placeholder="MM/AA" />
                 </label>
                 <label>
                   CVV
-                  <input name="card_cvv" autocomplete="cc-csc" inputmode="numeric" placeholder="Ej: 123" />
+                  <input name="card_cvv" autocomplete="cc-csc" inputmode="numeric" placeholder="{% trans 'Ej: 123' %}" />
                 </label>
               </div>
 
               <div class="row">
                 <label>
-                  Tipo de documento
+                  {% trans "Tipo de documento" %}
                   <select name="doc_type">
-                    <option value="cedula">Cédula</option>
-                    <option value="pasaporte">Pasaporte</option>
+                    <option value="cedula">{% trans "Cedula" %}</option>
+                    <option value="pasaporte">{% trans "Pasaporte" %}</option>
                     <option value="nit">NIT</option>
                   </select>
                 </label>
                 <label>
-                  Número de documento
-                  <input name="doc_number" inputmode="numeric" placeholder="Ej: 123456789" />
+                  {% trans "Numero de documento" %}
+                  <input name="doc_number" inputmode="numeric" placeholder="{% trans 'Ej: 123456789' %}" />
                 </label>
               </div>
             </div>
@@ -509,7 +510,7 @@
                 <span class="pay-icon" aria-hidden="true">🏦</span>
                 <div>
                   <div>PSE</div>
-                  <div class="pay-sub">Pagos Seguros en Línea</div>
+                  <div class="pay-sub">{% trans "Pagos Seguros en Linea" %}</div>
                 </div>
               </div>
               <div class="pay-right">
@@ -517,28 +518,28 @@
               </div>
             </label>
             <div id="pseSection" class="payment-expand" hidden>
-              <p class="hint" style="margin: 0;">PSE estará disponible más adelante. Por ahora, selecciona efectivo o tarjeta.</p>
+              <p class="hint" style="margin: 0;">{% trans "PSE estara disponible mas adelante. Por ahora, selecciona efectivo o tarjeta." %}</p>
             </div>
           </div>
         </div>
 
         <div class="checkout-actions">
-          <button class="btn btn-primary" id="submitBtn" type="submit">Confirmar y pagar</button>
-          <a class="btn btn-secondary" href="/ui/carrito/">Volver</a>
+          <button class="btn btn-primary" id="submitBtn" type="submit">{% trans "Confirmar y pagar" %}</button>
+          <a class="btn btn-secondary" href="/ui/carrito/">{% trans "Volver" %}</a>
         </div>
 
         <pre id="out" class="out" aria-live="polite" style="margin:0;"></pre>
       </form>
     </section>
 
-    <aside class="panel" aria-label="Resumen">
-      <h3>Resumen</h3>
+    <aside class="panel" aria-label="{% trans 'Resumen' %}">
+      <h3>{% trans "Resumen" %}</h3>
 
       <div class="summary-lines">
-        <div class="summary-line"><span>Subtotal</span><span id="subtotalValue">-</span></div>
-        <div class="summary-line"><span>Envío</span><span id="deliveryValue">-</span></div>
+        <div class="summary-line"><span>{% trans "Subtotal" %}</span><span id="subtotalValue">-</span></div>
+        <div class="summary-line"><span>{% trans "Envio" %}</span><span id="deliveryValue">-</span></div>
       </div>
-      <div class="summary-total"><span>Total</span><span id="totalValue">-</span></div>
+      <div class="summary-total"><span>{% trans "Total" %}</span><span id="totalValue">-</span></div>
 
       <div class="items-box">
         <ul id="itemsMini" class="items-mini"></ul>
@@ -547,13 +548,28 @@
   </div>
 
   <div id="emptyState" class="note" style="margin: 0 22px 22px;" hidden>
-    Tu carrito está vacío. Vuelve a <a href="/ui/pedido/"><strong>Comprar</strong></a> y agrega al menos un producto.
+    {% trans "Tu carrito esta vacio. Vuelve a" %} <a href="/ui/pedido/"><strong>{% trans "Comprar" %}</strong></a> {% trans "y agrega al menos un producto." %}
   </div>
 {% endblock %}
 
 {% block page_scripts %}
 <script>
   const auth = window.CUCUAuth;
+  const TXT_REQ_FAILED = '{% trans "No se pudo completar la solicitud." %}';
+  const TXT_EMPTY_CART_PUBS = '{% trans "No se pudieron cargar las publicaciones para calcular el total." %}';
+  const TXT_TOTAL_HELP = '{% trans "Total:" %}';
+  const TXT_ENTER_PAY = '{% trans "Ingresa el valor con el que pagaras." %}';
+  const TXT_PROCESSING = '{% trans "Procesando..." %}';
+  const TXT_PSE_DISABLED = '{% trans "PSE todavia no esta disponible. Selecciona efectivo o tarjeta." %}';
+  const TXT_CART_EMPTY = '{% trans "Tu carrito esta vacio." %}';
+  const TXT_PHONE_REQ = '{% trans "El telefono es requerido." %}';
+  const TXT_ADDRESS_REQ = '{% trans "La direccion de entrega es requerida." %}';
+  const TXT_PAY_WITH_REQ = '{% trans "Ingresa con cuanto pagaras." %}';
+  const TXT_CARD_REQ = '{% trans "Completa los datos de la tarjeta y el documento." %}';
+  const TXT_CREATE_ORDER_ERR = '{% trans "No se pudo crear el pedido." %}';
+  const TXT_NO_ORDER_ID = '{% trans "No se pudo determinar el ID del pedido." %}';
+  const TXT_PAYMENT_OK = '{% trans "Pago registrado. Redirigiendo al seguimiento del pedido..." %}';
+  const TXT_PAYMENT_ERR = '{% trans "No se pudo registrar el pago." %}';
   const tracking = window.CUCUTracking;
   const DELIVERY_FEE = 5000;
   const TRACKING_SPEED_MULTIPLIER = 2.25;
@@ -942,7 +958,7 @@
     if (typeof payload?.detail === 'string' && payload.detail.trim()) return payload.detail.trim();
     if (typeof payload?.message === 'string' && payload.message.trim()) return payload.message.trim();
     if (typeof fallback === 'string' && fallback.trim()) return fallback.trim();
-    return 'No se pudo completar la solicitud.';
+    return TXT_REQ_FAILED;
   }
 
   function loadSelection() {
@@ -1068,7 +1084,7 @@
       if (!result) return;
       const { response: res, payload } = result;
       if (!res.ok || !Array.isArray(payload)) {
-        setOutMessage('No se pudieron cargar las publicaciones para calcular el total.', 'err');
+        setOutMessage(TXT_EMPTY_CART_PUBS, 'err');
         submitBtn.disabled = true;
         return;
       }
@@ -1134,8 +1150,8 @@
     if (metodo === 'efectivo') {
       const needs = Boolean(needsChange?.checked);
       cashHint.textContent = needs
-        ? `Total: ${formatMoneyCOP(computed.total)}. Ingresa el valor con el que pagarás.`
-        : `Total: ${formatMoneyCOP(computed.total)}.`;
+        ? `${TXT_TOTAL_HELP} ${formatMoneyCOP(computed.total)}. ${TXT_ENTER_PAY}`
+        : `${TXT_TOTAL_HELP} ${formatMoneyCOP(computed.total)}.`;
     } else {
       cashHint.textContent = '';
     }
@@ -1207,7 +1223,7 @@
   checkoutForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    setOutMessage('Procesando...', '');
+    setOutMessage(TXT_PROCESSING, '');
     submitBtn.disabled = true;
 
     const form = new FormData(e.target);
@@ -1215,7 +1231,7 @@
     const metodo = String(data.metodo || '').trim();
 
     if (metodo === 'pse') {
-      setOutMessage('PSE todavía no está disponible. Selecciona efectivo o tarjeta.', 'err');
+      setOutMessage(TXT_PSE_DISABLED, 'err');
       submitBtn.disabled = false;
       return;
     }
@@ -1223,14 +1239,14 @@
     const selection = sanitizeSelection(loadSelection());
     const publicacion_ids = selectionToPublicacionIds(selection);
     if (!publicacion_ids.length) {
-      setOutMessage('Tu carrito está vacío.', 'err');
+      setOutMessage(TXT_CART_EMPTY, 'err');
       submitBtn.disabled = false;
       return;
     }
 
     const telefono = String(data.telefono || '').trim();
     if (!telefono) {
-      setOutMessage('El teléfono es requerido.', 'err');
+      setOutMessage(TXT_PHONE_REQ, 'err');
       submitBtn.disabled = false;
       return;
     }
@@ -1238,7 +1254,7 @@
     const direccionBase = String(data.direccion_base || '').trim();
     const direccionDetalles = String(data.direccion_detalles || '').trim();
     if (!direccionBase) {
-      setOutMessage('La dirección de entrega es requerida.', 'err');
+      setOutMessage(TXT_ADDRESS_REQ, 'err');
       submitBtn.disabled = false;
       return;
     }
@@ -1251,7 +1267,7 @@
     if (metodo === 'efectivo' && needsChange.checked) {
       const payWith = Number(String(payWithAmount.value || '').replace(/\D+/g, ''));
       if (!payWith || payWith <= 0) {
-        setOutMessage('Ingresa con cuánto pagarás.', 'err');
+        setOutMessage(TXT_PAY_WITH_REQ, 'err');
         submitBtn.disabled = false;
         return;
       }
@@ -1266,7 +1282,7 @@
       const requiredFields = ['card_name', 'card_number', 'card_exp', 'card_cvv', 'doc_number'];
       const missing = requiredFields.find((k) => !String(data[k] || '').trim());
       if (missing) {
-        setOutMessage('Completa los datos de la tarjeta y el documento.', 'err');
+        setOutMessage(TXT_CARD_REQ, 'err');
         submitBtn.disabled = false;
         return;
       }
@@ -1301,14 +1317,14 @@
     if (!pedidoResult) return;
     const { response: pedidoRes, payload: pedidoJson } = pedidoResult;
     if (!pedidoRes.ok) {
-      setOutMessage(extractErrorMessage(pedidoJson, 'No se pudo crear el pedido.'), 'err');
+      setOutMessage(extractErrorMessage(pedidoJson, TXT_CREATE_ORDER_ERR), 'err');
       submitBtn.disabled = false;
       return;
     }
 
     const pedidoId = pedidoJson?.id;
     if (!pedidoId) {
-      setOutMessage('No se pudo determinar el ID del pedido.', 'err');
+      setOutMessage(TXT_NO_ORDER_ID, 'err');
       submitBtn.disabled = false;
       return;
     }
@@ -1352,11 +1368,11 @@
         direccion_lng: deliveryCoords?.lng ?? null,
         createdAt: Date.now(),
       }));
-      setOutMessage('Pago registrado. Redirigiendo al seguimiento del pedido...', 'ok');
+      setOutMessage(TXT_PAYMENT_OK, 'ok');
       window.location.href = `/ui/seguimiento/?pedido_id=${encodeURIComponent(String(pedidoId))}`;
       return;
     } else {
-      setOutMessage(extractErrorMessage(pagoJson, 'No se pudo registrar el pago.'), 'err');
+      setOutMessage(extractErrorMessage(pagoJson, TXT_PAYMENT_ERR), 'err');
       submitBtn.disabled = false;
     }
   });

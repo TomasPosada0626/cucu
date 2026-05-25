@@ -7,6 +7,7 @@ from flask import Flask
 
 from .api.errors import register_error_handlers
 from .api.routes import payments_bp
+from .events import RabbitMQPaymentEventPublisher
 from .repositories.payment_repository import SQLitePaymentRepository
 from .services.payment_service import PaymentService
 
@@ -23,7 +24,8 @@ def create_app() -> Flask:
     repository = SQLitePaymentRepository(database_path)
     repository.initialize()
 
-    app.config["payment_service"] = PaymentService(repository=repository)
+    event_publisher = RabbitMQPaymentEventPublisher()
+    app.config["payment_service"] = PaymentService(repository=repository, event_publisher=event_publisher)
 
     app.register_blueprint(payments_bp)
     register_error_handlers(app)

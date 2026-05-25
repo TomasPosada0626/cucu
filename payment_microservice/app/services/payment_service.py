@@ -9,8 +9,9 @@ from ..repositories.payment_repository import SQLitePaymentRepository
 
 
 class PaymentService:
-    def __init__(self, *, repository: SQLitePaymentRepository) -> None:
+    def __init__(self, *, repository: SQLitePaymentRepository, event_publisher=None) -> None:
         self.repository = repository
+        self.event_publisher = event_publisher
 
     def create_payment(
         self,
@@ -51,6 +52,9 @@ class PaymentService:
 
         if updated_payment is None:
             raise NotFoundError(f"Pago {payment.id} no encontrado")
+
+        if self.event_publisher is not None:
+            self.event_publisher.publish_payment_processed(updated_payment)
 
         return updated_payment
 

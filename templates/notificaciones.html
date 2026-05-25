@@ -1,33 +1,43 @@
 {% extends "base_app.html" %}
+{% load i18n %}
 
-{% block title %}Notificaciones | CUCU{% endblock %}
-{% block eyebrow %}Actividad{% endblock %}
-{% block page_title %}Tus <span>notificaciones</span>{% endblock %}
-{% block page_lead %}Aquí convergen las señales del sistema: nuevos pedidos, confirmaciones y eventos importantes dentro del flujo de CUCU.{% endblock %}
+{% block title %}{% trans "Notificaciones" %} | CUCU{% endblock %}
+{% block eyebrow %}{% trans "Actividad" %}{% endblock %}
+{% block page_title %}{% trans "Tus" %} <span>{% trans "notificaciones" %}</span>{% endblock %}
+{% block page_lead %}{% trans "Aqui convergen las senales del sistema: nuevos pedidos, confirmaciones y eventos importantes dentro del flujo de CUCU." %}{% endblock %}
 {% block hero_actions %}
-  <a class="btn btn-primary" href="/ui/aceptar-pedido/">Aceptar pedido</a>
-  <a class="btn btn-secondary" href="/">Inicio</a>
+  <a class="btn btn-primary" href="/ui/aceptar-pedido/">{% trans "Aceptar pedido" %}</a>
+  <a class="btn btn-secondary" href="/">{% trans "Inicio" %}</a>
 {% endblock %}
 {% block hero_points %}
-  <div class="hero-point"><span class="hero-point-badge">•</span><div><strong>Pedidos</strong><p>Recibe avisos cuando alguien compra uno de tus platos.</p></div></div>
-  <div class="hero-point"><span class="hero-point-badge">✓</span><div><strong>Lectura</strong><p>Marca rápidamente lo que ya revisaste sin salir del flujo.</p></div></div>
-  <div class="hero-point"><span class="hero-point-badge">↻</span><div><strong>Actualiza</strong><p>Recarga la lista cuando quieras revisar actividad reciente.</p></div></div>
+  <div class="hero-point"><span class="hero-point-badge">•</span><div><strong>{% trans "Pedidos" %}</strong><p>{% trans "Recibe avisos cuando alguien compra uno de tus platos." %}</p></div></div>
+  <div class="hero-point"><span class="hero-point-badge">✓</span><div><strong>{% trans "Lectura" %}</strong><p>{% trans "Marca rapidamente lo que ya revisaste sin salir del flujo." %}</p></div></div>
+  <div class="hero-point"><span class="hero-point-badge">↻</span><div><strong>{% trans "Actualiza" %}</strong><p>{% trans "Recarga la lista cuando quieras revisar actividad reciente." %}</p></div></div>
 {% endblock %}
-{% block section_title %}Centro de notificaciones{% endblock %}
-{% block section_hint %}La actividad del producto aparece aquí con el mismo lenguaje visual del resto de la aplicación.{% endblock %}
+{% block section_title %}{% trans "Centro de notificaciones" %}{% endblock %}
+{% block section_hint %}{% trans "La actividad del producto aparece aqui con el mismo lenguaje visual del resto de la aplicacion." %}{% endblock %}
 {% block content %}
       <div class="toolbar">
-        <span class="counter" id="counter">Cargando...</span>
-        <button class="btn btn-secondary" id="reloadBtn" type="button">Recargar</button>
+        <span class="counter" id="counter">{% trans "Cargando..." %}</span>
+        <button class="btn btn-secondary" id="reloadBtn" type="button">{% trans "Recargar" %}</button>
       </div>
 
       <div id="list" class="list" aria-live="polite">
-        <div class="note">Cargando notificaciones...</div>
+        <div class="note">{% trans "Cargando notificaciones..." %}</div>
       </div>
 {% endblock %}
 {% block page_scripts %}
   <script>
     const auth = window.CUCUAuth;
+    const TXT_READ = '{% trans "Leida" %}';
+    const TXT_MARK_READ = '{% trans "Marcar leida" %}';
+    const TXT_MARK_READ_ERROR = '{% trans "No se pudo marcar como leida." %}';
+    const TXT_LOADING = '{% trans "Cargando..." %}';
+    const TXT_LOAD_ERROR = '{% trans "Error al cargar notificaciones" %}';
+    const TXT_NONE = '{% trans "Sin notificaciones" %}';
+    const TXT_TOTAL = '{% trans "total" %}';
+    const TXT_UNREAD = '{% trans "sin leer" %}';
+    const TXT_NO_NOTIFS = '{% trans "No tienes notificaciones por el momento." %}';
     auth.ensureAuthenticatedSession();
 
     const list = document.getElementById('list');
@@ -50,23 +60,23 @@
       const { response: res, payload: json } = result;
       if (res.ok) {
         row.classList.add('leida');
-        btn.textContent = '✓ Leída';
+        btn.textContent = `✓ ${TXT_READ}`;
       } else {
         btn.disabled = false;
-        alert(json.error || 'No se pudo marcar como leída.');
+        alert(json.error || TXT_MARK_READ_ERROR);
       }
     }
 
     async function loadNotificaciones() {
-      list.innerHTML = '<div class="note">Cargando...</div>';
-      counter.textContent = 'Cargando...';
+      list.innerHTML = `<div class="note">${TXT_LOADING}</div>`;
+      counter.textContent = TXT_LOADING;
 
       const result = await auth.authenticatedFetch('/api/notificaciones/');
       if (!result) return;
       const { response: res, payload: data } = result;
 
       if (!res.ok) {
-        list.innerHTML = `<div class="note">Error al cargar notificaciones (${res.status}).</div>`;
+        list.innerHTML = `<div class="note">${TXT_LOAD_ERROR} (${res.status}).</div>`;
         counter.textContent = '';
         return;
       }
@@ -75,11 +85,11 @@
 
       const noLeidas = notifs.filter(n => !n.leida).length;
       counter.textContent = notifs.length === 0
-        ? 'Sin notificaciones'
-        : `${notifs.length} total · ${noLeidas} sin leer`;
+        ? TXT_NONE
+        : `${notifs.length} ${TXT_TOTAL} · ${noLeidas} ${TXT_UNREAD}`;
 
       if (!notifs.length) {
-        list.innerHTML = '<div class="note">No tenés notificaciones por el momento.</div>';
+        list.innerHTML = `<div class="note">${TXT_NO_NOTIFS}</div>`;
         return;
       }
 
@@ -97,7 +107,7 @@
               class="marcar"
               data-id="${n.id}"
               ${n.leida ? 'disabled' : ''}
-            >${n.leida ? ' Leída' : 'Marcar leída'}</button>
+            >${n.leida ? ` ${TXT_READ}` : TXT_MARK_READ}</button>
           </div>
         </div>
       `).join('');

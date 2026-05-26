@@ -1,1339 +1,2118 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CUCU\n"
-"POT-Creation-Date: 2026-05-25 00:00+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-26 18:32+0000\n"
 "PO-Revision-Date: 2026-05-25 00:00+0000\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "Navegacion principal"
-msgstr "Main navigation"
+#: notifications/tasks.py:13
+#, python-format
+msgid "Tu pago fue autorizado para el pedido #%(pedido_id)s"
+msgstr ""
 
-msgid "Inicio"
-msgstr "Home"
+#: notifications/tasks.py:15
+#, python-format
+msgid "Tu pago fallo para el pedido #%(pedido_id)s"
+msgstr ""
 
-msgid "Compra"
-msgstr "Buy"
+#: notifications/tasks.py:17
+#, python-format
+msgid "Tu pago cambio de estado a %(estado)s para el pedido #%(pedido_id)s"
+msgstr ""
 
-msgid "Vende"
-msgstr "Sell"
-
-msgid "Carrito"
-msgstr "Cart"
-
-msgid "Perfil"
-msgstr "Profile"
-
-msgid "Iniciar sesion"
-msgstr "Sign in"
-
-msgid "Inicia sesion"
-msgstr "Sign in"
-
-msgid "Bienvenido a CUCU"
-msgstr "Welcome to CUCU"
-
-msgid "Ilustracion de inicio de sesion"
-msgstr "Sign-in illustration"
-
-msgid "Correo electronico"
-msgstr "Email"
-
-msgid "Contrasena"
-msgstr "Password"
-
-msgid "Mostrar u ocultar contrasena"
-msgstr "Show or hide password"
-
-msgid "Olvidaste tu contrasena?"
-msgstr "Forgot your password?"
-
-msgid "Recuerdame"
-msgstr "Remember me"
-
-msgid "Eres nuevo en CUCU?"
-msgstr "New to CUCU?"
-
-msgid "Registrate"
-msgstr "Sign up"
-
-msgid "Terminos"
-msgstr "Terms"
-
-msgid "Privacidad"
-msgstr "Privacy"
-
-msgid "Soporte"
-msgstr "Support"
-
-msgid "Todos los derechos reservados."
-msgstr "All rights reserved."
-
-msgid "Crear cuenta"
-msgstr "Create account"
-
-msgid "Crea tu cuenta"
-msgstr "Create your account"
-
-msgid "Unete a CUCU hoy mismo"
-msgstr "Join CUCU today"
-
-msgid "Ilustracion de registro"
-msgstr "Registration illustration"
-
-msgid "Nombre completo"
-msgstr "Full name"
-
-msgid "Confirma tu contrasena"
-msgstr "Confirm your password"
-
-msgid "Mostrar u ocultar confirmacion de contrasena"
-msgstr "Show or hide password confirmation"
-
-msgid "Al registrarte, aceptas nuestros"
-msgstr "By signing up, you accept our"
-
-msgid "Terminos y Condiciones"
-msgstr "Terms and Conditions"
-
-msgid "Ya tienes cuenta?"
-msgstr "Already have an account?"
-
-msgid "Recuperar contrasena"
-msgstr "Recover password"
-
-msgid "Recupera tu acceso"
-msgstr "Recover access"
-
-msgid "Escribe tu correo y te enviaremos un enlace para cambiar la contrasena."
-msgstr "Enter your email and we will send you a link to change your password."
-
-msgid "Enviar enlace"
-msgstr "Send link"
-
-msgid "Volver al login"
-msgstr "Back to login"
-
-msgid "Restablecer contrasena"
-msgstr "Reset password"
-
-msgid "Nueva contrasena"
-msgstr "New password"
-
-msgid "Ingresa una contrasena nueva para recuperar tu cuenta."
-msgstr "Enter a new password to recover your account."
-
-msgid "Guardar contrasena"
-msgstr "Save password"
-
-msgid "+ Anadir imagen"
-msgstr "+ Add image"
-
-msgid "+ Anadir ingrediente"
-msgstr "+ Add ingredient"
-
-msgid "0 disponibles"
-msgstr "0 available"
-
-msgid "0 resultados"
-msgstr "0 results"
-
-msgid "A"
-msgstr "TO"
-
-msgid "ACEPTADO"
-msgstr "ACCEPTED"
-
-msgid "Acepta un"
-msgstr "Accept a"
-
-msgid "Aceptacion"
-msgstr "Acceptance"
-
-msgid "Aceptar el pedido"
-msgstr "Accept the order"
-
+#: templates/aceptar_pedido.html:4 templates/aceptar_pedido.html:17
+#: templates/aceptar_pedido.html:33 templates/notificaciones.html:9
 msgid "Aceptar pedido"
 msgstr "Accept order"
 
-msgid "Actividad"
-msgstr "Activity"
-
-msgid "Actualiza"
-msgstr "Update"
-
-msgid "Agotado"
-msgstr "Exhausted"
-
-msgid "Agotado por ahora"
-msgstr "Out of stock for now"
-
-msgid "Agregado"
-msgstr "Aggregate"
-
-msgid "Agregar"
-msgstr "Add"
-
-msgid "Agregar al carrito"
-msgstr "Add to cart"
-
-msgid "Ajusta el pin o escribe una direccion exacta."
-msgstr "Adjust the pin or write an exact address."
-
-msgid "Ajusta tus filtros o tu ubicacion."
-msgstr "Adjust your filters or your location."
-
-msgid "Anade un ingrediente"
-msgstr "Add an ingredient"
-
-msgid "Apellidos"
-msgstr "Surnames"
-
-msgid "Aplicar propina"
-msgstr "Apply tip"
-
-msgid "Aqui convergen las senales del sistema: nuevos pedidos, confirmaciones y eventos importantes dentro del flujo de CUCU."
-msgstr "Here the system signals converge: new orders, confirmations and important events within the CUCU flow."
-
-msgid "Asignando repartidor"
-msgstr "Assigning delivery person"
-
-msgid "Aumentar"
-msgstr "Increase"
-
-msgid "Aun no has anadido imagen"
-msgstr "You have not added an image yet."
-
-msgid "Balance acumulado a partir de las ventas registradas de tus platos."
-msgstr "Accumulated balance from the registered sales of your dishes."
-
-msgid "Bowl saludable"
-msgstr "Healthy bowl"
-
-msgid "Busca comida cerca"
-msgstr "Look for food nearby"
-
-msgid "Busca un pedido por ID y valida si corresponde a tu publicacion."
-msgstr "Search for an order by ID and validate if it corresponds to your publication."
-
-msgid "Buscando la direccion en el mapa..."
-msgstr "Looking for the address on the map..."
-
-msgid "Buscar pedido"
-msgstr "Search order"
-
-msgid "CUCU"
-msgstr "CUCKOO"
-
-msgid "Calculando ruta real por las calles..."
-msgstr "Calculating real route through the streets..."
-
-msgid "Cancelar"
-msgstr "Cancel"
-
-msgid "Cantidad"
-msgstr "Amount"
-
-msgid "Cargando notificaciones..."
-msgstr "Loading notifications..."
-
-msgid "Cargando..."
-msgstr "Charging..."
-
-msgid "Cedula"
-msgstr "ID"
-
-msgid "Centro de notificaciones"
-msgstr "Notification Center"
-
-msgid "Cerrar sesion"
-msgstr "Log out"
-
-msgid "Checkout"
-msgstr "Checkout"
-
-msgid "Como funciona"
-msgstr "How it works"
-
-msgid "Como funciona?"
-msgstr "How does it work?"
-
-msgid "Como ubicar tu punto de venta"
-msgstr "How to set your pickup point"
-
-msgid "Completa los datos de la tarjeta y el documento."
-msgstr "Complete the card and document details."
-
-msgid "Completa tus datos y el metodo de pago en el checkout."
-msgstr "Complete your information and payment method at checkout."
-
-msgid "Compra de forma segura"
-msgstr "Buy safely"
-
-msgid "Compra o vende"
-msgstr "Buy or sell"
-
-msgid "Comprar"
-msgstr "Buy"
-
-msgid "Compras"
-msgstr "Shopping"
-
-msgid "Comunidad"
-msgstr "Community"
-
-msgid "Con cuanto pagas?"
-msgstr "How much are you paying with?"
-
-msgid "Conecta con tu comunidad de forma simple."
-msgstr "Connect with your community in a simple way."
-
-msgid "Confirma el"
-msgstr "Confirm the"
-
-msgid "Confirma tu pedido y mira el recorrido del repartidor."
-msgstr "Confirm your order and see the courier route."
-
-msgid "Confirmacion"
-msgstr "Confirmation"
-
-msgid "Confirmar y pagar"
-msgstr "Confirm and pay"
-
-msgid "Confirmas tus datos, tu direccion y el metodo de pago. Si la direccion se puede resolver rapido o eliges una sugerencia, guardamos coordenadas para que el seguimiento cargue mas agil."
-msgstr "You confirm your information, your address and the payment method. If the address can be resolved quickly or you choose a suggestion, we save coordinates so that the tracking loads more quickly."
-
-msgid "Consulta tu historial de pedidos, administra tus publicaciones y revisa el saldo de tus ventas desde un solo lugar."
-msgstr "Check your order history, manage your listings, and check your sales balance from one place."
-
-msgid "Contacto"
-msgstr "Contact"
-
-msgid "Continuar"
-msgstr "Continue"
-
-msgid "Contrato"
-msgstr "Contract"
-
-msgid "Crear cuenta gratis"
-msgstr "Create a free account"
-
-msgid "Crear otro pedido"
-msgstr "Create another order"
-
-msgid "Cuando hagas tu primer pedido, aqui veras toda la informacion."
-msgstr "When you place your first order, you will see all the information here."
-
-msgid "Cuando subas una foto, aqui aparecera la vista previa del platillo."
-msgstr "When you upload a photo, the preview of the dish will appear here."
-
-msgid "Datos de entrega"
-msgstr "Delivery data"
-
-msgid "Debes cumplir con nuestras normas comunitarias y ubicar correctamente tu punto de venta."
-msgstr "You must comply with our community standards and correctly locate your point of sale."
-
-msgid "Delivery fijo"
-msgstr "Fixed delivery"
-
-msgid "Delivery:"
-msgstr "Delivery:"
-
-msgid "Descubre comida casera hecha con amor o vende tus platos en minutos."
-msgstr "Discover homemade food made with love or sell your dishes in minutes."
-
-msgid "Desde aqui el vendedor confirma pedidos y continua el flujo operativo sin salir del estilo visual de CUCU."
-msgstr "From here the seller confirms orders and continues the operational flow without leaving the CUCU visual style."
-
-msgid "Despues puedes volver al inicio o crear otro pedido."
-msgstr "Afterwards you can return to the beginning or create another order."
-
-msgid "Detalle del pedido"
-msgstr "Order detail"
-
-msgid "Direccion"
-msgstr "Address"
-
-msgid "Direccion de entrega"
-msgstr "Delivery address"
-
-msgid "Direccion ubicada en el mapa."
-msgstr "Address located on the map."
-
-msgid "Disminuir"
-msgstr "Decrease"
-
-msgid "Disponible"
-msgstr "Available"
-
-msgid "Disponible ahora"
-msgstr "Available now"
-
-msgid "Distancia"
-msgstr "Distance"
-
-msgid "ETA"
-msgstr "ETA"
-
-msgid "ETA actual"
-msgstr "Current ETA"
-
-msgid "ETA pendiente"
-msgstr "pending ETA"
-
-msgid "Efectivo"
-msgstr "Cash"
-
-msgid "El Pedido ID y el monto se toman del carrito automaticamente."
-msgstr "The Order ID and amount are taken from the cart automatically."
-
-msgid "El carrito se arma con lo que agregaste en la vista de compra."
-msgstr "The cart is assembled with what you added in the purchase view."
-
-msgid "El comprador recibe una notificacion automatica al aceptar."
-msgstr "The buyer receives an automatic notification upon acceptance."
-
-msgid "El comprador recibira una notificacion automaticamente."
-msgstr "The buyer will receive a notification automatically."
-
-msgid "El delivery se calcula como $5.000 COP por pedido."
-msgstr "Delivery is calculated as $5,000 COP per order."
-
-msgid "El mapa guardara la ubicacion exacta del producto para que CUCU calcule distancias reales con respecto al comprador."
-msgstr "The map will save the exact location of the product so that CUCU can calculate real distances from the buyer."
-
-msgid "El monto se toma automaticamente del pedido actual."
-msgstr "The amount is automatically taken from the current order."
-
-msgid "El pago toma automaticamente el pedido y el total del carrito para que el flujo no se sienta fragmentado."
-msgstr "Checkout automatically takes the order and cart total so the flow feels seamless."
-
-msgid "El telefono es requerido."
-msgstr "The telephone is required."
-
-msgid "Elige, paga y recibe. O publica tus platos."
-msgstr "Choose, pay and receive. Or post your dishes."
-
-msgid "Eliminar ingrediente"
-msgstr "Delete ingredient"
-
-msgid "Empieza a vender"
-msgstr "Start selling"
-
-msgid "En camino"
-msgstr "On the way"
-
-msgid "En tu barrio"
-msgstr "in your neighborhood"
-
-msgid "Encuentra comida cerca"
-msgstr "Find food nearby"
-
-msgid "Entrega estimada"
-msgstr "Estimated delivery"
-
-msgid "Entrega estimada:"
-msgstr "Estimated delivery:"
-
-msgid "Entregado"
-msgstr "Delivered"
-
-msgid "Envio"
-msgstr "Shipment"
-
-msgid "Error al cargar notificaciones"
-msgstr "Error loading notifications"
-
-msgid "Escribe primero una direccion para ubicarla en el mapa."
-msgstr "First write an address to locate it on the map."
-
-msgid "Escribe una direccion (o un lugar) como EAFIT, pulsa Ubicar direccion, o mueve el marcador directamente sobre el mapa para guardar una ubicacion mas exacta."
-msgstr "Type an address (or place) such as EAFIT, press Locate Address, or move the marker directly on the map to save a more exact location."
-
-msgid "Escribir direccion"
-msgstr "Write address"
-
-msgid "Esta es la primera vista donde se fija la ubicacion real del producto. Desde aqui el sistema podra comparar la posicion del vendedor con la del comprador y mostrar distancias reales dentro del flujo de CUCU."
-msgstr "This is the first view where the real location of the product is set. From here the system will be able to compare the position of the seller with that of the buyer and show real distances within the CUCU flow."
-
-msgid "Esta etapa recoge el total del pedido y lo presenta dentro del mismo sistema visual que ya ve el usuario en comprar y vender."
-msgstr "This stage collects the total of the order and presents it within the same visual system that the user already sees when buying and selling."
-
-msgid "Esta pantalla representa el lado del vendedor dentro de CUCU y mantiene el mismo lenguaje visual del resto del producto."
-msgstr "This screen represents the seller side within CUCU and maintains the same visual language as the rest of the product."
-
-msgid "Estado"
-msgstr "State"
-
-msgid "Estado:"
-msgstr "State:"
-
-msgid "Este navegador no soporta geolocalizacion."
-msgstr "This browser does not support geolocation."
-
-msgid "Este navegador no soporta geolocalizacion. Usa la opcion de direccion."
-msgstr "This browser does not support geolocation. Use the direction option."
-
-msgid "Este pedido no tiene items visibles."
-msgstr "This order has no visible items."
-
-msgid "Este producto no tiene stock disponible para agregarlo al carrito."
-msgstr "This product does not have stock available to add to cart."
-
-msgid "Este producto ya no tiene stock disponible."
-msgstr "This product is no longer in stock."
-
-msgid "Explora los platillos caseros disponibles en tu barrio y ordena tus favoritos."
-msgstr "Explore the homemade dishes available in your neighborhood and order your favorites."
-
-msgid "Explora platos caseros en tu zona."
-msgstr "Explore homemade dishes in your area."
-
-msgid "Explora platos por ubicacion"
-msgstr "Explore dishes by location"
-
-msgid "Explorar"
-msgstr "Explore"
-
-msgid "Explorar ahora"
-msgstr "Explore now"
-
-msgid "Explorar comida"
-msgstr "Explore food"
-
-msgid "Falta pedido_id en la URL."
-msgstr "Order_id is missing from the URL."
-
-msgid "Faltan puntos de recogida o entrega para construir el mapa del pedido."
-msgstr "Pickup or delivery points are missing to build the order map."
-
-msgid "Fecha de expiracion"
-msgstr "Expiration date"
-
-msgid "Filtra por lo que mas te antoja hoy."
-msgstr "Filter by what you crave most today."
-
-msgid "Filtra por precio y categoria"
-msgstr "Filter by price and category"
-
-msgid "Filtrar por"
-msgstr "Filter by"
-
-msgid "Finaliza tu"
-msgstr "Finish your"
-
-msgid "Formulario reiniciado."
-msgstr "Restarted form."
-
-msgid "Garantia de satisfaccion en todas tus compras."
-msgstr "Satisfaction guarantee on all your purchases."
-
-msgid "Gestiona pedidos facilmente"
-msgstr "Manage orders easily"
-
-msgid "Guardado"
-msgstr "Saved"
-
-msgid "Guardar"
-msgstr "Keep"
-
-msgid "Haz click en un pedido para ver el detalle completo, su fecha, estado y valor total."
-msgstr "Click on an order to see the complete details, its date, status and total value."
-
-msgid "Hecho para tu barrio, hecho con amor."
-msgstr "Made for your neighborhood, made with love."
-
-msgid "Historial de pedidos"
-msgstr "Order history"
-
-msgid "Imagen del platillo"
-msgstr "Image of the saucer"
-
-msgid "Ingredientes incluidos"
-msgstr "Ingredients included"
-
-msgid "Ingresa con cuanto pagaras."
-msgstr "Enter how much you will pay."
-
-msgid "Ingresa el valor con el que pagaras."
-msgstr "Enter the value with which you will pay."
-
-msgid "Ingresa tus datos de entrega y el metodo de pago."
-msgstr "Enter your delivery information and payment method."
-
-msgid "Ir a pagar"
-msgstr "go to pay"
-
-msgid "Italiana"
-msgstr "Italian"
-
-msgid "Items claros"
-msgstr "Clear items"
-
-msgid "Items:"
-msgstr "Items:"
-
-msgid "La actividad del producto aparece aqui con el mismo lenguaje visual del resto de la aplicacion."
-msgstr "The product activity appears here with the same visual language as the rest of the application."
-
-msgid "La demo acepta pago en efectivo o tarjeta."
-msgstr "The demo accepts payment in cash or card."
-
-msgid "La direccion de entrega es requerida."
-msgstr "The delivery address is required."
-
-msgid "La propina se muestra en el resumen (no se procesa como pago real todavia)."
-msgstr "The tip is shown on the statement (it is not processed as an actual payment yet)."
-
-msgid "La transferencia se deja lista como flujo demo para esta entrega."
-msgstr "The transfer is left ready as a demo flow for this delivery."
-
-msgid "Las contraseñas no coinciden"
-msgstr "Passwords do not match"
-
-msgid "Lectura"
-msgstr "Reading"
-
-msgid "Legal"
-msgstr "Legal"
-
-msgid "Leida"
-msgstr "Read"
-
-msgid "Limite actual"
-msgstr "Current limit"
-
-msgid "Limite por pedido"
-msgstr "Limit per order"
-
-msgid "Limite por pedido:"
-msgstr "Limit per order:"
-
-msgid "Listo en minutos"
-msgstr "Ready in minutes"
-
-msgid "Llega a mas clientes del barrio"
-msgstr "Reach more customers in the neighborhood"
-
-msgid "Mapa"
-msgstr "Map"
-
-msgid "Marca rapidamente lo que ya revisaste sin salir del flujo."
-msgstr "Quickly mark what you have already reviewed without leaving the flow."
-
-msgid "Marcar leida"
-msgstr "Mark read"
-
-msgid "Maximo"
-msgstr "Maximum"
-
-msgid "Maximo permitido por venta"
-msgstr "Maximum allowed per sale"
-
-msgid "Menu"
-msgstr "Menu"
-
-msgid "Metodo"
-msgstr "Method"
-
-msgid "Metodo de pago"
-msgstr "Payment method"
-
-msgid "Metodo simple"
-msgstr "Simple method"
-
-msgid "Metodos soportados (demo):"
-msgstr "Supported methods (demo):"
-
-msgid "Mexicana"
-msgstr "Mexican"
-
-msgid "Mi"
-msgstr "My"
-
-msgid "Mi perfil"
-msgstr "my profile"
-
-msgid "Miembro desde"
-msgstr "Member since"
-
-msgid "Mientras escribes, te mostramos sugerencias globales para que escojas una mas precisa."
-msgstr "As you write, we show you global suggestions so you can choose a more precise one."
-
-msgid "Minimo"
-msgstr "Minimum"
-
-msgid "Mis pedidos"
-msgstr "My orders"
-
-msgid "Mis publicaciones"
-msgstr "My listings"
-
-msgid "Mis ventas"
-msgstr "My sales"
-
-msgid "Monto"
-msgstr "Amount"
-
-msgid "Mostrando platos alrededor de tu ubicacion actual."
-msgstr "Showing dishes around your current location."
-
-msgid "Mostrando platos cerca de"
-msgstr "Showing dishes near"
-
-msgid "Mueve tu barrio con CUCU."
-msgstr "Power your neighborhood with CUCU."
-
-msgid "Necesitas cambio?"
-msgstr "Do you need change?"
-
-msgid "No encontramos platos con esos filtros. Prueba otro tipo de comida o amplia el rango."
-msgstr "We could not find dishes with those filters. Try another food type or expand the range."
-
-msgid "No fue posible cargar la ruta vial del pedido. Recarga la vista para reintentar."
-msgstr "Could not load the route for this order. Reload the page and try again."
-
-msgid "No fue posible ubicar el punto inicial del repartidor."
-msgstr "Could not locate the courier starting point."
-
-msgid "No hay coincidencias con tu busqueda actual."
-msgstr "No matches found for your current search."
-
-msgid "No se pudieron cargar las publicaciones para armar el carrito."
-msgstr "Could not load listings to build your cart."
-
-msgid "No se pudieron cargar las publicaciones para calcular el total."
-msgstr "Could not load listings to calculate the total."
-
-msgid "No se pudieron cargar sugerencias"
-msgstr "Suggestions could not be loaded"
-
-msgid "No se pudo cargar el perfil."
-msgstr "The profile could not be loaded."
-
-msgid "No se pudo completar la solicitud."
-msgstr "The request could not be completed."
-
-msgid "No se pudo crear el pedido."
-msgstr "The order could not be created."
-
-msgid "No se pudo determinar el ID del pedido."
-msgstr "The order ID could not be determined."
-
-msgid "No se pudo determinar el monto del pedido. Revisa el Pedido ID."
-msgstr "The order amount could not be determined. Review the Order ID."
-
-msgid "No se pudo eliminar la publicacion."
-msgstr "Could not delete the listing."
-
-msgid "No se pudo guardar la publicacion."
-msgstr "Could not save the listing."
-
-msgid "No se pudo marcar como leida."
-msgstr "Could not mark as read."
-
-msgid "No se pudo obtener la ubicacion"
-msgstr "Could not get location"
-
-msgid "No se pudo obtener tu ubicacion. Activa permisos de ubicacion para ver la distancia."
-msgstr "Your location could not be obtained. Activate location permissions to see the distance."
-
-msgid "No se pudo obtener tu ubicacion:"
-msgstr "Could not get your location:"
-
-msgid "No se pudo publicar el platillo."
-msgstr "The dish could not be published."
-
-msgid "No se pudo registrar el pago."
-msgstr "The payment could not be recorded."
-
-msgid "No se pudo resolver la direccion"
-msgstr "Could not resolve address"
-
-msgid "No se pudo ubicar la direccion"
-msgstr "The address could not be located"
-
-msgid "No se pudo ubicar tu direccion. Usando tu ubicacion actual como respaldo."
-msgstr "Your address could not be located. Using your current location as a backup."
-
-msgid "No tienes notificaciones por el momento."
-msgstr "You have no notifications at the moment."
-
-msgid "Nombre"
-msgstr "Name"
-
-msgid "Nombre del platillo"
-msgstr "Name of the dish"
-
-msgid "Nombre en la tarjeta"
-msgstr "name on card"
-
-msgid "Notificacion"
-msgstr "Notification"
-
-msgid "Notificaciones"
-msgstr "Notifications"
-
-msgid "Numero de documento"
-msgstr "Document number"
-
-msgid "Numero de tarjeta"
-msgstr "Card number"
-
-msgid "Obteniendo tu ubicacion actual..."
-msgstr "Getting your current location..."
-
-msgid "Obteniendo tu ubicacion..."
-msgstr "Getting your location..."
-
-msgid "Ocultar detalle"
-msgstr "Hide detail"
-
-msgid "Otra"
-msgstr "Other"
-
-msgid "PSE estara disponible mas adelante. Por ahora, selecciona efectivo o tarjeta."
-msgstr "PSE will be available later. For now, select cash or card."
-
-msgid "PSE todavia no esta disponible. Selecciona efectivo o tarjeta."
-msgstr "PSE is not yet available. Select cash or card."
-
-msgid "Pagaste"
-msgstr "you paid"
-
-msgid "Pago"
-msgstr "Pay"
-
-msgid "Pago de manera segura"
-msgstr "Secure payment"
-
-msgid "Pago registrado. Redirigiendo al seguimiento del pedido..."
-msgstr "Registered payment. Redirecting to order tracking..."
-
-msgid "Pago seguro"
-msgstr "Secure payment"
-
-msgid "Pagos Seguros en Linea"
-msgstr "Secure Online Payments"
-
-msgid "Pasaporte"
-msgstr "Passport"
-
-msgid "Pedido"
-msgstr "Order"
-
-msgid "Pedido ID"
-msgstr "Order ID"
-
-msgid "Pedido activo"
-msgstr "Active order"
-
-msgid "Pedido pendiente"
-msgstr "Pending order"
-
-msgid "Pedidos"
-msgstr "Orders"
-
-msgid "Pendiente"
-msgstr "Earring"
-
-msgid "Platillo publicado y sincronizado con el catalogo."
-msgstr "Plate published and synchronized with the catalog."
-
-msgid "Platos"
-msgstr "Dishes"
-
-msgid "Postres"
-msgstr "Desserts"
-
-msgid "Precio"
-msgstr "Price"
-
-msgid "Preparacion"
-msgstr "Preparation"
-
-msgid "Preparacion casera"
-msgstr "Homemade preparation"
-
-msgid "Preparacion casera disponible por tiempo limitado."
-msgstr "Homemade preparation available for a limited time."
-
-msgid "Procesando..."
-msgstr "Processing..."
-
-msgid "Producto"
-msgstr "Product"
-
-msgid "Producto agregado al carrito."
-msgstr "Product added to cart."
-
-msgid "Productos del pedido"
-msgstr "Order products"
-
-msgid "Propina"
-msgstr "Tip"
-
-msgid "Propina (opcional)"
-msgstr "Tip (optional)"
-
-msgid "Publica tus platos en minutos"
-msgstr "Publish your dishes in minutes"
-
-msgid "Publicacion"
-msgstr "Publication"
-
-msgid "Publicacion actualizada correctamente."
-msgstr "Post updated correctly."
-
-msgid "Publicacion eliminada correctamente."
-msgstr "Post successfully deleted."
-
-msgid "Publicaciones"
-msgstr "Publications"
-
-msgid "Publicando..."
-msgstr "Posting..."
-
-msgid "Publicar platillo"
-msgstr "Publish dish"
-
-msgid "Publicar plato"
-msgstr "Publish dish"
-
-msgid "Publicar un platillo"
-msgstr "Publish a dish"
-
-msgid "Puedes escribir, hacer clic en el mapa, arrastrar el pin o usar tu ubicacion actual."
-msgstr "You can type, click on the map, drag the pin or use your current location."
-
-msgid "Puedes volver al seguimiento en cualquier momento hasta que la entrega termine."
-msgstr "You can return to tracking at any time until the delivery is finished."
-
-msgid "Quieres eliminar esta publicacion por completo?"
-msgstr "Do you want to delete this post completely?"
-
-msgid "Quiero comprar"
-msgstr "I want to buy"
-
-msgid "Quiero vender"
-msgstr "I want to sell"
-
-msgid "Quitar imagen"
-msgstr "Remove image"
-
-msgid "Radio maximo"
-msgstr "maximum radius"
-
-msgid "Rango actual"
-msgstr "Current range"
-
-msgid "Rapido"
-msgstr "Fast"
-
-msgid "Recarga la lista cuando quieras revisar actividad reciente."
-msgstr "Reload the list when you want to review recent activity."
-
-msgid "Recargar"
-msgstr "Recharge"
-
-msgid "Recibe avisos cuando alguien compra uno de tus platos."
-msgstr "Receive notifications when someone buys one of your dishes."
-
-msgid "Recogida"
-msgstr "Pickup"
-
-msgid "Referencias para llegar (opcional)"
-msgstr "References to get there (optional)"
-
-msgid "Registrar pago"
-msgstr "Register payment"
-
-msgid "Registrate gratis y empieza a comprar o vender hoy mismo."
-msgstr "Register for free and start buying or selling today."
-
-msgid "Repartidor"
-msgstr "Dealer"
-
-msgid "Repartidor asignado"
-msgstr "Assigned delivery driver"
-
-msgid "Repartidor en camino a tu ubicacion"
-msgstr "Delivery man on the way to your location"
-
-msgid "Repartidor ha llegado por tu pedido"
-msgstr "Delivery man has arrived for your order"
-
-msgid "Repartidor ha salido con tu pedido"
-msgstr "Delivery man has left with your order"
-
-msgid "Repartidor yendo por tu pedido"
-msgstr "Delivery man going for your order"
-
-msgid "Restablecer filtros"
-msgstr "Reset filters"
-
-msgid "Restar cantidad"
-msgstr "Subtract quantity"
-
-msgid "Resumen"
-msgstr "Summary"
-
-msgid "Retoma el seguimiento de tu pedido"
-msgstr "Resume tracking your order"
-
-msgid "Revisa tus platos publicados desde una vista simple. Si necesitas cambiar algo, abre el detalle."
-msgstr "Review your listed dishes in a simple view. If you need to change anything, open the details."
-
-msgid "Revisa tus productos y continua al pago."
-msgstr "Review your products and continue to checkout."
-
-msgid "Saldo de ventas"
-msgstr "Sales balance"
-
-msgid "Saludable"
-msgstr "Healthy"
-
-msgid "Seguimiento"
-msgstr "Follow-up"
-
-msgid "Seguimiento en"
-msgstr "Tracking on"
-
-msgid "Seguir comprando"
-msgstr "Continue shopping"
-
-msgid "Seguir mi pedido"
-msgstr "Track my order"
-
-msgid "Selecciona un pedido del historial para ver sus productos, fecha, telefono y valor a pagar."
-msgstr "Select an order from the history to see its products, date, telephone number and amount to pay."
-
-msgid "Sigue el flujo"
-msgstr "Follow the flow"
-
-msgid "Siguenos"
-msgstr "Follow us"
-
-msgid "Sin costos escondidos"
-msgstr "No hidden costs"
-
-msgid "Sin descripcion disponible."
-msgstr "No description available."
-
-msgid "Sin items"
-msgstr "No items"
-
-msgid "Sin notificaciones"
-msgstr "No notifications"
-
-msgid "Sin stock disponible"
-msgstr "No stock available"
-
-msgid "Solo el dueno de la publicacion puede aceptar el pedido."
-msgstr "Only the listing owner can accept the order."
-
-msgid "Solo el dueno de la publicacion puede confirmar el pedido."
-msgstr "Only the owner of the publication can confirm the order."
-
-msgid "Solo puedes agregar"
-msgstr "You can only add"
-
-msgid "Stock"
-msgstr "stock"
-
-msgid "Stock disponible"
-msgstr "Stock available"
-
-msgid "Subtotal"
-msgstr "Subtotal"
-
-msgid "Subtotal:"
-msgstr "Subtotal:"
-
-msgid "Sumar cantidad"
-msgstr "Add quantity"
-
-msgid "Tacos caseros"
-msgstr "Homemade tacos"
-
-msgid "Tarjeta"
-msgstr "Card"
-
-msgid "Telefono"
-msgstr "Phone"
-
-msgid "Telefono:"
-msgstr "Phone:"
-
-msgid "Tiempo de entrega"
-msgstr "Delivery time"
-
-msgid "Tipo de comida"
-msgstr "Type of food"
-
-msgid "Tipo de documento"
-msgstr "Document type"
-
-msgid "Todavia no has publicado platos. Cuando publiques uno, aqui podras editar su stock, ingredientes, valor y la informacion del menu."
-msgstr "You have not published dishes yet. When you publish one, you can edit its stock, ingredients, value, and menu information here."
-
-msgid "Todavia no tienes pedidos registrados."
-msgstr "You still have no registered orders."
-
-msgid "Todos"
-msgstr "All"
-
-msgid "Total"
-msgstr "Total"
-
-msgid "Total claro"
-msgstr "Totally clear"
-
-msgid "Total con propina"
-msgstr "Total with tip"
-
-msgid "Total del pedido:"
-msgstr "Order total:"
-
-msgid "Total pedido"
-msgstr "Total order"
-
-msgid "Total:"
-msgstr "Total:"
-
-msgid "Transferencia iniciada en modo demo. En una integracion real aqui conectariamos la pasarela o payout."
-msgstr "Transfer started in demo mode. In a real integration, this would connect to a payment gateway or payout flow."
-
-msgid "Transferir ganancias"
-msgstr "Transfer earnings"
-
-msgid "Tu carrito esta vacio."
-msgstr "Your cart is empty."
-
-msgid "Tu carrito esta vacio. Ve a"
-msgstr "Your cart is empty. Go to"
-
-msgid "Tu carrito esta vacio. Vuelve a"
-msgstr "Your cart is empty. Go back to"
-
-msgid "Tu carrito se ajusto porque algunos productos ya no tienen stock suficiente."
-msgstr "Your cart was adjusted because some products no longer have enough stock."
-
-msgid "Tu navegador no soporta geolocalizacion."
-msgstr "Your browser does not support geolocation."
-
-msgid "Tu pedido fue entregado"
-msgstr "Your order was delivered"
-
-msgid "Tu pedido ha llegado a tu ubicacion"
-msgstr "Your order has arrived at your location"
-
-msgid "Tu pedido sigue en camino"
-msgstr "Your order is still on its way"
-
-msgid "Tus"
-msgstr "Your"
-
-msgid "Ubicacion actual fijada en el mapa."
-msgstr "Current location set on the map."
-
-msgid "Ubicacion del punto de entrega"
-msgstr "Delivery point location"
-
-msgid "Ubicacion fijada en"
-msgstr "Location set to"
-
-msgid "Ubicacion lista. Mostrando platos dentro de"
-msgstr "Location ready. Showing dishes within"
-
-msgid "Ubicando puntos del pedido"
-msgstr "Locating order points"
-
-msgid "Ubicando tu direccion de entrega:"
-msgstr "Locating your delivery address:"
-
-msgid "Ubicar direccion"
-msgstr "Locate address"
-
-msgid "Unete a CUCU y mueve tu barrio"
-msgstr "Join CUCU and energize your neighborhood"
-
-msgid "Unidades vendidas"
-msgstr "Units sold"
-
-msgid "Usa la direccion manual."
-msgstr "Use the manual address."
-
-msgid "Usa tu ubicacion o escribe tu direccion para cargar platos cercanos dentro de 5 km."
-msgstr "Use your location or type your address to load nearby dishes within 5 km."
-
-msgid "Usa tu ubicacion o escribe una direccion para empezar a ver platos cercanos."
-msgstr "Use your location or type an address to start seeing nearby dishes."
-
-msgid "Usar mi ubicacion"
-msgstr "Use my location"
-
-msgid "Usar ubicacion"
-msgstr "Use location"
-
-msgid "Usuario CUCU"
-msgstr "CUCU user"
-
-msgid "VISA · Mastercard"
-msgstr "VISA Mastercard"
-
-msgid "Vaciar carrito"
-msgstr "Empty cart"
-
-msgid "Vende fresco."
-msgstr "Sell fresh."
-
+#: templates/aceptar_pedido.html:5 templates/index.html:1031
+#: templates/pedido.html:1682 templates/perfil.html:10
+#: templates/publicar.html:817
 msgid "Vender"
 msgstr "Sell"
 
-msgid "Vender comida"
-msgstr "Sell food"
+#: templates/aceptar_pedido.html:6
+msgid "Acepta un"
+msgstr "Accept a"
 
-msgid "Ventas"
-msgstr "Sales"
-
-msgid "Ver detalle completo"
-msgstr "View full details"
-
-msgid "Ver notificaciones"
-msgstr "View notifications"
-
-msgid "Ver seguimiento"
-msgstr "View tracking"
-
-msgid "Volver"
-msgstr "Return"
-
-msgid "Volver al carrito"
-msgstr "Return to cart"
-
-msgid "Volver al inicio"
-msgstr "Back to home"
-
-msgid "activo"
-msgstr "active"
-
-msgid "carrito"
-msgstr "cart"
-
-msgid "cerca."
-msgstr "nearby."
-
-msgid "disponibles"
-msgstr "available"
-
-msgid "efectivo"
-msgstr "cash"
-
-msgid "km de ti por"
-msgstr "km from you"
-
-msgid "km."
-msgstr "km."
-
-msgid "notificaciones"
-msgstr "notifications"
-
-msgid "o"
-msgstr "either"
-
-msgid "pago"
-msgstr "pay"
-
+#: templates/aceptar_pedido.html:6 templates/checkout.html:6
 msgid "pedido"
 msgstr "order"
 
-msgid "perfil"
-msgstr "profile"
+#: templates/aceptar_pedido.html:7
+msgid ""
+"Esta pantalla representa el lado del vendedor dentro de CUCU y mantiene el "
+"mismo lenguaje visual del resto del producto."
+msgstr ""
+"This screen represents the seller side within CUCU and maintains the same "
+"visual language as the rest of the product."
 
-msgid "por pedido."
-msgstr "per request."
+#: templates/aceptar_pedido.html:9 templates/aceptar_pedido.html:50
+msgid "Ver notificaciones"
+msgstr "View notifications"
 
-msgid "porque ese es el stock disponible."
-msgstr "because that is the available stock."
+#: templates/aceptar_pedido.html:10 templates/base_app.html:726
+#: templates/carrito.html:10 templates/index.html:840
+#: templates/notificaciones.html:10 templates/pago.html:10
+#: templates/pedido.html:1521 templates/pedido.html:1544
+#: templates/pedido.html:1712 templates/publicar.html:656
+msgid "Inicio"
+msgstr "Home"
 
-msgid "productos"
-msgstr "products"
+#: templates/aceptar_pedido.html:13
+msgid "Pedido pendiente"
+msgstr "Pending order"
 
-msgid "resenas"
-msgstr "reviews"
+#: templates/aceptar_pedido.html:13
+msgid "Busca un pedido por ID y valida si corresponde a tu publicacion."
+msgstr ""
+"Search for an order by ID and validate if it corresponds to your publication."
 
-msgid "sin leer"
-msgstr "unread"
+#: templates/aceptar_pedido.html:14
+msgid "Aceptacion"
+msgstr "Acceptance"
 
-msgid "sin perder el recorrido actual."
-msgstr "without losing the current route."
+#: templates/aceptar_pedido.html:14
+msgid "Solo el dueno de la publicacion puede confirmar el pedido."
+msgstr "Only the owner of the publication can confirm the order."
 
-msgid "tarjeta"
-msgstr "card"
+#: templates/aceptar_pedido.html:15
+msgid "Notificacion"
+msgstr "Notification"
 
-msgid "tiempo real"
-msgstr "real time"
+#: templates/aceptar_pedido.html:15
+msgid "El comprador recibe una notificacion automatica al aceptar."
+msgstr "The buyer receives an automatic notification upon acceptance."
 
-msgid "total"
-msgstr "total"
+#: templates/aceptar_pedido.html:18
+msgid ""
+"Desde aqui el vendedor confirma pedidos y continua el flujo operativo sin "
+"salir del estilo visual de CUCU."
+msgstr ""
+"From here the seller confirms orders and continues the operational flow "
+"without leaving the CUCU visual style."
 
-msgid "unidad"
-msgstr "unit"
+#: templates/aceptar_pedido.html:22 templates/pago.html:23
+msgid "Pedido ID"
+msgstr "Order ID"
 
-msgid "unidades"
-msgstr "units"
+#: templates/aceptar_pedido.html:23
+msgid "Ej: 5"
+msgstr ""
 
+#: templates/aceptar_pedido.html:26
+msgid "Buscar pedido"
+msgstr "Search order"
+
+#: templates/aceptar_pedido.html:32
+msgid "Aceptar el pedido"
+msgstr "Accept the order"
+
+#: templates/aceptar_pedido.html:38
+msgid "Estado:"
+msgstr "State:"
+
+#: templates/aceptar_pedido.html:39
+msgid "Telefono:"
+msgstr "Phone:"
+
+#: templates/aceptar_pedido.html:40 templates/checkout.html:560
+msgid "Total:"
+msgstr "Total:"
+
+#: templates/aceptar_pedido.html:44
+msgid "Solo el dueno de la publicacion puede aceptar el pedido."
+msgstr "Only the listing owner can accept the order."
+
+#: templates/aceptar_pedido.html:45
+msgid "El comprador recibira una notificacion automaticamente."
+msgstr "The buyer will receive a notification automatically."
+
+#: templates/aceptar_pedido.html:49 templates/pago.html:54
+msgid "Volver al inicio"
+msgstr "Back to home"
+
+#: templates/aceptar_pedido.html:58 templates/checkout.html:562
+#: templates/pago.html:65 templates/recuperar_password.html:76
+#: templates/registro.html:315 templates/restablecer_password.html:78
+msgid "Procesando..."
+msgstr "Processing..."
+
+#: templates/aceptar_pedido.html:59
+msgid "ACEPTADO"
+msgstr "ACCEPTED"
+
+#: templates/base_app.html:725 templates/index.html:839
+#: templates/pedido.html:1520 templates/publicar.html:655
+msgid "Navegacion principal"
+msgstr "Main navigation"
+
+#: templates/base_app.html:727 templates/index.html:841
+#: templates/index.html:865 templates/pedido.html:1522
+#: templates/publicar.html:657
+msgid "Compra"
+msgstr "Buy"
+
+#: templates/base_app.html:728 templates/index.html:842
+#: templates/pedido.html:1523 templates/publicar.html:658
+msgid "Vende"
+msgstr "Sell"
+
+#: templates/base_app.html:736 templates/partials/language_fab.html:72
+msgid "Idioma"
+msgstr ""
+
+#: templates/base_app.html:743 templates/carrito.html:4
+#: templates/carrito.html:5 templates/index.html:851 templates/pedido.html:1532
+#: templates/publicar.html:661 templates/seguimiento.html:10
+msgid "Carrito"
+msgstr "Cart"
+
+#: templates/base_app.html:748 templates/index.html:855
+#: templates/pedido.html:1536 templates/pedido.html:1836
+#: templates/perfil.html:5 templates/publicar.html:665
+#: templates/publicar.html:851
+msgid "Perfil"
+msgstr "Profile"
+
+#: templates/carrito.html:6 templates/perfil.html:6
+msgid "Mi"
+msgstr "My"
+
+#: templates/carrito.html:6
+msgid "carrito"
+msgstr "cart"
+
+#: templates/carrito.html:7
+msgid "Revisa tus productos y continua al pago."
+msgstr "Review your products and continue to checkout."
+
+#: templates/carrito.html:9 templates/checkout.html:10
+#: templates/seguimiento.html:9
+msgid "Seguir comprando"
+msgstr "Continue shopping"
+
+#: templates/carrito.html:13
+msgid "Items claros"
+msgstr "Clear items"
+
+#: templates/carrito.html:13
+msgid "El carrito se arma con lo que agregaste en la vista de compra."
+msgstr "The cart is assembled with what you added in the purchase view."
+
+#: templates/carrito.html:14
+msgid "Delivery fijo"
+msgstr "Fixed delivery"
+
+#: templates/carrito.html:14
+msgid "El delivery se calcula como $5.000 COP por pedido."
+msgstr "Delivery is calculated as $5,000 COP per order."
+
+#: templates/carrito.html:15
+msgid "Continuar"
+msgstr "Continue"
+
+#: templates/carrito.html:15
+msgid "Completa tus datos y el metodo de pago en el checkout."
+msgstr "Complete your information and payment method at checkout."
+
+#: templates/carrito.html:252
+#, fuzzy
+#| msgid "Volver al carrito"
+msgid "Resumen del carrito"
+msgstr "Return to cart"
+
+#: templates/carrito.html:253 templates/checkout.html:535
+#: templates/checkout.html:536
+msgid "Resumen"
+msgstr "Summary"
+
+#: templates/carrito.html:256 templates/checkout.html:539
+msgid "Subtotal"
+msgstr "Subtotal"
+
+#: templates/carrito.html:259 templates/checkout.html:542
+msgid "Total"
+msgstr "Total"
+
+#: templates/carrito.html:262
+msgid "Ir a pagar"
+msgstr "go to pay"
+
+#: templates/carrito.html:263
+msgid "Vaciar carrito"
+msgstr "Empty cart"
+
+#: templates/carrito.html:266
+msgid "Pago de manera segura"
+msgstr "Secure payment"
+
+#: templates/carrito.html:273
+msgid "Tu carrito esta vacio. Ve a"
+msgstr "Your cart is empty. Go to"
+
+#: templates/carrito.html:273 templates/checkout.html:551
+#: templates/pedido.html:7 templates/pedido.html:1546
+#: templates/pedido.html:1714 templates/perfil.html:9
+msgid "Comprar"
+msgstr "Buy"
+
+#: templates/carrito.html:273 templates/checkout.html:551
 msgid "y agrega al menos un producto."
 msgstr "and add at least one product."
 
+#: templates/carrito.html:280
+msgid "No se pudieron cargar las publicaciones para armar el carrito."
+msgstr "Could not load listings to build your cart."
+
+#: templates/carrito.html:281
+msgid ""
+"Tu carrito se ajusto porque algunos productos ya no tienen stock suficiente."
+msgstr ""
+"Your cart was adjusted because some products no longer have enough stock."
+
+#: templates/carrito.html:282
+msgid "Preparacion casera"
+msgstr "Homemade preparation"
+
+#: templates/carrito.html:283 templates/pedido.html:1833
+msgid "Cantidad"
+msgstr "Amount"
+
+#: templates/carrito.html:284
+msgid "Disminuir"
+msgstr "Decrease"
+
+#: templates/carrito.html:285
+msgid "Aumentar"
+msgstr "Increase"
+
+#: templates/carrito.html:286
+msgid "Este producto ya no tiene stock disponible."
+msgstr "This product is no longer in stock."
+
+#: templates/carrito.html:287
+msgid "Solo puedes agregar"
+msgstr "You can only add"
+
+#: templates/carrito.html:288
+msgid "porque ese es el stock disponible."
+msgstr "because that is the available stock."
+
+#: templates/carrito.html:289
+msgid "por pedido."
+msgstr "per request."
+
+#: templates/carrito.html:290
+msgid "unidad"
+msgstr "unit"
+
+#: templates/carrito.html:291 templates/pedido.html:1826
+msgid "unidades"
+msgstr "units"
+
+#: templates/checkout.html:4 templates/checkout.html:5
+msgid "Checkout"
+msgstr "Checkout"
+
+#: templates/checkout.html:6
+msgid "Finaliza tu"
+msgstr "Finish your"
+
+#: templates/checkout.html:7
+msgid "Ingresa tus datos de entrega y el metodo de pago."
+msgstr "Enter your delivery information and payment method."
+
+#: templates/checkout.html:9 templates/pago.html:9
+msgid "Volver al carrito"
+msgstr "Return to cart"
+
+#: templates/checkout.html:384
+#, fuzzy
+#| msgid "Datos de entrega"
+msgid "Datos de checkout"
+msgstr "Delivery data"
+
+#: templates/checkout.html:385
+msgid "Datos de entrega"
+msgstr "Delivery data"
+
+#: templates/checkout.html:386
+msgid ""
+"Confirmas tus datos, tu direccion y el metodo de pago. Si la direccion se "
+"puede resolver rapido o eliges una sugerencia, guardamos coordenadas para "
+"que el seguimiento cargue mas agil."
+msgstr ""
+"You confirm your information, your address and the payment method. If the "
+"address can be resolved quickly or you choose a suggestion, we save "
+"coordinates so that the tracking loads more quickly."
+
+#: templates/checkout.html:390
+msgid "Nombre"
+msgstr "Name"
+
+#: templates/checkout.html:391
+msgid "Ej: Laura"
+msgstr ""
+
+#: templates/checkout.html:394
+msgid "Apellidos"
+msgstr "Surnames"
+
+#: templates/checkout.html:395
+msgid "Ej: Indabur"
+msgstr ""
+
+#: templates/checkout.html:401 templates/perfil.html:743
+msgid "Telefono"
+msgstr "Phone"
+
+#: templates/checkout.html:402
+msgid "Ej: 3001234567"
+msgstr ""
+
+#: templates/checkout.html:409
+msgid "Direccion de entrega"
+msgstr "Delivery address"
+
+#: templates/checkout.html:412
+msgid "Sugerencias globales de direccion"
+msgstr ""
+
+#: templates/checkout.html:414
+msgid ""
+"Mientras escribes, te mostramos sugerencias globales para que escojas una "
+"mas precisa."
+msgstr ""
+"As you write, we show you global suggestions so you can choose a more "
+"precise one."
+
+#: templates/checkout.html:418
+msgid "Referencias para llegar (opcional)"
+msgstr "References to get there (optional)"
+
+#: templates/checkout.html:419
+msgid "Ej: Torre 2, apto 1313, porteria blanca, al lado de la farmacia"
+msgstr ""
+
+#: templates/checkout.html:423 templates/checkout.html:424
+msgid "Metodo de pago"
+msgstr "Payment method"
+
+#: templates/checkout.html:432
+msgid "Efectivo"
+msgstr "Cash"
+
+#: templates/checkout.html:442
+msgid "Con cuanto pagas?"
+msgstr "How much are you paying with?"
+
+#: templates/checkout.html:449
+msgid "Necesitas cambio?"
+msgstr "Do you need change?"
+
+#: templates/checkout.html:461
+msgid "Tarjeta"
+msgstr "Card"
+
+#: templates/checkout.html:462
+msgid "VISA · Mastercard"
+msgstr "VISA Mastercard"
+
+#: templates/checkout.html:472
+msgid "Nombre en la tarjeta"
+msgstr "name on card"
+
+#: templates/checkout.html:473
+msgid "Ej: LAURA INDABUR"
+msgstr ""
+
+#: templates/checkout.html:476
+msgid "Numero de tarjeta"
+msgstr "Card number"
+
+#: templates/checkout.html:477
+msgid "Ej: 4111 1111 1111 1111"
+msgstr ""
+
+#: templates/checkout.html:482
+msgid "Fecha de expiracion"
+msgstr "Expiration date"
+
+#: templates/checkout.html:487
+msgid "Ej: 123"
+msgstr ""
+
+#: templates/checkout.html:493
+msgid "Tipo de documento"
+msgstr "Document type"
+
+#: templates/checkout.html:495
+msgid "Cedula"
+msgstr "ID"
+
+#: templates/checkout.html:496
+msgid "Pasaporte"
+msgstr "Passport"
+
+#: templates/checkout.html:501
+msgid "Numero de documento"
+msgstr "Document number"
+
+#: templates/checkout.html:502
+msgid "Ej: 123456789"
+msgstr ""
+
+#: templates/checkout.html:513
+msgid "Pagos Seguros en Linea"
+msgstr "Secure Online Payments"
+
+#: templates/checkout.html:521
+msgid ""
+"PSE estara disponible mas adelante. Por ahora, selecciona efectivo o tarjeta."
+msgstr "PSE will be available later. For now, select cash or card."
+
+#: templates/checkout.html:527
+msgid "Confirmar y pagar"
+msgstr "Confirm and pay"
+
+#: templates/checkout.html:528
+msgid "Volver"
+msgstr "Return"
+
+#: templates/checkout.html:540
+msgid "Envio"
+msgstr "Shipment"
+
+#: templates/checkout.html:551
+msgid "Tu carrito esta vacio. Vuelve a"
+msgstr "Your cart is empty. Go back to"
+
+#: templates/checkout.html:558
+msgid "No se pudo completar la solicitud."
+msgstr "The request could not be completed."
+
+#: templates/checkout.html:559
+msgid "No se pudieron cargar las publicaciones para calcular el total."
+msgstr "Could not load listings to calculate the total."
+
+#: templates/checkout.html:561
+msgid "Ingresa el valor con el que pagaras."
+msgstr "Enter the value with which you will pay."
+
+#: templates/checkout.html:563
+msgid "PSE todavia no esta disponible. Selecciona efectivo o tarjeta."
+msgstr "PSE is not yet available. Select cash or card."
+
+#: templates/checkout.html:564
+msgid "Tu carrito esta vacio."
+msgstr "Your cart is empty."
+
+#: templates/checkout.html:565
+msgid "El telefono es requerido."
+msgstr "The telephone is required."
+
+#: templates/checkout.html:566
+msgid "La direccion de entrega es requerida."
+msgstr "The delivery address is required."
+
+#: templates/checkout.html:567
+msgid "Ingresa con cuanto pagaras."
+msgstr "Enter how much you will pay."
+
+#: templates/checkout.html:568
+msgid "Completa los datos de la tarjeta y el documento."
+msgstr "Complete the card and document details."
+
+#: templates/checkout.html:569
+msgid "No se pudo crear el pedido."
+msgstr "The order could not be created."
+
+#: templates/checkout.html:570
+msgid "No se pudo determinar el ID del pedido."
+msgstr "The order ID could not be determined."
+
+#: templates/checkout.html:571
+msgid "Pago registrado. Redirigiendo al seguimiento del pedido..."
+msgstr "Registered payment. Redirecting to order tracking..."
+
+#: templates/checkout.html:572
+msgid "No se pudo registrar el pago."
+msgstr "The payment could not be recorded."
+
+#: templates/index.html:7
+msgid "CUCU"
+msgstr "CUCKOO"
+
+#: templates/index.html:847 templates/login.html:8 templates/login.html:291
+#: templates/pedido.html:1528
+msgid "Iniciar sesion"
+msgstr "Sign in"
+
+#: templates/index.html:848 templates/login.html:294 templates/pedido.html:1529
+msgid "Registrate"
+msgstr "Sign up"
+
+#: templates/index.html:865
+msgid "cerca."
+msgstr "nearby."
+
+#: templates/index.html:865
+msgid "Vende fresco."
+msgstr "Sell fresh."
+
+#: templates/index.html:865
+msgid "Mueve tu barrio con CUCU."
+msgstr "Power your neighborhood with CUCU."
+
+#: templates/index.html:866
+msgid "Descubre comida casera hecha con amor o vende tus platos en minutos."
+msgstr "Discover homemade food made with love or sell your dishes in minutes."
+
+#: templates/index.html:871
+msgid "Explorar comida"
+msgstr "Explore food"
+
+#: templates/index.html:875
+msgid "Vender comida"
+msgstr "Sell food"
+
+#: templates/index.html:880
+msgid "Rapido"
+msgstr "Fast"
+
+#: templates/index.html:881
+msgid "Sin costos escondidos"
+msgstr "No hidden costs"
+
+#: templates/index.html:882
+msgid "En tu barrio"
+msgstr "in your neighborhood"
+
+#: templates/index.html:889
+msgid "Plato casero de CUCU"
+msgstr ""
+
+#: templates/index.html:900
+msgid "Tu pedido sigue en camino"
+msgstr "Your order is still on its way"
+
+#: templates/index.html:901
+msgid ""
+"Puedes volver al seguimiento en cualquier momento hasta que la entrega "
+"termine."
+msgstr "You can return to tracking at any time until the delivery is finished."
+
+#: templates/index.html:904
+msgid "Pedido activo"
+msgstr "Active order"
+
+#: templates/index.html:907
+msgid "Seguir mi pedido"
+msgstr "Track my order"
+
+#: templates/index.html:910
+msgid "Como funciona?"
+msgstr "How does it work?"
+
+#: templates/index.html:916
+msgid "Busca comida cerca"
+msgstr "Look for food nearby"
+
+#: templates/index.html:917
+msgid "Explora platos caseros en tu zona."
+msgstr "Explore homemade dishes in your area."
+
+#: templates/index.html:924
+msgid "Compra o vende"
+msgstr "Buy or sell"
+
+#: templates/index.html:925
+msgid "Elige, paga y recibe. O publica tus platos."
+msgstr "Choose, pay and receive. Or post your dishes."
+
+#: templates/index.html:932
+msgid "Listo en minutos"
+msgstr "Ready in minutes"
+
+#: templates/index.html:933
+msgid "Conecta con tu comunidad de forma simple."
+msgstr "Connect with your community in a simple way."
+
+#: templates/index.html:946
+msgid "Quiero comprar"
+msgstr "I want to buy"
+
+#: templates/index.html:948
+msgid "Explora platos por ubicacion"
+msgstr "Explore dishes by location"
+
+#: templates/index.html:949
+msgid "Filtra por precio y categoria"
+msgstr "Filter by price and category"
+
+#: templates/index.html:950
+msgid "Compra de forma segura"
+msgstr "Buy safely"
+
+#: templates/index.html:953
+msgid "Explorar ahora"
+msgstr "Explore now"
+
+#: templates/index.html:963
+msgid "Tacos caseros"
+msgstr "Homemade tacos"
+
+#: templates/index.html:968 templates/publicar.html:723
+msgid "Bowl saludable"
+msgstr "Healthy bowl"
+
+#: templates/index.html:981
+msgid "Quiero vender"
+msgstr "I want to sell"
+
+#: templates/index.html:983
+msgid "Publica tus platos en minutos"
+msgstr "Publish your dishes in minutes"
+
+#: templates/index.html:984
+msgid "Gestiona pedidos facilmente"
+msgstr "Manage orders easily"
+
+#: templates/index.html:985
+msgid "Llega a mas clientes del barrio"
+msgstr "Reach more customers in the neighborhood"
+
+#: templates/index.html:988
+msgid "Empieza a vender"
+msgstr "Start selling"
+
+#: templates/index.html:993
+msgid "Preparacion de comida casera para vender en CUCU"
+msgstr ""
+
+#: templates/index.html:1001
+msgid "Unete a CUCU y mueve tu barrio"
+msgstr "Join CUCU and energize your neighborhood"
+
+#: templates/index.html:1002
+msgid "Registrate gratis y empieza a comprar o vender hoy mismo."
+msgstr "Register for free and start buying or selling today."
+
+#: templates/index.html:1004
+msgid "Crear cuenta gratis"
+msgstr "Create a free account"
+
+#: templates/index.html:1018 templates/pedido.html:1672
+#: templates/publicar.html:807
+msgid "Hecho para tu barrio, hecho con amor."
+msgstr "Made for your neighborhood, made with love."
+
+#: templates/index.html:1022 templates/pedido.html:1676
+#: templates/publicar.html:811
+msgid "Explorar"
+msgstr "Explore"
+
+#: templates/index.html:1024 templates/pedido.html:1677
+#: templates/publicar.html:812
+msgid "Menu"
+msgstr "Menu"
+
+#: templates/index.html:1025 templates/pedido.html:1678
+#: templates/pedido.html:1683 templates/publicar.html:813
+#: templates/publicar.html:818
+msgid "Como funciona"
+msgstr "How it works"
+
+#: templates/index.html:1026 templates/pedido.html:1684
+msgid "Comunidad"
+msgstr "Community"
+
+#: templates/index.html:1033 templates/publicar.html:824
+msgid "Publicar plato"
+msgstr "Publish dish"
+
+#: templates/index.html:1034 templates/publicar.html:819
+msgid "Mis ventas"
+msgstr "My sales"
+
+#: templates/index.html:1035 templates/login.html:304
+#: templates/registro.html:308
+msgid "Soporte"
+msgstr "Support"
+
+#: templates/index.html:1040 templates/pedido.html:1688
+#: templates/publicar.html:823
+msgid "Legal"
+msgstr "Legal"
+
+#: templates/index.html:1042 templates/login.html:300
+#: templates/pedido.html:1689 templates/registro.html:304
+msgid "Terminos"
+msgstr "Terms"
+
+#: templates/index.html:1043 templates/login.html:302
+#: templates/pedido.html:1690 templates/publicar.html:825
+#: templates/registro.html:306
+msgid "Privacidad"
+msgstr "Privacy"
+
+#: templates/index.html:1044 templates/publicar.html:826
+msgid "Contacto"
+msgstr "Contact"
+
+#: templates/index.html:1049 templates/pedido.html:1695
+#: templates/publicar.html:830
+msgid "Siguenos"
+msgstr "Follow us"
+
+#: templates/index.html:1067 templates/pedido.html:1704
+#: templates/publicar.html:839
 msgid "© 2025 CUCU. Todos los derechos reservados."
 msgstr "© 2025 CUCU. All rights reserved."
 
-msgid "Activa"
-msgstr "Active"
+#: templates/index.html:1073
+msgid "Retoma el seguimiento de tu pedido"
+msgstr "Resume tracking your order"
 
-msgid "Aqui puedes hacer cambios basicos del plato sin mostrar demasiada informacion al mismo tiempo."
-msgstr "Here you can make basic dish updates without showing too much information at once."
+#: templates/index.html:1074
+msgid "ETA actual"
+msgstr "Current ETA"
 
-msgid "Ej: tortilla, carne, cebolla, cilantro"
-msgstr "E.g.: tortilla, beef, onion, cilantro"
+#: templates/index.html:1075
+msgid "sin perder el recorrido actual."
+msgstr "without losing the current route."
 
-msgid "Eliminar publicacion"
-msgstr "Delete listing"
+#: templates/index.html:1076 templates/perfil.html:741
+#: templates/seguimiento.html:5 templates/seguimiento.html:274
+msgid "Pedido"
+msgstr "Order"
 
-msgid "Guardar cambios"
-msgstr "Save changes"
+#: templates/index.html:1077
+msgid "activo"
+msgstr "active"
 
-msgid "Informacion del menu"
-msgstr "Menu information"
+#: templates/index.html:1078
+msgid "ETA"
+msgstr "ETA"
 
-msgid "Ingredientes"
-msgstr "Ingredients"
+#: templates/login.html:267 templates/registro.html:298
+msgid "Inicia sesion"
+msgstr "Sign in"
 
-msgid "Maximo por venta"
-msgstr "Max per sale"
+#: templates/login.html:268
+msgid "Bienvenido a CUCU"
+msgstr "Welcome to CUCU"
 
-msgid "No disponible"
-msgstr "Unavailable"
+#: templates/login.html:269
+msgid "Ilustracion de inicio de sesion"
+msgstr "Sign-in illustration"
 
-msgid "Pausada"
-msgstr "Paused"
+#: templates/login.html:276 templates/recuperar_password.html:67
+#: templates/registro.html:278
+msgid "Correo electronico"
+msgstr "Email"
 
-msgid "Resumen rapido del plato. Haz click si quieres ver mas opciones."
-msgstr "Quick dish summary. Click to view more options."
+#: templates/login.html:280 templates/registro.html:282
+msgid "Contrasena"
+msgstr "Password"
 
-msgid "Titulo del plato"
-msgstr "Dish title"
+#: templates/login.html:282 templates/registro.html:283
+#: templates/restablecer_password.html:60
+msgid "Mostrar u ocultar contrasena"
+msgstr "Show or hide password"
 
+#: templates/login.html:285
+msgid "Olvidaste tu contrasena?"
+msgstr "Forgot your password?"
+
+#: templates/login.html:289
+msgid "Recuerdame"
+msgstr "Remember me"
+
+#: templates/login.html:294
+msgid "Eres nuevo en CUCU?"
+msgstr "New to CUCU?"
+
+#: templates/login.html:306 templates/registro.html:310
+msgid "Todos los derechos reservados."
+msgstr "All rights reserved."
+
+#: templates/notificaciones.html:4
+msgid "Notificaciones"
+msgstr "Notifications"
+
+#: templates/notificaciones.html:5
+msgid "Actividad"
+msgstr "Activity"
+
+#: templates/notificaciones.html:6
+msgid "Tus"
+msgstr "Your"
+
+#: templates/notificaciones.html:6
+msgid "notificaciones"
+msgstr "notifications"
+
+#: templates/notificaciones.html:7
+msgid ""
+"Aqui convergen las senales del sistema: nuevos pedidos, confirmaciones y "
+"eventos importantes dentro del flujo de CUCU."
+msgstr ""
+"Here the system signals converge: new orders, confirmations and important "
+"events within the CUCU flow."
+
+#: templates/notificaciones.html:13
+msgid "Pedidos"
+msgstr "Orders"
+
+#: templates/notificaciones.html:13
+msgid "Recibe avisos cuando alguien compra uno de tus platos."
+msgstr "Receive notifications when someone buys one of your dishes."
+
+#: templates/notificaciones.html:14
+msgid "Lectura"
+msgstr "Reading"
+
+#: templates/notificaciones.html:14
+msgid "Marca rapidamente lo que ya revisaste sin salir del flujo."
+msgstr "Quickly mark what you have already reviewed without leaving the flow."
+
+#: templates/notificaciones.html:15
+msgid "Actualiza"
+msgstr "Update"
+
+#: templates/notificaciones.html:15
+msgid "Recarga la lista cuando quieras revisar actividad reciente."
+msgstr "Reload the list when you want to review recent activity."
+
+#: templates/notificaciones.html:17
+msgid "Centro de notificaciones"
+msgstr "Notification Center"
+
+#: templates/notificaciones.html:18
+msgid ""
+"La actividad del producto aparece aqui con el mismo lenguaje visual del "
+"resto de la aplicacion."
+msgstr ""
+"The product activity appears here with the same visual language as the rest "
+"of the application."
+
+#: templates/notificaciones.html:21 templates/notificaciones.html:35
+msgid "Cargando..."
+msgstr "Charging..."
+
+#: templates/notificaciones.html:22
+msgid "Recargar"
+msgstr "Recharge"
+
+#: templates/notificaciones.html:26
+msgid "Cargando notificaciones..."
+msgstr "Loading notifications..."
+
+#: templates/notificaciones.html:32
+msgid "Leida"
+msgstr "Read"
+
+#: templates/notificaciones.html:33
+msgid "Marcar leida"
+msgstr "Mark read"
+
+#: templates/notificaciones.html:34
+msgid "No se pudo marcar como leida."
+msgstr "Could not mark as read."
+
+#: templates/notificaciones.html:36
+msgid "Error al cargar notificaciones"
+msgstr "Error loading notifications"
+
+#: templates/notificaciones.html:37
+msgid "Sin notificaciones"
+msgstr "No notifications"
+
+#: templates/notificaciones.html:38
+msgid "total"
+msgstr "total"
+
+#: templates/notificaciones.html:39
+msgid "sin leer"
+msgstr "unread"
+
+#: templates/notificaciones.html:40
+msgid "No tienes notificaciones por el momento."
+msgstr "You have no notifications at the moment."
+
+#: templates/pago.html:4 templates/pago.html:5
+msgid "Pago"
+msgstr "Pay"
+
+#: templates/pago.html:6
+msgid "Confirma el"
+msgstr "Confirm the"
+
+#: templates/pago.html:6
+msgid "pago"
+msgstr "pay"
+
+#: templates/pago.html:7
+msgid ""
+"Esta etapa recoge el total del pedido y lo presenta dentro del mismo sistema "
+"visual que ya ve el usuario en comprar y vender."
+msgstr ""
+"This stage collects the total of the order and presents it within the same "
+"visual system that the user already sees when buying and selling."
+
+#: templates/pago.html:13
+msgid "Total claro"
+msgstr "Totally clear"
+
+#: templates/pago.html:13
+msgid "El monto se toma automaticamente del pedido actual."
+msgstr "The amount is automatically taken from the current order."
+
+#: templates/pago.html:14
+msgid "Metodo simple"
+msgstr "Simple method"
+
+#: templates/pago.html:14
+msgid "La demo acepta pago en efectivo o tarjeta."
+msgstr "The demo accepts payment in cash or card."
+
+#: templates/pago.html:15
+msgid "Sigue el flujo"
+msgstr "Follow the flow"
+
+#: templates/pago.html:15
+msgid "Despues puedes volver al inicio o crear otro pedido."
+msgstr "Afterwards you can return to the beginning or create another order."
+
+#: templates/pago.html:17 templates/pago.html:36
+msgid "Registrar pago"
+msgstr "Register payment"
+
+#: templates/pago.html:18
+msgid ""
+"El pago toma automaticamente el pedido y el total del carrito para que el "
+"flujo no se sienta fragmentado."
+msgstr ""
+"Checkout automatically takes the order and cart total so the flow feels "
+"seamless."
+
+#: templates/pago.html:24
+msgid "Se asigna automaticamente"
+msgstr ""
+
+#: templates/pago.html:27
+msgid "Monto"
+msgstr "Amount"
+
+#: templates/pago.html:28
+msgid "Ej: 12.50"
+msgstr ""
+
+#: templates/pago.html:32 templates/seguimiento.html:278
+msgid "Metodo"
+msgstr "Method"
+
+#: templates/pago.html:33
+#, fuzzy
+#| msgid "Numero de tarjeta"
+msgid "efectivo | tarjeta"
+msgstr "Card number"
+
+#: templates/pago.html:41
+msgid "Subtotal:"
+msgstr "Subtotal:"
+
+#: templates/pago.html:42
+msgid "Delivery:"
+msgstr "Delivery:"
+
+#: templates/pago.html:43
+msgid "Total del pedido:"
+msgstr "Order total:"
+
+#: templates/pago.html:44
+msgid "Items:"
+msgstr "Items:"
+
+#: templates/pago.html:49
+msgid "El Pedido ID y el monto se toman del carrito automaticamente."
+msgstr "The Order ID and amount are taken from the cart automatically."
+
+#: templates/pago.html:50
+msgid "Metodos soportados (demo):"
+msgstr "Supported methods (demo):"
+
+#: templates/pago.html:50
+msgid "efectivo"
+msgstr "cash"
+
+#: templates/pago.html:50
+msgid "o"
+msgstr "either"
+
+#: templates/pago.html:50
+msgid "tarjeta"
+msgstr "card"
+
+#: templates/pago.html:55
+msgid "Crear otro pedido"
+msgstr "Create another order"
+
+#: templates/pago.html:63 templates/pedido.html:1719 templates/pedido.html:1814
+#: templates/perfil.html:729
+msgid "Publicacion"
+msgstr "Publication"
+
+#: templates/pago.html:64
+msgid "Sin items"
+msgstr "No items"
+
+#: templates/pago.html:66
+msgid "No se pudo determinar el monto del pedido. Revisa el Pedido ID."
+msgstr "The order amount could not be determined. Review the Order ID."
+
+#: templates/pedido.html:1550
+msgid "Encuentra comida cerca"
+msgstr "Find food nearby"
+
+#: templates/pedido.html:1551
+msgid ""
+"Explora los platillos caseros disponibles en tu barrio y ordena tus "
+"favoritos."
+msgstr ""
+"Explore the homemade dishes available in your neighborhood and order your "
+"favorites."
+
+#: templates/pedido.html:1556
+#, fuzzy
+#| msgid "Mis publicaciones"
+msgid "Buscar publicaciones"
+msgstr "My listings"
+
+#: templates/pedido.html:1558
+#, fuzzy
+#| msgid "Filtra por lo que mas te antoja hoy."
+msgid "Que se te antoja hoy?"
+msgstr "Filter by what you crave most today."
+
+#: templates/pedido.html:1564
+msgid ""
+"Usa tu ubicacion o escribe tu direccion para cargar platos cercanos dentro "
+"de 5 km."
+msgstr ""
+"Use your location or type your address to load nearby dishes within 5 km."
+
+#: templates/pedido.html:1566
+msgid "Usar ubicacion"
+msgstr "Use location"
+
+#: templates/pedido.html:1567 templates/pedido.html:1571
+msgid "Escribir direccion"
+msgstr "Write address"
+
+#: templates/pedido.html:1570
+#, fuzzy
+#| msgid "Escribir direccion"
+msgid "Buscar por direccion"
+msgstr "Write address"
+
+#: templates/pedido.html:1573
+msgid "Ej: Cra 43A #6 Sur-15, Medellin"
+msgstr ""
+
+#: templates/pedido.html:1575 templates/publicar.html:766
+#, fuzzy
+#| msgid "Fecha de expiracion"
+msgid "Sugerencias de direccion"
+msgstr "Expiration date"
+
+#: templates/pedido.html:1583
+msgid "Filtrar por"
+msgstr "Filter by"
+
+#: templates/pedido.html:1585 templates/pedido.html:1633
+msgid "Todos"
+msgstr "All"
+
+#: templates/pedido.html:1586 templates/publicar.html:747
+msgid "Mexicana"
+msgstr "Mexican"
+
+#: templates/pedido.html:1587 templates/publicar.html:748
+msgid "Italiana"
+msgstr "Italian"
+
+#: templates/pedido.html:1588 templates/publicar.html:746
+msgid "Saludable"
+msgstr "Healthy"
+
+#: templates/pedido.html:1589 templates/publicar.html:749
+msgid "Postres"
+msgstr "Desserts"
+
+#: templates/pedido.html:1594 templates/perfil.html:752
+#: templates/publicar.html:726
+msgid "Precio"
+msgstr "Price"
+
+#: templates/pedido.html:1599
+msgid "Minimo"
+msgstr "Minimum"
+
+#: templates/pedido.html:1603 templates/pedido.html:1825
+msgid "Maximo"
+msgstr "Maximum"
+
+#: templates/pedido.html:1607
+msgid "Rango de precio"
+msgstr ""
+
+#: templates/pedido.html:1614
+msgid "Rango actual"
+msgstr "Current range"
+
+#: templates/pedido.html:1619 templates/seguimiento.html:276
+msgid "Distancia"
+msgstr "Distance"
+
+#: templates/pedido.html:1626
+msgid "Radio maximo"
+msgstr "maximum radius"
+
+#: templates/pedido.html:1631
+msgid "Tiempo de entrega"
+msgstr "Delivery time"
+
+#: templates/pedido.html:1642 templates/publicar.html:777
+#: templates/publicar.html:781
+msgid "Disponible ahora"
+msgstr "Available now"
+
+#: templates/pedido.html:1645
+msgid "Restablecer filtros"
+msgstr "Reset filters"
+
+#: templates/pedido.html:1651 templates/pedido.html:1840
+msgid "Ajusta tus filtros o tu ubicacion."
+msgstr "Adjust your filters or your location."
+
+#: templates/pedido.html:1655 templates/pedido.html:1839
+msgid ""
+"Usa tu ubicacion o escribe una direccion para empezar a ver platos cercanos."
+msgstr "Use your location or type an address to start seeing nearby dishes."
+
+#: templates/pedido.html:1659
+msgid "0 resultados"
+msgstr "0 results"
+
+#: templates/pedido.html:1691
+msgid "Contrato"
+msgstr "Contract"
+
+#: templates/pedido.html:1722
+#, fuzzy
+#| msgid "Ocultar detalle"
+msgid "Cerrar detalle"
+msgstr "Hide detail"
+
+#: templates/pedido.html:1733 templates/publicar.html:756
+msgid "Ingredientes incluidos"
+msgstr "Ingredients included"
+
+#: templates/pedido.html:1738 templates/publicar.html:772
+msgid "Preparacion"
+msgstr "Preparation"
+
+#: templates/pedido.html:1760
+msgid "Restar"
+msgstr ""
+
+#: templates/pedido.html:1762
+msgid "Sumar"
+msgstr ""
+
+#: templates/pedido.html:1764
+msgid "0 disponibles"
+msgstr "0 available"
+
+#: templates/pedido.html:1767 templates/pedido.html:1808
+msgid "Agregar al carrito"
+msgstr "Add to cart"
+
+#: templates/pedido.html:1768 templates/pedido.html:1812
+msgid "Guardar"
+msgstr "Keep"
+
+#: templates/pedido.html:1773
+msgid "Pago seguro"
+msgstr "Secure payment"
+
+#: templates/pedido.html:1773
+msgid "Garantia de satisfaccion en todas tus compras."
+msgstr "Satisfaction guarantee on all your purchases."
+
+#: templates/pedido.html:1779
+msgid "Entrega estimada:"
+msgstr "Estimated delivery:"
+
+#: templates/pedido.html:1784
+msgid "Limite por pedido:"
+msgstr "Limit per order:"
+
+#: templates/pedido.html:1801
+msgid "Sin stock disponible"
+msgstr "No stock available"
+
+#: templates/pedido.html:1802
+msgid "Stock"
+msgstr "stock"
+
+#: templates/pedido.html:1803
+msgid "Limite actual"
+msgstr "Current limit"
+
+#: templates/pedido.html:1804
+msgid "Limite por pedido"
+msgstr "Limit per order"
+
+#: templates/pedido.html:1805
+msgid "disponibles"
+msgstr "available"
+
+#: templates/pedido.html:1806
+msgid "Agotado por ahora"
+msgstr "Out of stock for now"
+
+#: templates/pedido.html:1807
+msgid "Agregado"
+msgstr "Aggregate"
+
+#: templates/pedido.html:1809
+msgid "Agotado"
+msgstr "Exhausted"
+
+#: templates/pedido.html:1810 templates/perfil.html:703
+#: templates/perfil.html:746
+msgid "Disponible"
+msgstr "Available"
+
+#: templates/pedido.html:1811
+msgid "Guardado"
+msgstr "Saved"
+
+#: templates/pedido.html:1813
+msgid "Agregar"
+msgstr "Add"
+
+#: templates/pedido.html:1815
+msgid "A"
+msgstr "TO"
+
+#: templates/pedido.html:1816
+msgid "km de ti por"
+msgstr "km from you"
+
+#: templates/pedido.html:1817
+msgid "Este navegador no soporta geolocalizacion. Usa la opcion de direccion."
+msgstr "This browser does not support geolocation. Use the direction option."
+
+#: templates/pedido.html:1818 templates/publicar.html:863
+msgid "Obteniendo tu ubicacion actual..."
+msgstr "Getting your current location..."
+
+#: templates/pedido.html:1819
+msgid "Ubicacion lista. Mostrando platos dentro de"
+msgstr "Location ready. Showing dishes within"
+
+#: templates/pedido.html:1820
+msgid "km."
+msgstr "km."
+
+#: templates/pedido.html:1821
+msgid "No se pudo obtener tu ubicacion:"
+msgstr "Could not get your location:"
+
+#: templates/pedido.html:1822
+msgid "Usa la direccion manual."
+msgstr "Use the manual address."
+
+#: templates/pedido.html:1823
+msgid "Preparacion casera disponible por tiempo limitado."
+msgstr "Homemade preparation available for a limited time."
+
+#: templates/pedido.html:1824
+msgid "resenas"
+msgstr "reviews"
+
+#: templates/pedido.html:1827
+msgid "No hay coincidencias con tu busqueda actual."
+msgstr "No matches found for your current search."
+
+#: templates/pedido.html:1828
+msgid "Mostrando platos cerca de"
+msgstr "Showing dishes near"
+
+#: templates/pedido.html:1829
+msgid "Mostrando platos alrededor de tu ubicacion actual."
+msgstr "Showing dishes around your current location."
+
+#: templates/pedido.html:1830
+msgid "Filtra por lo que mas te antoja hoy."
+msgstr "Filter by what you crave most today."
+
+#: templates/pedido.html:1831
+msgid "Sin descripcion disponible."
+msgstr "No description available."
+
+#: templates/pedido.html:1832
+msgid "Entrega estimada"
+msgstr "Estimated delivery"
+
+#: templates/pedido.html:1834
+msgid "Restar cantidad"
+msgstr "Subtract quantity"
+
+#: templates/pedido.html:1835
+msgid "Sumar cantidad"
+msgstr "Add quantity"
+
+#: templates/pedido.html:1837
+msgid "Este producto no tiene stock disponible para agregarlo al carrito."
+msgstr "This product does not have stock available to add to cart."
+
+#: templates/pedido.html:1838
+msgid "Producto agregado al carrito."
+msgstr "Product added to cart."
+
+#: templates/pedido.html:1841
+msgid ""
+"No encontramos platos con esos filtros. Prueba otro tipo de comida o amplia "
+"el rango."
+msgstr ""
+"We could not find dishes with those filters. Try another food type or expand "
+"the range."
+
+#: templates/perfil.html:4
+msgid "Mi perfil"
+msgstr "my profile"
+
+#: templates/perfil.html:6
+msgid "perfil"
+msgstr "profile"
+
+#: templates/perfil.html:7
+msgid ""
+"Consulta tu historial de pedidos, administra tus publicaciones y revisa el "
+"saldo de tus ventas desde un solo lugar."
+msgstr ""
+"Check your order history, manage your listings, and check your sales balance "
+"from one place."
+
+#: templates/perfil.html:644
+msgid "Compras"
+msgstr "Shopping"
+
+#: templates/perfil.html:645 templates/perfil.html:750
+msgid "Ventas"
+msgstr "Sales"
+
+#: templates/perfil.html:646
+msgid "Platos"
+msgstr "Dishes"
+
+#: templates/perfil.html:654
+msgid "Cerrar sesion"
+msgstr "Log out"
+
+#: templates/perfil.html:658
+#, fuzzy
+#| msgid "Direccion de entrega"
+msgid "Secciones del perfil"
+msgstr "Delivery address"
+
+#: templates/perfil.html:659
+msgid "Mis pedidos"
+msgstr "My orders"
+
+#: templates/perfil.html:660 templates/perfil.html:688
+msgid "Mis publicaciones"
+msgstr "My listings"
+
+#: templates/perfil.html:668
+msgid "Historial de pedidos"
+msgstr "Order history"
+
+#: templates/perfil.html:669
+msgid ""
+"Haz click en un pedido para ver el detalle completo, su fecha, estado y "
+"valor total."
+msgstr ""
+"Click on an order to see the complete details, its date, status and total "
+"value."
+
+#: templates/perfil.html:679 templates/perfil.html:725
+#: templates/seguimiento.html:270
+msgid "Detalle del pedido"
+msgstr "Order detail"
+
+#: templates/perfil.html:680
+msgid ""
+"Selecciona un pedido del historial para ver sus productos, fecha, telefono y "
+"valor a pagar."
+msgstr ""
+"Select an order from the history to see its products, date, telephone number "
+"and amount to pay."
+
+#: templates/perfil.html:689
+msgid ""
+"Revisa tus platos publicados desde una vista simple. Si necesitas cambiar "
+"algo, abre el detalle."
+msgstr ""
+"Review your listed dishes in a simple view. If you need to change anything, "
+"open the details."
+
+#: templates/perfil.html:696
+msgid "Saldo de ventas"
+msgstr "Sales balance"
+
+#: templates/perfil.html:697
+msgid "Balance acumulado a partir de las ventas registradas de tus platos."
+msgstr "Accumulated balance from the registered sales of your dishes."
+
+#: templates/perfil.html:701
+msgid "Unidades vendidas"
+msgstr "Units sold"
+
+#: templates/perfil.html:702
+msgid "Publicaciones"
+msgstr "Publications"
+
+#: templates/perfil.html:703 templates/perfil.html:755
+msgid "Estado"
+msgstr "State"
+
+#: templates/perfil.html:705
+msgid "Transferir ganancias"
+msgstr "Transfer earnings"
+
+#: templates/perfil.html:706
+msgid "La transferencia se deja lista como flujo demo para esta entrega."
+msgstr "The transfer is left ready as a demo flow for this delivery."
+
+#: templates/perfil.html:721
+msgid "Miembro desde"
+msgstr "Member since"
+
+#: templates/perfil.html:722
+msgid "Usuario CUCU"
+msgstr "CUCU user"
+
+#: templates/perfil.html:723
+msgid "ETA pendiente"
+msgstr "pending ETA"
+
+#: templates/perfil.html:724
+msgid "Pendiente"
+msgstr "Earring"
+
+#: templates/perfil.html:726
+msgid "Todavia no tienes pedidos registrados."
+msgstr "You still have no registered orders."
+
+#: templates/perfil.html:727
+msgid "Cuando hagas tu primer pedido, aqui veras toda la informacion."
+msgstr ""
+"When you place your first order, you will see all the information here."
+
+#: templates/perfil.html:728
+msgid "productos"
+msgstr "products"
+
+#: templates/perfil.html:730
+msgid "Productos del pedido"
+msgstr "Order products"
+
+#: templates/perfil.html:731
+msgid "Ver seguimiento"
+msgstr "View tracking"
+
+#: templates/perfil.html:732
+msgid "Este pedido no tiene items visibles."
+msgstr "This order has no visible items."
+
+#: templates/perfil.html:733
+msgid ""
+"Todavia no has publicado platos. Cuando publiques uno, aqui podras editar su "
+"stock, ingredientes, valor y la informacion del menu."
+msgstr ""
+"You have not published dishes yet. When you publish one, you can edit its "
+"stock, ingredients, value, and menu information here."
+
+#: templates/perfil.html:734
+msgid "No se pudo guardar la publicacion."
+msgstr "Could not save the listing."
+
+#: templates/perfil.html:735
+msgid "Publicacion actualizada correctamente."
+msgstr "Post updated correctly."
+
+#: templates/perfil.html:736
+msgid "Quieres eliminar esta publicacion por completo?"
+msgstr "Do you want to delete this post completely?"
+
+#: templates/perfil.html:737
+msgid "No se pudo eliminar la publicacion."
+msgstr "Could not delete the listing."
+
+#: templates/perfil.html:738
+msgid "Publicacion eliminada correctamente."
+msgstr "Post successfully deleted."
+
+#: templates/perfil.html:739
+msgid "Ver detalle completo"
+msgstr "View full details"
+
+#: templates/perfil.html:740
+msgid "Ocultar detalle"
+msgstr "Hide detail"
+
+#: templates/perfil.html:742
 msgid "Total a pagar"
 msgstr "Total due"
 
+#: templates/perfil.html:744
 msgid "Ubicacion"
 msgstr "Location"
 
+#: templates/perfil.html:745
 msgid "Ubicacion general"
 msgstr "General location"
 
+#: templates/perfil.html:747
+msgid "No disponible"
+msgstr "Unavailable"
+
+#: templates/perfil.html:748
+msgid "Resumen rapido del plato. Haz click si quieres ver mas opciones."
+msgstr "Quick dish summary. Click to view more options."
+
+#: templates/perfil.html:749
+msgid ""
+"Aqui puedes hacer cambios basicos del plato sin mostrar demasiada "
+"informacion al mismo tiempo."
+msgstr ""
+"Here you can make basic dish updates without showing too much information at "
+"once."
+
+#: templates/perfil.html:751
+msgid "Titulo del plato"
+msgstr "Dish title"
+
+#: templates/perfil.html:753 templates/publicar.html:733
+msgid "Stock disponible"
+msgstr "Stock available"
+
+#: templates/perfil.html:754
+msgid "Maximo por venta"
+msgstr "Max per sale"
+
+#: templates/perfil.html:756
+msgid "Activa"
+msgstr "Active"
+
+#: templates/perfil.html:757
+msgid "Pausada"
+msgstr "Paused"
+
+#: templates/perfil.html:758
+msgid "Ingredientes"
+msgstr "Ingredients"
+
+#: templates/perfil.html:759
+msgid "Ej: tortilla, carne, cebolla, cilantro"
+msgstr "E.g.: tortilla, beef, onion, cilantro"
+
+#: templates/perfil.html:760
+msgid "Informacion del menu"
+msgstr "Menu information"
+
+#: templates/perfil.html:761
+msgid "Eliminar publicacion"
+msgstr "Delete listing"
+
+#: templates/perfil.html:762
+msgid "Guardar cambios"
+msgstr "Save changes"
+
+#: templates/perfil.html:763
+msgid ""
+"Transferencia iniciada en modo demo. En una integracion real aqui "
+"conectariamos la pasarela o payout."
+msgstr ""
+"Transfer started in demo mode. In a real integration, this would connect to "
+"a payment gateway or payout flow."
+
+#: templates/perfil.html:764
+msgid "No se pudo cargar el perfil."
+msgstr "The profile could not be loaded."
+
+#: templates/publicar.html:7 templates/publicar.html:673
+msgid "Publicar un platillo"
+msgstr "Publish a dish"
+
+#: templates/publicar.html:674
+msgid ""
+"Esta es la primera vista donde se fija la ubicacion real del producto. Desde "
+"aqui el sistema podra comparar la posicion del vendedor con la del comprador "
+"y mostrar distancias reales dentro del flujo de CUCU."
+msgstr ""
+"This is the first view where the real location of the product is set. From "
+"here the system will be able to compare the position of the seller with that "
+"of the buyer and show real distances within the CUCU flow."
+
+#: templates/publicar.html:680
+msgid "Como ubicar tu punto de venta"
+msgstr "How to set your pickup point"
+
+#: templates/publicar.html:681
+msgid ""
+"Escribe una direccion (o un lugar) como EAFIT, pulsa Ubicar direccion, o "
+"mueve el marcador directamente sobre el mapa para guardar una ubicacion mas "
+"exacta."
+msgstr ""
+"Type an address (or place) such as EAFIT, press Locate Address, or move the "
+"marker directly on the map to save a more exact location."
+
+#: templates/publicar.html:685
+msgid "Ubicacion del punto de entrega"
+msgstr "Delivery point location"
+
+#: templates/publicar.html:687
+msgid "Mapa para ubicar el producto"
+msgstr ""
+
+#: templates/publicar.html:689
+msgid ""
+"Puedes escribir, hacer clic en el mapa, arrastrar el pin o usar tu ubicacion "
+"actual."
+msgstr ""
+"You can type, click on the map, drag the pin or use your current location."
+
+#: templates/publicar.html:691
+msgid "Ubicar direccion"
+msgstr "Locate address"
+
+#: templates/publicar.html:692
+msgid "Usar mi ubicacion"
+msgstr "Use my location"
+
+#: templates/publicar.html:699
+msgid "Imagen del platillo"
+msgstr "Image of the saucer"
+
+#: templates/publicar.html:701
+msgid "+ Anadir imagen"
+msgstr "+ Add image"
+
+#: templates/publicar.html:702
+msgid "Quitar imagen"
+msgstr "Remove image"
+
+#: templates/publicar.html:709
+msgid "Aun no has anadido imagen"
+msgstr "You have not added an image yet."
+
+#: templates/publicar.html:710
+msgid "Cuando subas una foto, aqui aparecera la vista previa del platillo."
+msgstr "When you upload a photo, the preview of the dish will appear here."
+
+#: templates/publicar.html:715
+#, fuzzy
+#| msgid "Imagen del platillo"
+msgid "Vista previa del platillo"
+msgstr "Image of the saucer"
+
+#: templates/publicar.html:722
+msgid "Nombre del platillo"
+msgstr "Name of the dish"
+
+#: templates/publicar.html:737
+msgid "Maximo permitido por venta"
+msgstr "Maximum allowed per sale"
+
+#: templates/publicar.html:743
+msgid "Tipo de comida"
+msgstr "Type of food"
+
+#: templates/publicar.html:750
+msgid "Otra"
+msgstr "Other"
+
+#: templates/publicar.html:758
+msgid "+ Anadir ingrediente"
+msgstr "+ Add ingredient"
+
+#: templates/publicar.html:763
+msgid "Direccion"
+msgstr "Address"
+
+#: templates/publicar.html:773
+msgid ""
+"Describe porciones, ingredientes, presentacion y detalles importantes del "
+"pedido."
+msgstr ""
+
+#: templates/publicar.html:790
+msgid "Cancelar"
+msgstr "Cancel"
+
+#: templates/publicar.html:791
+msgid "Publicar platillo"
+msgstr "Publish dish"
+
+#: templates/publicar.html:794
+msgid ""
+"Debes cumplir con nuestras normas comunitarias y ubicar correctamente tu "
+"punto de venta."
+msgstr ""
+"You must comply with our community standards and correctly locate your point "
+"of sale."
+
+#: templates/publicar.html:795
+msgid ""
+"El mapa guardara la ubicacion exacta del producto para que CUCU calcule "
+"distancias reales con respecto al comprador."
+msgstr ""
+"The map will save the exact location of the product so that CUCU can "
+"calculate real distances from the buyer."
+
+#: templates/publicar.html:852
+msgid "Eliminar ingrediente"
+msgstr "Delete ingredient"
+
+#: templates/publicar.html:853
+msgid "Anade un ingrediente"
+msgstr "Add an ingredient"
+
+#: templates/publicar.html:854
+msgid "No se pudieron cargar sugerencias"
+msgstr "Suggestions could not be loaded"
+
+#: templates/publicar.html:855
+msgid "No se pudo resolver la direccion"
+msgstr "Could not resolve address"
+
+#: templates/publicar.html:856
+msgid "No se pudo ubicar la direccion"
+msgstr "The address could not be located"
+
+#: templates/publicar.html:857
+msgid "Direccion ubicada en el mapa."
+msgstr "Address located on the map."
+
+#: templates/publicar.html:858
+msgid "Ubicacion fijada en"
+msgstr "Location set to"
+
+#: templates/publicar.html:859
+msgid "Ajusta el pin o escribe una direccion exacta."
+msgstr "Adjust the pin or write an exact address."
+
+#: templates/publicar.html:860
+msgid "Escribe primero una direccion para ubicarla en el mapa."
+msgstr "First write an address to locate it on the map."
+
+#: templates/publicar.html:861
+msgid "Buscando la direccion en el mapa..."
+msgstr "Looking for the address on the map..."
+
+#: templates/publicar.html:862
+msgid "Este navegador no soporta geolocalizacion."
+msgstr "This browser does not support geolocation."
+
+#: templates/publicar.html:864
+msgid "Ubicacion actual fijada en el mapa."
+msgstr "Current location set on the map."
+
+#: templates/publicar.html:865
+msgid "No se pudo obtener la ubicacion"
+msgstr "Could not get location"
+
+#: templates/publicar.html:866
+msgid "Formulario reiniciado."
+msgstr "Restarted form."
+
+#: templates/publicar.html:867
+msgid "Publicando..."
+msgstr "Posting..."
+
+#: templates/publicar.html:868
+msgid "No se pudo publicar el platillo."
+msgstr "The dish could not be published."
+
+#: templates/publicar.html:869
+msgid "Platillo publicado y sincronizado con el catalogo."
+msgstr "Plate published and synchronized with the catalog."
+
+#: templates/recuperar_password.html:8
+msgid "Recuperar contrasena"
+msgstr "Recover password"
+
+#: templates/recuperar_password.html:62
+msgid "Recupera tu acceso"
+msgstr "Recover access"
+
+#: templates/recuperar_password.html:63
+msgid "Escribe tu correo y te enviaremos un enlace para cambiar la contrasena."
+msgstr "Enter your email and we will send you a link to change your password."
+
+#: templates/recuperar_password.html:69
+msgid "Enviar enlace"
+msgstr "Send link"
+
+#: templates/recuperar_password.html:71 templates/restablecer_password.html:73
+msgid "Volver al login"
+msgstr "Back to login"
+
+#: templates/registro.html:8 templates/registro.html:295
+msgid "Crear cuenta"
+msgstr "Create account"
+
+#: templates/registro.html:265
+msgid "Crea tu cuenta"
+msgstr "Create your account"
+
+#: templates/registro.html:266
+msgid "Unete a CUCU hoy mismo"
+msgstr "Join CUCU today"
+
+#: templates/registro.html:267
+msgid "Ilustracion de registro"
+msgstr "Registration illustration"
+
+#: templates/registro.html:274
+msgid "Nombre completo"
+msgstr "Full name"
+
+#: templates/registro.html:289 templates/restablecer_password.html:66
+msgid "Confirma tu contrasena"
+msgstr "Confirm your password"
+
+#: templates/registro.html:290 templates/restablecer_password.html:67
+msgid "Mostrar u ocultar confirmacion de contrasena"
+msgstr "Show or hide password confirmation"
+
+#: templates/registro.html:294
+msgid "Al registrarte, aceptas nuestros"
+msgstr "By signing up, you accept our"
+
+#: templates/registro.html:294
+msgid "Terminos y Condiciones"
+msgstr "Terms and Conditions"
+
+#: templates/registro.html:298
+msgid "Ya tienes cuenta?"
+msgstr "Already have an account?"
+
+#: templates/registro.html:316 templates/restablecer_password.html:79
+msgid "Las contraseñas no coinciden"
+msgstr "Passwords do not match"
+
+#: templates/restablecer_password.html:8
+msgid "Restablecer contrasena"
+msgstr "Reset password"
+
+#: templates/restablecer_password.html:54
+#: templates/restablecer_password.html:59
+msgid "Nueva contrasena"
+msgstr "New password"
+
+#: templates/restablecer_password.html:55
+msgid "Ingresa una contrasena nueva para recuperar tu cuenta."
+msgstr "Enter a new password to recover your account."
+
+#: templates/restablecer_password.html:71
+msgid "Guardar contrasena"
+msgstr "Save password"
+
+#: templates/seguimiento.html:4
+msgid "Seguimiento"
+msgstr "Follow-up"
+
+#: templates/seguimiento.html:6
+msgid "Seguimiento en"
+msgstr "Tracking on"
+
+#: templates/seguimiento.html:6
+msgid "tiempo real"
+msgstr "real time"
+
+#: templates/seguimiento.html:7
+msgid "Confirma tu pedido y mira el recorrido del repartidor."
+msgstr "Confirm your order and see the courier route."
+
+#: templates/seguimiento.html:264 templates/seguimiento.html:266
+#, fuzzy
+#| msgid "Ver seguimiento"
+msgid "Mapa de seguimiento"
+msgstr "View tracking"
+
+#: templates/seguimiento.html:265
+msgid "Mapa"
+msgstr "Map"
+
+#: templates/seguimiento.html:271
+msgid "Confirmacion"
+msgstr "Confirmation"
+
+#: templates/seguimiento.html:275
+msgid "Repartidor"
+msgstr "Dealer"
+
+#: templates/seguimiento.html:282
+msgid "Pagaste"
+msgstr "you paid"
+
+#: templates/seguimiento.html:283
+msgid "Total pedido"
+msgstr "Total order"
+
+#: templates/seguimiento.html:284
+msgid "Propina"
+msgstr "Tip"
+
+#: templates/seguimiento.html:285
+msgid "Total con propina"
+msgstr "Total with tip"
+
+#: templates/seguimiento.html:288
+msgid "En camino"
+msgstr "On the way"
+
+#: templates/seguimiento.html:290
+#, fuzzy
+#| msgid "Total del pedido:"
+msgid "Estado del pedido"
+msgstr "Order total:"
+
+#: templates/seguimiento.html:291
+msgid "Repartidor asignado"
+msgstr "Assigned delivery driver"
+
+#: templates/seguimiento.html:292 templates/seguimiento.html:326
+msgid "Repartidor ha llegado por tu pedido"
+msgstr "Delivery man has arrived for your order"
+
+#: templates/seguimiento.html:293
+msgid "Repartidor ha salido con tu pedido"
+msgstr "Delivery man has left with your order"
+
+#: templates/seguimiento.html:294 templates/seguimiento.html:328
+msgid "Tu pedido ha llegado a tu ubicacion"
+msgstr "Your order has arrived at your location"
+
+#: templates/seguimiento.html:299
+msgid "Propina (opcional)"
+msgstr "Tip (optional)"
+
+#: templates/seguimiento.html:300
+msgid "Ej: 2000"
+msgstr ""
+
+#: templates/seguimiento.html:303
+msgid "Aplicar propina"
+msgstr "Apply tip"
+
+#: templates/seguimiento.html:305
+msgid ""
+"La propina se muestra en el resumen (no se procesa como pago real todavia)."
+msgstr ""
+"The tip is shown on the statement (it is not processed as an actual payment "
+"yet)."
+
+#: templates/seguimiento.html:324
+msgid "Asignando repartidor"
+msgstr "Assigning delivery person"
+
+#: templates/seguimiento.html:325
+msgid "Repartidor yendo por tu pedido"
+msgstr "Delivery man going for your order"
+
+#: templates/seguimiento.html:327
+msgid "Repartidor en camino a tu ubicacion"
+msgstr "Delivery man on the way to your location"
+
+#: templates/seguimiento.html:329
+msgid "Recogida"
+msgstr "Pickup"
+
+#: templates/seguimiento.html:330
+msgid "Faltan puntos de recogida o entrega para construir el mapa del pedido."
+msgstr "Pickup or delivery points are missing to build the order map."
+
+#: templates/seguimiento.html:331
+msgid "No fue posible ubicar el punto inicial del repartidor."
+msgstr "Could not locate the courier starting point."
+
+#: templates/seguimiento.html:332
+msgid "Calculando ruta real por las calles..."
+msgstr "Calculating real route through the streets..."
+
+#: templates/seguimiento.html:333
+msgid ""
+"No fue posible cargar la ruta vial del pedido. Recarga la vista para "
+"reintentar."
+msgstr ""
+"Could not load the route for this order. Reload the page and try again."
+
+#: templates/seguimiento.html:334
+msgid "Falta pedido_id en la URL."
+msgstr "Order_id is missing from the URL."
+
+#: templates/seguimiento.html:335
+msgid "Tu pedido fue entregado"
+msgstr "Your order was delivered"
+
+#: templates/seguimiento.html:336
+msgid "Entregado"
+msgstr "Delivered"
+
+#: templates/seguimiento.html:337
+msgid "Producto"
+msgstr "Product"
+
+#: templates/seguimiento.html:338
+msgid "Ubicando puntos del pedido"
+msgstr "Locating order points"
+
+#: templates/seguimiento.html:354
+msgid "Tu navegador no soporta geolocalizacion."
+msgstr "Your browser does not support geolocation."
+
+#: templates/seguimiento.html:355
+msgid "Obteniendo tu ubicacion..."
+msgstr "Getting your location..."
+
+#: templates/seguimiento.html:356
+msgid ""
+"No se pudo obtener tu ubicacion. Activa permisos de ubicacion para ver la "
+"distancia."
+msgstr ""
+"Your location could not be obtained. Activate location permissions to see "
+"the distance."
+
+#: templates/seguimiento.html:357
+msgid "Ubicando tu direccion de entrega:"
+msgstr "Locating your delivery address:"
+
+#: templates/seguimiento.html:358
+msgid ""
+"No se pudo ubicar tu direccion. Usando tu ubicacion actual como respaldo."
+msgstr ""
+"Your address could not be located. Using your current location as a backup."

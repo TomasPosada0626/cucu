@@ -57,7 +57,6 @@ urlpatterns = [
     path('ui/aceptar-pedido/', ui_aceptar_pedido, name='ui-aceptar-pedido'),
     path('ui/notificaciones/', ui_notificaciones, name='ui-notificaciones'),
 
-    # Aliases to satisfy simplified API paths (e.g. POST /registro)
     path('', include('accounts.interfaces.api.urls')),
     path('', include('market.interfaces.api.urls')),
     path('', include('payments.interfaces.api.urls')),
@@ -67,6 +66,7 @@ urlpatterns = [
     path('api/', include('accounts.interfaces.api.urls')),
     path('api/', include('market.interfaces.api.urls')),
     path('api/', include('payments.interfaces.api.urls')),
+    path('api/', include('common.interfaces.api.urls')),
 ]
 
 if settings.DEBUG:

@@ -432,6 +432,13 @@
         setTimeout(() => {
           window.location.href = '/';
         }, 700);
+      } else {
+        const errorMsg = json?.detail || json?.error || 'Credenciales incorrectas. Verifica tu correo y contraseña.';
+        const outEl = document.getElementById('out');
+        if (outEl) {
+          outEl.textContent = String(errorMsg);
+          outEl.style.display = 'block';
+        }
       }
     });
   </script>

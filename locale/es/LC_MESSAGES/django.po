@@ -1319,11 +1319,11 @@ msgid "Este navegador no soporta geolocalizacion. Usa la opcion de direccion."
 msgstr ""
 
 #: templates/pedido.html:1818 templates/publicar.html:863
-msgid "Obteniendo tu ubicacion actual..."
+msgid "Obteniendo tu ubicación actual..."
 msgstr ""
 
 #: templates/pedido.html:1819
-msgid "Ubicacion lista. Mostrando platos dentro de"
+msgid "Ubicación lista. Mostrando platos dentro de"
 msgstr ""
 
 #: templates/pedido.html:1820
@@ -1331,11 +1331,11 @@ msgid "km."
 msgstr ""
 
 #: templates/pedido.html:1821
-msgid "No se pudo obtener tu ubicacion:"
+msgid "No se pudo obtener tu ubicación:"
 msgstr ""
 
 #: templates/pedido.html:1822
-msgid "Usa la direccion manual."
+msgid "Usa la dirección manual."
 msgstr ""
 
 #: templates/pedido.html:1823

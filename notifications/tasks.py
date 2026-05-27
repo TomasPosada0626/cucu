@@ -32,3 +32,15 @@ def enqueue_payment_notification(self, *, usuario_id: int, pago_id: int, pedido_
         "usuario_id": usuario_id,
         "estado": estado_normalizado,
     }
+
+
+@shared_task(bind=True)
+def trigger_report_generation(self, *, requester_email: str):
+    import time
+    # Simula trabajo pesado asíncrono
+    time.sleep(2)
+    return {
+        "status": "completed",
+        "report_type": "summary_report",
+        "requested_by": requester_email
+    }

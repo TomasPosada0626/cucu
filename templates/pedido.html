@@ -1815,11 +1815,11 @@
     const TXT_FROM = '{% trans "A" %}';
     const TXT_KM_FROM_YOU = '{% trans "km de ti por" %}';
     const TXT_GEO_UNSUPPORTED = '{% trans "Este navegador no soporta geolocalizacion. Usa la opcion de direccion." %}';
-    const TXT_GETTING_LOCATION = '{% trans "Obteniendo tu ubicacion actual..." %}';
-    const TXT_LOCATION_READY = '{% trans "Ubicacion lista. Mostrando platos dentro de" %}';
+    const TXT_GETTING_LOCATION = '{% trans "Obteniendo tu ubicación actual..." %}';
+    const TXT_LOCATION_READY = '{% trans "Ubicación lista. Mostrando platos dentro de" %}';
     const TXT_KM_SUFFIX = '{% trans "km." %}';
-    const TXT_LOCATION_ERROR = '{% trans "No se pudo obtener tu ubicacion:" %}';
-    const TXT_USE_MANUAL_ADDRESS = '{% trans "Usa la direccion manual." %}';
+    const TXT_LOCATION_ERROR = '{% trans "No se pudo obtener tu ubicación:" %}';
+    const TXT_USE_MANUAL_ADDRESS = '{% trans "Usa la dirección manual." %}';
     const TXT_PREP_FALLBACK = '{% trans "Preparacion casera disponible por tiempo limitado." %}';
     const TXT_REVIEWS = '{% trans "resenas" %}';
     const TXT_MAX = '{% trans "Maximo" %}';
@@ -1867,9 +1867,21 @@
     };
 
     function imageForPublicacion(publicacion, index) {
-      if (publicacion?.image_url) return String(publicacion.image_url);
+      // Intentar usar image_url del backend
+      if (publicacion?.image_url) {
+        const imageUrl = String(publicacion.image_url).trim();
+        // Si es una ruta relativa /media/..., asegurar que sea accesible
+        if (imageUrl && (imageUrl.startsWith('/') || imageUrl.startsWith('http'))) {
+          return imageUrl;
+        }
+      }
+      // Fallback a diccionario por título
       const title = String(publicacion?.titulo || '').trim();
-      return IMAGE_BY_TITLE[title] || IMAGE_POOL[index % IMAGE_POOL.length];
+      if (IMAGE_BY_TITLE[title]) {
+        return IMAGE_BY_TITLE[title];
+      }
+      // Fallback al pool de imágenes default
+      return IMAGE_POOL[index % IMAGE_POOL.length];
     }
 
     const searchInput = document.getElementById('searchInput');
@@ -2906,7 +2918,16 @@
         },
         (error) => {
           if (!background) {
-            setLocationBanner(`${TXT_LOCATION_ERROR} ${error.message}. ${TXT_USE_MANUAL_ADDRESS}`, true);
+            // Traducir errores del navegador a mensajes amigables
+            let friendlyMsg = error.message;
+            if (error.message.includes('denied') || error.message.includes('Denied')) {
+              friendlyMsg = 'Permiso de ubicación denegado. Habilita permisos en tu navegador.';
+            } else if (error.message.includes('timeout') || error.message.includes('Timeout')) {
+              friendlyMsg = 'No se pudo obtener tu ubicación. Intenta nuevamente.';
+            } else if (error.message.includes('unavailable') || error.message.includes('Unavailable')) {
+              friendlyMsg = 'Servicio de ubicación no disponible en tu dispositivo.';
+            }
+            setLocationBanner(`${TXT_LOCATION_ERROR} ${friendlyMsg} ${TXT_USE_MANUAL_ADDRESS}`, true);
           }
         },
         { enableHighAccuracy: false, timeout: 4500, maximumAge: 300000 }
@@ -3154,6 +3175,38 @@
 
     deliveryTimeSelect.addEventListener('change', applyFilters);
     availableNowToggle.addEventListener('change', applyFilters);
+
+    // Agregar handler para cuando el usuario escribe dirección manualmente
+    if (addressInput) {
+      addressInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') {
+          const address = String(addressInput.value || '').trim();
+          if (address) {
+            searchAddress = address;
+            userLocation = null; // Limpiar ubicación previa
+            clearAddressSuggestions();
+            closeAddressInline();
+            setLocationBanner(`Buscando platos cerca de ${address}.`, true);
+            loadPublicaciones();
+          }
+        }
+      });
+
+      addressInput.addEventListener('blur', (event) => {
+        const address = String(addressInput.value || '').trim();
+        if (address && activeAddressSuggestionIndex < 0) {
+          // Solo procesar si no estamos en sugerencias
+          if (searchAddress !== address) {
+            searchAddress = address;
+            userLocation = null;
+            clearAddressSuggestions();
+            closeAddressInline();
+            setLocationBanner(`Buscando platos cerca de ${address}.`, true);
+            loadPublicaciones();
+          }
+        }
+      });
+    }
 
     pagination.addEventListener('click', (event) => {
       const button = event.target.closest('[data-page]');

@@ -1,129 +1,2090 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CUCU\n"
-"POT-Creation-Date: 2026-05-25 00:00+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-26 18:32+0000\n"
 "PO-Revision-Date: 2026-05-25 00:00+0000\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "Navegacion principal"
-msgstr "Navegacion principal"
+#: notifications/tasks.py:13
+#, python-format
+msgid "Tu pago fue autorizado para el pedido #%(pedido_id)s"
+msgstr ""
 
+#: notifications/tasks.py:15
+#, python-format
+msgid "Tu pago fallo para el pedido #%(pedido_id)s"
+msgstr ""
+
+#: notifications/tasks.py:17
+#, python-format
+msgid "Tu pago cambio de estado a %(estado)s para el pedido #%(pedido_id)s"
+msgstr ""
+
+#: templates/aceptar_pedido.html:4 templates/aceptar_pedido.html:17
+#: templates/aceptar_pedido.html:33 templates/notificaciones.html:9
+msgid "Aceptar pedido"
+msgstr ""
+
+#: templates/aceptar_pedido.html:5 templates/index.html:1031
+#: templates/pedido.html:1682 templates/perfil.html:10
+#: templates/publicar.html:817
+#, fuzzy
+#| msgid "Vende"
+msgid "Vender"
+msgstr "Vende"
+
+#: templates/aceptar_pedido.html:6
+msgid "Acepta un"
+msgstr ""
+
+#: templates/aceptar_pedido.html:6 templates/checkout.html:6
+msgid "pedido"
+msgstr ""
+
+#: templates/aceptar_pedido.html:7
+msgid ""
+"Esta pantalla representa el lado del vendedor dentro de CUCU y mantiene el "
+"mismo lenguaje visual del resto del producto."
+msgstr ""
+
+#: templates/aceptar_pedido.html:9 templates/aceptar_pedido.html:50
+msgid "Ver notificaciones"
+msgstr ""
+
+#: templates/aceptar_pedido.html:10 templates/base_app.html:726
+#: templates/carrito.html:10 templates/index.html:840
+#: templates/notificaciones.html:10 templates/pago.html:10
+#: templates/pedido.html:1521 templates/pedido.html:1544
+#: templates/pedido.html:1712 templates/publicar.html:656
 msgid "Inicio"
 msgstr "Inicio"
 
+#: templates/aceptar_pedido.html:13
+msgid "Pedido pendiente"
+msgstr ""
+
+#: templates/aceptar_pedido.html:13
+msgid "Busca un pedido por ID y valida si corresponde a tu publicacion."
+msgstr ""
+
+#: templates/aceptar_pedido.html:14
+msgid "Aceptacion"
+msgstr ""
+
+#: templates/aceptar_pedido.html:14
+msgid "Solo el dueno de la publicacion puede confirmar el pedido."
+msgstr ""
+
+#: templates/aceptar_pedido.html:15
+msgid "Notificacion"
+msgstr ""
+
+#: templates/aceptar_pedido.html:15
+msgid "El comprador recibe una notificacion automatica al aceptar."
+msgstr ""
+
+#: templates/aceptar_pedido.html:18
+msgid ""
+"Desde aqui el vendedor confirma pedidos y continua el flujo operativo sin "
+"salir del estilo visual de CUCU."
+msgstr ""
+
+#: templates/aceptar_pedido.html:22 templates/pago.html:23
+msgid "Pedido ID"
+msgstr ""
+
+#: templates/aceptar_pedido.html:23
+msgid "Ej: 5"
+msgstr ""
+
+#: templates/aceptar_pedido.html:26
+msgid "Buscar pedido"
+msgstr ""
+
+#: templates/aceptar_pedido.html:32
+msgid "Aceptar el pedido"
+msgstr ""
+
+#: templates/aceptar_pedido.html:38
+msgid "Estado:"
+msgstr ""
+
+#: templates/aceptar_pedido.html:39
+msgid "Telefono:"
+msgstr ""
+
+#: templates/aceptar_pedido.html:40 templates/checkout.html:560
+msgid "Total:"
+msgstr ""
+
+#: templates/aceptar_pedido.html:44
+msgid "Solo el dueno de la publicacion puede aceptar el pedido."
+msgstr ""
+
+#: templates/aceptar_pedido.html:45
+msgid "El comprador recibira una notificacion automaticamente."
+msgstr ""
+
+#: templates/aceptar_pedido.html:49 templates/pago.html:54
+#, fuzzy
+#| msgid "Volver al login"
+msgid "Volver al inicio"
+msgstr "Volver al login"
+
+#: templates/aceptar_pedido.html:58 templates/checkout.html:562
+#: templates/pago.html:65 templates/recuperar_password.html:76
+#: templates/registro.html:315 templates/restablecer_password.html:78
+msgid "Procesando..."
+msgstr ""
+
+#: templates/aceptar_pedido.html:59
+msgid "ACEPTADO"
+msgstr ""
+
+#: templates/base_app.html:725 templates/index.html:839
+#: templates/pedido.html:1520 templates/publicar.html:655
+msgid "Navegacion principal"
+msgstr "Navegacion principal"
+
+#: templates/base_app.html:727 templates/index.html:841
+#: templates/index.html:865 templates/pedido.html:1522
+#: templates/publicar.html:657
 msgid "Compra"
 msgstr "Compra"
 
+#: templates/base_app.html:728 templates/index.html:842
+#: templates/pedido.html:1523 templates/publicar.html:658
 msgid "Vende"
 msgstr "Vende"
 
+#: templates/base_app.html:736 templates/partials/language_fab.html:72
+msgid "Idioma"
+msgstr ""
+
+#: templates/base_app.html:743 templates/carrito.html:4
+#: templates/carrito.html:5 templates/index.html:851 templates/pedido.html:1532
+#: templates/publicar.html:661 templates/seguimiento.html:10
 msgid "Carrito"
 msgstr "Carrito"
 
+#: templates/base_app.html:748 templates/index.html:855
+#: templates/pedido.html:1536 templates/pedido.html:1836
+#: templates/perfil.html:5 templates/publicar.html:665
+#: templates/publicar.html:851
 msgid "Perfil"
 msgstr "Perfil"
 
+#: templates/carrito.html:6 templates/perfil.html:6
+msgid "Mi"
+msgstr ""
+
+#: templates/carrito.html:6
+#, fuzzy
+#| msgid "Carrito"
+msgid "carrito"
+msgstr "Carrito"
+
+#: templates/carrito.html:7
+msgid "Revisa tus productos y continua al pago."
+msgstr ""
+
+#: templates/carrito.html:9 templates/checkout.html:10
+#: templates/seguimiento.html:9
+msgid "Seguir comprando"
+msgstr ""
+
+#: templates/carrito.html:13
+msgid "Items claros"
+msgstr ""
+
+#: templates/carrito.html:13
+msgid "El carrito se arma con lo que agregaste en la vista de compra."
+msgstr ""
+
+#: templates/carrito.html:14
+msgid "Delivery fijo"
+msgstr ""
+
+#: templates/carrito.html:14
+msgid "El delivery se calcula como $5.000 COP por pedido."
+msgstr ""
+
+#: templates/carrito.html:15
+#, fuzzy
+#| msgid "Contrasena"
+msgid "Continuar"
+msgstr "Contrasena"
+
+#: templates/carrito.html:15
+msgid "Completa tus datos y el metodo de pago en el checkout."
+msgstr ""
+
+#: templates/carrito.html:252
+msgid "Resumen del carrito"
+msgstr ""
+
+#: templates/carrito.html:253 templates/checkout.html:535
+#: templates/checkout.html:536
+msgid "Resumen"
+msgstr ""
+
+#: templates/carrito.html:256 templates/checkout.html:539
+msgid "Subtotal"
+msgstr ""
+
+#: templates/carrito.html:259 templates/checkout.html:542
+msgid "Total"
+msgstr ""
+
+#: templates/carrito.html:262
+msgid "Ir a pagar"
+msgstr ""
+
+#: templates/carrito.html:263
+msgid "Vaciar carrito"
+msgstr ""
+
+#: templates/carrito.html:266
+msgid "Pago de manera segura"
+msgstr ""
+
+#: templates/carrito.html:273
+msgid "Tu carrito esta vacio. Ve a"
+msgstr ""
+
+#: templates/carrito.html:273 templates/checkout.html:551
+#: templates/pedido.html:7 templates/pedido.html:1546
+#: templates/pedido.html:1714 templates/perfil.html:9
+#, fuzzy
+#| msgid "Compra"
+msgid "Comprar"
+msgstr "Compra"
+
+#: templates/carrito.html:273 templates/checkout.html:551
+msgid "y agrega al menos un producto."
+msgstr ""
+
+#: templates/carrito.html:280
+msgid "No se pudieron cargar las publicaciones para armar el carrito."
+msgstr ""
+
+#: templates/carrito.html:281
+msgid ""
+"Tu carrito se ajusto porque algunos productos ya no tienen stock suficiente."
+msgstr ""
+
+#: templates/carrito.html:282
+msgid "Preparacion casera"
+msgstr ""
+
+#: templates/carrito.html:283 templates/pedido.html:1833
+msgid "Cantidad"
+msgstr ""
+
+#: templates/carrito.html:284
+msgid "Disminuir"
+msgstr ""
+
+#: templates/carrito.html:285
+msgid "Aumentar"
+msgstr ""
+
+#: templates/carrito.html:286
+msgid "Este producto ya no tiene stock disponible."
+msgstr ""
+
+#: templates/carrito.html:287
+msgid "Solo puedes agregar"
+msgstr ""
+
+#: templates/carrito.html:288
+msgid "porque ese es el stock disponible."
+msgstr ""
+
+#: templates/carrito.html:289
+msgid "por pedido."
+msgstr ""
+
+#: templates/carrito.html:290
+msgid "unidad"
+msgstr ""
+
+#: templates/carrito.html:291 templates/pedido.html:1826
+msgid "unidades"
+msgstr ""
+
+#: templates/checkout.html:4 templates/checkout.html:5
+msgid "Checkout"
+msgstr ""
+
+#: templates/checkout.html:6
+msgid "Finaliza tu"
+msgstr ""
+
+#: templates/checkout.html:7
+msgid "Ingresa tus datos de entrega y el metodo de pago."
+msgstr ""
+
+#: templates/checkout.html:9 templates/pago.html:9
+#, fuzzy
+#| msgid "Volver al login"
+msgid "Volver al carrito"
+msgstr "Volver al login"
+
+#: templates/checkout.html:384
+msgid "Datos de checkout"
+msgstr ""
+
+#: templates/checkout.html:385
+msgid "Datos de entrega"
+msgstr ""
+
+#: templates/checkout.html:386
+msgid ""
+"Confirmas tus datos, tu direccion y el metodo de pago. Si la direccion se "
+"puede resolver rapido o eliges una sugerencia, guardamos coordenadas para "
+"que el seguimiento cargue mas agil."
+msgstr ""
+
+#: templates/checkout.html:390
+msgid "Nombre"
+msgstr ""
+
+#: templates/checkout.html:391
+msgid "Ej: Laura"
+msgstr ""
+
+#: templates/checkout.html:394
+msgid "Apellidos"
+msgstr ""
+
+#: templates/checkout.html:395
+msgid "Ej: Indabur"
+msgstr ""
+
+#: templates/checkout.html:401 templates/perfil.html:743
+msgid "Telefono"
+msgstr ""
+
+#: templates/checkout.html:402
+msgid "Ej: 3001234567"
+msgstr ""
+
+#: templates/checkout.html:409
+msgid "Direccion de entrega"
+msgstr ""
+
+#: templates/checkout.html:412
+msgid "Sugerencias globales de direccion"
+msgstr ""
+
+#: templates/checkout.html:414
+msgid ""
+"Mientras escribes, te mostramos sugerencias globales para que escojas una "
+"mas precisa."
+msgstr ""
+
+#: templates/checkout.html:418
+msgid "Referencias para llegar (opcional)"
+msgstr ""
+
+#: templates/checkout.html:419
+msgid "Ej: Torre 2, apto 1313, porteria blanca, al lado de la farmacia"
+msgstr ""
+
+#: templates/checkout.html:423 templates/checkout.html:424
+msgid "Metodo de pago"
+msgstr ""
+
+#: templates/checkout.html:432
+msgid "Efectivo"
+msgstr ""
+
+#: templates/checkout.html:442
+msgid "Con cuanto pagas?"
+msgstr ""
+
+#: templates/checkout.html:449
+msgid "Necesitas cambio?"
+msgstr ""
+
+#: templates/checkout.html:461
+msgid "Tarjeta"
+msgstr ""
+
+#: templates/checkout.html:462
+msgid "VISA · Mastercard"
+msgstr ""
+
+#: templates/checkout.html:472
+msgid "Nombre en la tarjeta"
+msgstr ""
+
+#: templates/checkout.html:473
+msgid "Ej: LAURA INDABUR"
+msgstr ""
+
+#: templates/checkout.html:476
+msgid "Numero de tarjeta"
+msgstr ""
+
+#: templates/checkout.html:477
+msgid "Ej: 4111 1111 1111 1111"
+msgstr ""
+
+#: templates/checkout.html:482
+msgid "Fecha de expiracion"
+msgstr ""
+
+#: templates/checkout.html:487
+msgid "Ej: 123"
+msgstr ""
+
+#: templates/checkout.html:493
+msgid "Tipo de documento"
+msgstr ""
+
+#: templates/checkout.html:495
+msgid "Cedula"
+msgstr ""
+
+#: templates/checkout.html:496
+#, fuzzy
+#| msgid "Soporte"
+msgid "Pasaporte"
+msgstr "Soporte"
+
+#: templates/checkout.html:501
+msgid "Numero de documento"
+msgstr ""
+
+#: templates/checkout.html:502
+msgid "Ej: 123456789"
+msgstr ""
+
+#: templates/checkout.html:513
+msgid "Pagos Seguros en Linea"
+msgstr ""
+
+#: templates/checkout.html:521
+msgid ""
+"PSE estara disponible mas adelante. Por ahora, selecciona efectivo o tarjeta."
+msgstr ""
+
+#: templates/checkout.html:527
+#, fuzzy
+#| msgid "Confirma tu contrasena"
+msgid "Confirmar y pagar"
+msgstr "Confirma tu contrasena"
+
+#: templates/checkout.html:528
+msgid "Volver"
+msgstr ""
+
+#: templates/checkout.html:540
+msgid "Envio"
+msgstr ""
+
+#: templates/checkout.html:551
+msgid "Tu carrito esta vacio. Vuelve a"
+msgstr ""
+
+#: templates/checkout.html:558
+msgid "No se pudo completar la solicitud."
+msgstr ""
+
+#: templates/checkout.html:559
+msgid "No se pudieron cargar las publicaciones para calcular el total."
+msgstr ""
+
+#: templates/checkout.html:561
+msgid "Ingresa el valor con el que pagaras."
+msgstr ""
+
+#: templates/checkout.html:563
+msgid "PSE todavia no esta disponible. Selecciona efectivo o tarjeta."
+msgstr ""
+
+#: templates/checkout.html:564
+msgid "Tu carrito esta vacio."
+msgstr ""
+
+#: templates/checkout.html:565
+msgid "El telefono es requerido."
+msgstr ""
+
+#: templates/checkout.html:566
+msgid "La direccion de entrega es requerida."
+msgstr ""
+
+#: templates/checkout.html:567
+msgid "Ingresa con cuanto pagaras."
+msgstr ""
+
+#: templates/checkout.html:568
+msgid "Completa los datos de la tarjeta y el documento."
+msgstr ""
+
+#: templates/checkout.html:569
+msgid "No se pudo crear el pedido."
+msgstr ""
+
+#: templates/checkout.html:570
+msgid "No se pudo determinar el ID del pedido."
+msgstr ""
+
+#: templates/checkout.html:571
+msgid "Pago registrado. Redirigiendo al seguimiento del pedido..."
+msgstr ""
+
+#: templates/checkout.html:572
+msgid "No se pudo registrar el pago."
+msgstr ""
+
+#: templates/index.html:7
+msgid "CUCU"
+msgstr ""
+
+#: templates/index.html:847 templates/login.html:8 templates/login.html:291
+#: templates/pedido.html:1528
 msgid "Iniciar sesion"
 msgstr "Iniciar sesion"
 
-msgid "Inicia sesion"
-msgstr "Inicia sesion"
-
-msgid "Bienvenido a CUCU"
-msgstr "Bienvenido a CUCU"
-
-msgid "Ilustracion de inicio de sesion"
-msgstr "Ilustracion de inicio de sesion"
-
-msgid "Correo electronico"
-msgstr "Correo electronico"
-
-msgid "Contrasena"
-msgstr "Contrasena"
-
-msgid "Mostrar u ocultar contrasena"
-msgstr "Mostrar u ocultar contrasena"
-
-msgid "Olvidaste tu contrasena?"
-msgstr "Olvidaste tu contrasena?"
-
-msgid "Recuerdame"
-msgstr "Recuerdame"
-
-msgid "Eres nuevo en CUCU?"
-msgstr "Eres nuevo en CUCU?"
-
+#: templates/index.html:848 templates/login.html:294 templates/pedido.html:1529
 msgid "Registrate"
 msgstr "Registrate"
 
-msgid "Terminos"
-msgstr "Terminos"
+#: templates/index.html:865
+msgid "cerca."
+msgstr ""
 
-msgid "Privacidad"
-msgstr "Privacidad"
+#: templates/index.html:865
+msgid "Vende fresco."
+msgstr ""
 
+#: templates/index.html:865
+msgid "Mueve tu barrio con CUCU."
+msgstr ""
+
+#: templates/index.html:866
+msgid "Descubre comida casera hecha con amor o vende tus platos en minutos."
+msgstr ""
+
+#: templates/index.html:871
+msgid "Explorar comida"
+msgstr ""
+
+#: templates/index.html:875
+msgid "Vender comida"
+msgstr ""
+
+#: templates/index.html:880
+msgid "Rapido"
+msgstr ""
+
+#: templates/index.html:881
+msgid "Sin costos escondidos"
+msgstr ""
+
+#: templates/index.html:882
+msgid "En tu barrio"
+msgstr ""
+
+#: templates/index.html:889
+msgid "Plato casero de CUCU"
+msgstr ""
+
+#: templates/index.html:900
+msgid "Tu pedido sigue en camino"
+msgstr ""
+
+#: templates/index.html:901
+msgid ""
+"Puedes volver al seguimiento en cualquier momento hasta que la entrega "
+"termine."
+msgstr ""
+
+#: templates/index.html:904
+msgid "Pedido activo"
+msgstr ""
+
+#: templates/index.html:907
+msgid "Seguir mi pedido"
+msgstr ""
+
+#: templates/index.html:910
+msgid "Como funciona?"
+msgstr ""
+
+#: templates/index.html:916
+msgid "Busca comida cerca"
+msgstr ""
+
+#: templates/index.html:917
+msgid "Explora platos caseros en tu zona."
+msgstr ""
+
+#: templates/index.html:924
+#, fuzzy
+#| msgid "Compra"
+msgid "Compra o vende"
+msgstr "Compra"
+
+#: templates/index.html:925
+msgid "Elige, paga y recibe. O publica tus platos."
+msgstr ""
+
+#: templates/index.html:932
+msgid "Listo en minutos"
+msgstr ""
+
+#: templates/index.html:933
+msgid "Conecta con tu comunidad de forma simple."
+msgstr ""
+
+#: templates/index.html:946
+msgid "Quiero comprar"
+msgstr ""
+
+#: templates/index.html:948
+msgid "Explora platos por ubicacion"
+msgstr ""
+
+#: templates/index.html:949
+msgid "Filtra por precio y categoria"
+msgstr ""
+
+#: templates/index.html:950
+msgid "Compra de forma segura"
+msgstr ""
+
+#: templates/index.html:953
+msgid "Explorar ahora"
+msgstr ""
+
+#: templates/index.html:963
+msgid "Tacos caseros"
+msgstr ""
+
+#: templates/index.html:968 templates/publicar.html:723
+msgid "Bowl saludable"
+msgstr ""
+
+#: templates/index.html:981
+msgid "Quiero vender"
+msgstr ""
+
+#: templates/index.html:983
+msgid "Publica tus platos en minutos"
+msgstr ""
+
+#: templates/index.html:984
+msgid "Gestiona pedidos facilmente"
+msgstr ""
+
+#: templates/index.html:985
+msgid "Llega a mas clientes del barrio"
+msgstr ""
+
+#: templates/index.html:988
+msgid "Empieza a vender"
+msgstr ""
+
+#: templates/index.html:993
+msgid "Preparacion de comida casera para vender en CUCU"
+msgstr ""
+
+#: templates/index.html:1001
+#, fuzzy
+#| msgid "Unete a CUCU hoy mismo"
+msgid "Unete a CUCU y mueve tu barrio"
+msgstr "Unete a CUCU hoy mismo"
+
+#: templates/index.html:1002
+msgid "Registrate gratis y empieza a comprar o vender hoy mismo."
+msgstr ""
+
+#: templates/index.html:1004
+#, fuzzy
+#| msgid "Crear cuenta"
+msgid "Crear cuenta gratis"
+msgstr "Crear cuenta"
+
+#: templates/index.html:1018 templates/pedido.html:1672
+#: templates/publicar.html:807
+msgid "Hecho para tu barrio, hecho con amor."
+msgstr ""
+
+#: templates/index.html:1022 templates/pedido.html:1676
+#: templates/publicar.html:811
+msgid "Explorar"
+msgstr ""
+
+#: templates/index.html:1024 templates/pedido.html:1677
+#: templates/publicar.html:812
+msgid "Menu"
+msgstr ""
+
+#: templates/index.html:1025 templates/pedido.html:1678
+#: templates/pedido.html:1683 templates/publicar.html:813
+#: templates/publicar.html:818
+msgid "Como funciona"
+msgstr ""
+
+#: templates/index.html:1026 templates/pedido.html:1684
+msgid "Comunidad"
+msgstr ""
+
+#: templates/index.html:1033 templates/publicar.html:824
+msgid "Publicar plato"
+msgstr ""
+
+#: templates/index.html:1034 templates/publicar.html:819
+msgid "Mis ventas"
+msgstr ""
+
+#: templates/index.html:1035 templates/login.html:304
+#: templates/registro.html:308
 msgid "Soporte"
 msgstr "Soporte"
 
+#: templates/index.html:1040 templates/pedido.html:1688
+#: templates/publicar.html:823
+msgid "Legal"
+msgstr ""
+
+#: templates/index.html:1042 templates/login.html:300
+#: templates/pedido.html:1689 templates/registro.html:304
+msgid "Terminos"
+msgstr "Terminos"
+
+#: templates/index.html:1043 templates/login.html:302
+#: templates/pedido.html:1690 templates/publicar.html:825
+#: templates/registro.html:306
+msgid "Privacidad"
+msgstr "Privacidad"
+
+#: templates/index.html:1044 templates/publicar.html:826
+msgid "Contacto"
+msgstr ""
+
+#: templates/index.html:1049 templates/pedido.html:1695
+#: templates/publicar.html:830
+msgid "Siguenos"
+msgstr ""
+
+#: templates/index.html:1067 templates/pedido.html:1704
+#: templates/publicar.html:839
+#, fuzzy
+#| msgid "Todos los derechos reservados."
+msgid "© 2025 CUCU. Todos los derechos reservados."
+msgstr "Todos los derechos reservados."
+
+#: templates/index.html:1073
+msgid "Retoma el seguimiento de tu pedido"
+msgstr ""
+
+#: templates/index.html:1074
+msgid "ETA actual"
+msgstr ""
+
+#: templates/index.html:1075
+msgid "sin perder el recorrido actual."
+msgstr ""
+
+#: templates/index.html:1076 templates/perfil.html:741
+#: templates/seguimiento.html:5 templates/seguimiento.html:274
+msgid "Pedido"
+msgstr ""
+
+#: templates/index.html:1077
+msgid "activo"
+msgstr ""
+
+#: templates/index.html:1078
+msgid "ETA"
+msgstr ""
+
+#: templates/login.html:267 templates/registro.html:298
+msgid "Inicia sesion"
+msgstr "Inicia sesion"
+
+#: templates/login.html:268
+msgid "Bienvenido a CUCU"
+msgstr "Bienvenido a CUCU"
+
+#: templates/login.html:269
+msgid "Ilustracion de inicio de sesion"
+msgstr "Ilustracion de inicio de sesion"
+
+#: templates/login.html:276 templates/recuperar_password.html:67
+#: templates/registro.html:278
+msgid "Correo electronico"
+msgstr "Correo electronico"
+
+#: templates/login.html:280 templates/registro.html:282
+msgid "Contrasena"
+msgstr "Contrasena"
+
+#: templates/login.html:282 templates/registro.html:283
+#: templates/restablecer_password.html:60
+msgid "Mostrar u ocultar contrasena"
+msgstr "Mostrar u ocultar contrasena"
+
+#: templates/login.html:285
+msgid "Olvidaste tu contrasena?"
+msgstr "Olvidaste tu contrasena?"
+
+#: templates/login.html:289
+msgid "Recuerdame"
+msgstr "Recuerdame"
+
+#: templates/login.html:294
+msgid "Eres nuevo en CUCU?"
+msgstr "Eres nuevo en CUCU?"
+
+#: templates/login.html:306 templates/registro.html:310
 msgid "Todos los derechos reservados."
 msgstr "Todos los derechos reservados."
 
-msgid "Crear cuenta"
-msgstr "Crear cuenta"
+#: templates/notificaciones.html:4
+msgid "Notificaciones"
+msgstr ""
 
-msgid "Crea tu cuenta"
-msgstr "Crea tu cuenta"
+#: templates/notificaciones.html:5
+#, fuzzy
+#| msgid "Privacidad"
+msgid "Actividad"
+msgstr "Privacidad"
 
-msgid "Unete a CUCU hoy mismo"
-msgstr "Unete a CUCU hoy mismo"
+#: templates/notificaciones.html:6
+msgid "Tus"
+msgstr ""
 
-msgid "Ilustracion de registro"
-msgstr "Ilustracion de registro"
+#: templates/notificaciones.html:6
+msgid "notificaciones"
+msgstr ""
 
-msgid "Nombre completo"
-msgstr "Nombre completo"
+#: templates/notificaciones.html:7
+msgid ""
+"Aqui convergen las senales del sistema: nuevos pedidos, confirmaciones y "
+"eventos importantes dentro del flujo de CUCU."
+msgstr ""
 
-msgid "Confirma tu contrasena"
+#: templates/notificaciones.html:13
+msgid "Pedidos"
+msgstr ""
+
+#: templates/notificaciones.html:13
+msgid "Recibe avisos cuando alguien compra uno de tus platos."
+msgstr ""
+
+#: templates/notificaciones.html:14
+msgid "Lectura"
+msgstr ""
+
+#: templates/notificaciones.html:14
+msgid "Marca rapidamente lo que ya revisaste sin salir del flujo."
+msgstr ""
+
+#: templates/notificaciones.html:15
+msgid "Actualiza"
+msgstr ""
+
+#: templates/notificaciones.html:15
+msgid "Recarga la lista cuando quieras revisar actividad reciente."
+msgstr ""
+
+#: templates/notificaciones.html:17
+msgid "Centro de notificaciones"
+msgstr ""
+
+#: templates/notificaciones.html:18
+msgid ""
+"La actividad del producto aparece aqui con el mismo lenguaje visual del "
+"resto de la aplicacion."
+msgstr ""
+
+#: templates/notificaciones.html:21 templates/notificaciones.html:35
+msgid "Cargando..."
+msgstr ""
+
+#: templates/notificaciones.html:22
+msgid "Recargar"
+msgstr ""
+
+#: templates/notificaciones.html:26
+msgid "Cargando notificaciones..."
+msgstr ""
+
+#: templates/notificaciones.html:32
+msgid "Leida"
+msgstr ""
+
+#: templates/notificaciones.html:33
+msgid "Marcar leida"
+msgstr ""
+
+#: templates/notificaciones.html:34
+msgid "No se pudo marcar como leida."
+msgstr ""
+
+#: templates/notificaciones.html:36
+msgid "Error al cargar notificaciones"
+msgstr ""
+
+#: templates/notificaciones.html:37
+msgid "Sin notificaciones"
+msgstr ""
+
+#: templates/notificaciones.html:38
+msgid "total"
+msgstr ""
+
+#: templates/notificaciones.html:39
+msgid "sin leer"
+msgstr ""
+
+#: templates/notificaciones.html:40
+msgid "No tienes notificaciones por el momento."
+msgstr ""
+
+#: templates/pago.html:4 templates/pago.html:5
+msgid "Pago"
+msgstr ""
+
+#: templates/pago.html:6
+#, fuzzy
+#| msgid "Confirma tu contrasena"
+msgid "Confirma el"
 msgstr "Confirma tu contrasena"
 
-msgid "Mostrar u ocultar confirmacion de contrasena"
-msgstr "Mostrar u ocultar confirmacion de contrasena"
+#: templates/pago.html:6
+msgid "pago"
+msgstr ""
 
-msgid "Al registrarte, aceptas nuestros"
-msgstr "Al registrarte, aceptas nuestros"
+#: templates/pago.html:7
+msgid ""
+"Esta etapa recoge el total del pedido y lo presenta dentro del mismo sistema "
+"visual que ya ve el usuario en comprar y vender."
+msgstr ""
 
-msgid "Terminos y Condiciones"
-msgstr "Terminos y Condiciones"
+#: templates/pago.html:13
+msgid "Total claro"
+msgstr ""
 
-msgid "Ya tienes cuenta?"
-msgstr "Ya tienes cuenta?"
+#: templates/pago.html:13
+msgid "El monto se toma automaticamente del pedido actual."
+msgstr ""
 
+#: templates/pago.html:14
+msgid "Metodo simple"
+msgstr ""
+
+#: templates/pago.html:14
+msgid "La demo acepta pago en efectivo o tarjeta."
+msgstr ""
+
+#: templates/pago.html:15
+msgid "Sigue el flujo"
+msgstr ""
+
+#: templates/pago.html:15
+msgid "Despues puedes volver al inicio o crear otro pedido."
+msgstr ""
+
+#: templates/pago.html:17 templates/pago.html:36
+#, fuzzy
+#| msgid "Registrate"
+msgid "Registrar pago"
+msgstr "Registrate"
+
+#: templates/pago.html:18
+msgid ""
+"El pago toma automaticamente el pedido y el total del carrito para que el "
+"flujo no se sienta fragmentado."
+msgstr ""
+
+#: templates/pago.html:24
+msgid "Se asigna automaticamente"
+msgstr ""
+
+#: templates/pago.html:27
+msgid "Monto"
+msgstr ""
+
+#: templates/pago.html:28
+msgid "Ej: 12.50"
+msgstr ""
+
+#: templates/pago.html:32 templates/seguimiento.html:278
+msgid "Metodo"
+msgstr ""
+
+#: templates/pago.html:33
+msgid "efectivo | tarjeta"
+msgstr ""
+
+#: templates/pago.html:41
+msgid "Subtotal:"
+msgstr ""
+
+#: templates/pago.html:42
+msgid "Delivery:"
+msgstr ""
+
+#: templates/pago.html:43
+msgid "Total del pedido:"
+msgstr ""
+
+#: templates/pago.html:44
+msgid "Items:"
+msgstr ""
+
+#: templates/pago.html:49
+msgid "El Pedido ID y el monto se toman del carrito automaticamente."
+msgstr ""
+
+#: templates/pago.html:50
+msgid "Metodos soportados (demo):"
+msgstr ""
+
+#: templates/pago.html:50
+msgid "efectivo"
+msgstr ""
+
+#: templates/pago.html:50
+msgid "o"
+msgstr ""
+
+#: templates/pago.html:50
+msgid "tarjeta"
+msgstr ""
+
+#: templates/pago.html:55
+msgid "Crear otro pedido"
+msgstr ""
+
+#: templates/pago.html:63 templates/pedido.html:1719 templates/pedido.html:1814
+#: templates/perfil.html:729
+msgid "Publicacion"
+msgstr ""
+
+#: templates/pago.html:64
+msgid "Sin items"
+msgstr ""
+
+#: templates/pago.html:66
+msgid "No se pudo determinar el monto del pedido. Revisa el Pedido ID."
+msgstr ""
+
+#: templates/pedido.html:1550
+msgid "Encuentra comida cerca"
+msgstr ""
+
+#: templates/pedido.html:1551
+msgid ""
+"Explora los platillos caseros disponibles en tu barrio y ordena tus "
+"favoritos."
+msgstr ""
+
+#: templates/pedido.html:1556
+msgid "Buscar publicaciones"
+msgstr ""
+
+#: templates/pedido.html:1558
+msgid "Que se te antoja hoy?"
+msgstr ""
+
+#: templates/pedido.html:1564
+msgid ""
+"Usa tu ubicacion o escribe tu direccion para cargar platos cercanos dentro "
+"de 5 km."
+msgstr ""
+
+#: templates/pedido.html:1566
+msgid "Usar ubicacion"
+msgstr ""
+
+#: templates/pedido.html:1567 templates/pedido.html:1571
+msgid "Escribir direccion"
+msgstr ""
+
+#: templates/pedido.html:1570
+msgid "Buscar por direccion"
+msgstr ""
+
+#: templates/pedido.html:1573
+msgid "Ej: Cra 43A #6 Sur-15, Medellin"
+msgstr ""
+
+#: templates/pedido.html:1575 templates/publicar.html:766
+msgid "Sugerencias de direccion"
+msgstr ""
+
+#: templates/pedido.html:1583
+msgid "Filtrar por"
+msgstr ""
+
+#: templates/pedido.html:1585 templates/pedido.html:1633
+msgid "Todos"
+msgstr ""
+
+#: templates/pedido.html:1586 templates/publicar.html:747
+msgid "Mexicana"
+msgstr ""
+
+#: templates/pedido.html:1587 templates/publicar.html:748
+msgid "Italiana"
+msgstr ""
+
+#: templates/pedido.html:1588 templates/publicar.html:746
+msgid "Saludable"
+msgstr ""
+
+#: templates/pedido.html:1589 templates/publicar.html:749
+msgid "Postres"
+msgstr ""
+
+#: templates/pedido.html:1594 templates/perfil.html:752
+#: templates/publicar.html:726
+msgid "Precio"
+msgstr ""
+
+#: templates/pedido.html:1599
+msgid "Minimo"
+msgstr ""
+
+#: templates/pedido.html:1603 templates/pedido.html:1825
+msgid "Maximo"
+msgstr ""
+
+#: templates/pedido.html:1607
+msgid "Rango de precio"
+msgstr ""
+
+#: templates/pedido.html:1614
+msgid "Rango actual"
+msgstr ""
+
+#: templates/pedido.html:1619 templates/seguimiento.html:276
+msgid "Distancia"
+msgstr ""
+
+#: templates/pedido.html:1626
+msgid "Radio maximo"
+msgstr ""
+
+#: templates/pedido.html:1631
+msgid "Tiempo de entrega"
+msgstr ""
+
+#: templates/pedido.html:1642 templates/publicar.html:777
+#: templates/publicar.html:781
+msgid "Disponible ahora"
+msgstr ""
+
+#: templates/pedido.html:1645
+#, fuzzy
+#| msgid "Restablecer contrasena"
+msgid "Restablecer filtros"
+msgstr "Restablecer contrasena"
+
+#: templates/pedido.html:1651 templates/pedido.html:1840
+msgid "Ajusta tus filtros o tu ubicacion."
+msgstr ""
+
+#: templates/pedido.html:1655 templates/pedido.html:1839
+msgid ""
+"Usa tu ubicacion o escribe una direccion para empezar a ver platos cercanos."
+msgstr ""
+
+#: templates/pedido.html:1659
+msgid "0 resultados"
+msgstr ""
+
+#: templates/pedido.html:1691
+#, fuzzy
+#| msgid "Contrasena"
+msgid "Contrato"
+msgstr "Contrasena"
+
+#: templates/pedido.html:1722
+msgid "Cerrar detalle"
+msgstr ""
+
+#: templates/pedido.html:1733 templates/publicar.html:756
+msgid "Ingredientes incluidos"
+msgstr ""
+
+#: templates/pedido.html:1738 templates/publicar.html:772
+msgid "Preparacion"
+msgstr ""
+
+#: templates/pedido.html:1760
+msgid "Restar"
+msgstr ""
+
+#: templates/pedido.html:1762
+msgid "Sumar"
+msgstr ""
+
+#: templates/pedido.html:1764
+msgid "0 disponibles"
+msgstr ""
+
+#: templates/pedido.html:1767 templates/pedido.html:1808
+msgid "Agregar al carrito"
+msgstr ""
+
+#: templates/pedido.html:1768 templates/pedido.html:1812
+msgid "Guardar"
+msgstr ""
+
+#: templates/pedido.html:1773
+msgid "Pago seguro"
+msgstr ""
+
+#: templates/pedido.html:1773
+msgid "Garantia de satisfaccion en todas tus compras."
+msgstr ""
+
+#: templates/pedido.html:1779
+msgid "Entrega estimada:"
+msgstr ""
+
+#: templates/pedido.html:1784
+msgid "Limite por pedido:"
+msgstr ""
+
+#: templates/pedido.html:1801
+msgid "Sin stock disponible"
+msgstr ""
+
+#: templates/pedido.html:1802
+msgid "Stock"
+msgstr ""
+
+#: templates/pedido.html:1803
+msgid "Limite actual"
+msgstr ""
+
+#: templates/pedido.html:1804
+msgid "Limite por pedido"
+msgstr ""
+
+#: templates/pedido.html:1805
+msgid "disponibles"
+msgstr ""
+
+#: templates/pedido.html:1806
+msgid "Agotado por ahora"
+msgstr ""
+
+#: templates/pedido.html:1807
+msgid "Agregado"
+msgstr ""
+
+#: templates/pedido.html:1809
+msgid "Agotado"
+msgstr ""
+
+#: templates/pedido.html:1810 templates/perfil.html:703
+#: templates/perfil.html:746
+msgid "Disponible"
+msgstr ""
+
+#: templates/pedido.html:1811
+msgid "Guardado"
+msgstr ""
+
+#: templates/pedido.html:1813
+msgid "Agregar"
+msgstr ""
+
+#: templates/pedido.html:1815
+msgid "A"
+msgstr ""
+
+#: templates/pedido.html:1816
+msgid "km de ti por"
+msgstr ""
+
+#: templates/pedido.html:1817
+msgid "Este navegador no soporta geolocalizacion. Usa la opcion de direccion."
+msgstr ""
+
+#: templates/pedido.html:1818 templates/publicar.html:863
+msgid "Obteniendo tu ubicación actual..."
+msgstr ""
+
+#: templates/pedido.html:1819
+msgid "Ubicación lista. Mostrando platos dentro de"
+msgstr ""
+
+#: templates/pedido.html:1820
+msgid "km."
+msgstr ""
+
+#: templates/pedido.html:1821
+msgid "No se pudo obtener tu ubicación:"
+msgstr ""
+
+#: templates/pedido.html:1822
+msgid "Usa la dirección manual."
+msgstr ""
+
+#: templates/pedido.html:1823
+msgid "Preparacion casera disponible por tiempo limitado."
+msgstr ""
+
+#: templates/pedido.html:1824
+msgid "resenas"
+msgstr ""
+
+#: templates/pedido.html:1827
+msgid "No hay coincidencias con tu busqueda actual."
+msgstr ""
+
+#: templates/pedido.html:1828
+msgid "Mostrando platos cerca de"
+msgstr ""
+
+#: templates/pedido.html:1829
+msgid "Mostrando platos alrededor de tu ubicacion actual."
+msgstr ""
+
+#: templates/pedido.html:1830
+msgid "Filtra por lo que mas te antoja hoy."
+msgstr ""
+
+#: templates/pedido.html:1831
+msgid "Sin descripcion disponible."
+msgstr ""
+
+#: templates/pedido.html:1832
+msgid "Entrega estimada"
+msgstr ""
+
+#: templates/pedido.html:1834
+msgid "Restar cantidad"
+msgstr ""
+
+#: templates/pedido.html:1835
+msgid "Sumar cantidad"
+msgstr ""
+
+#: templates/pedido.html:1837
+msgid "Este producto no tiene stock disponible para agregarlo al carrito."
+msgstr ""
+
+#: templates/pedido.html:1838
+msgid "Producto agregado al carrito."
+msgstr ""
+
+#: templates/pedido.html:1841
+msgid ""
+"No encontramos platos con esos filtros. Prueba otro tipo de comida o amplia "
+"el rango."
+msgstr ""
+
+#: templates/perfil.html:4
+#, fuzzy
+#| msgid "Perfil"
+msgid "Mi perfil"
+msgstr "Perfil"
+
+#: templates/perfil.html:6
+#, fuzzy
+#| msgid "Perfil"
+msgid "perfil"
+msgstr "Perfil"
+
+#: templates/perfil.html:7
+msgid ""
+"Consulta tu historial de pedidos, administra tus publicaciones y revisa el "
+"saldo de tus ventas desde un solo lugar."
+msgstr ""
+
+#: templates/perfil.html:644
+#, fuzzy
+#| msgid "Compra"
+msgid "Compras"
+msgstr "Compra"
+
+#: templates/perfil.html:645 templates/perfil.html:750
+msgid "Ventas"
+msgstr ""
+
+#: templates/perfil.html:646
+msgid "Platos"
+msgstr ""
+
+#: templates/perfil.html:654
+#, fuzzy
+#| msgid "Iniciar sesion"
+msgid "Cerrar sesion"
+msgstr "Iniciar sesion"
+
+#: templates/perfil.html:658
+msgid "Secciones del perfil"
+msgstr ""
+
+#: templates/perfil.html:659
+msgid "Mis pedidos"
+msgstr ""
+
+#: templates/perfil.html:660 templates/perfil.html:688
+msgid "Mis publicaciones"
+msgstr ""
+
+#: templates/perfil.html:668
+msgid "Historial de pedidos"
+msgstr ""
+
+#: templates/perfil.html:669
+msgid ""
+"Haz click en un pedido para ver el detalle completo, su fecha, estado y "
+"valor total."
+msgstr ""
+
+#: templates/perfil.html:679 templates/perfil.html:725
+#: templates/seguimiento.html:270
+msgid "Detalle del pedido"
+msgstr ""
+
+#: templates/perfil.html:680
+msgid ""
+"Selecciona un pedido del historial para ver sus productos, fecha, telefono y "
+"valor a pagar."
+msgstr ""
+
+#: templates/perfil.html:689
+msgid ""
+"Revisa tus platos publicados desde una vista simple. Si necesitas cambiar "
+"algo, abre el detalle."
+msgstr ""
+
+#: templates/perfil.html:696
+msgid "Saldo de ventas"
+msgstr ""
+
+#: templates/perfil.html:697
+msgid "Balance acumulado a partir de las ventas registradas de tus platos."
+msgstr ""
+
+#: templates/perfil.html:701
+msgid "Unidades vendidas"
+msgstr ""
+
+#: templates/perfil.html:702
+msgid "Publicaciones"
+msgstr ""
+
+#: templates/perfil.html:703 templates/perfil.html:755
+msgid "Estado"
+msgstr ""
+
+#: templates/perfil.html:705
+msgid "Transferir ganancias"
+msgstr ""
+
+#: templates/perfil.html:706
+msgid "La transferencia se deja lista como flujo demo para esta entrega."
+msgstr ""
+
+#: templates/perfil.html:721
+msgid "Miembro desde"
+msgstr ""
+
+#: templates/perfil.html:722
+msgid "Usuario CUCU"
+msgstr ""
+
+#: templates/perfil.html:723
+msgid "ETA pendiente"
+msgstr ""
+
+#: templates/perfil.html:724
+msgid "Pendiente"
+msgstr ""
+
+#: templates/perfil.html:726
+msgid "Todavia no tienes pedidos registrados."
+msgstr ""
+
+#: templates/perfil.html:727
+msgid "Cuando hagas tu primer pedido, aqui veras toda la informacion."
+msgstr ""
+
+#: templates/perfil.html:728
+msgid "productos"
+msgstr ""
+
+#: templates/perfil.html:730
+msgid "Productos del pedido"
+msgstr ""
+
+#: templates/perfil.html:731
+msgid "Ver seguimiento"
+msgstr ""
+
+#: templates/perfil.html:732
+msgid "Este pedido no tiene items visibles."
+msgstr ""
+
+#: templates/perfil.html:733
+msgid ""
+"Todavia no has publicado platos. Cuando publiques uno, aqui podras editar su "
+"stock, ingredientes, valor y la informacion del menu."
+msgstr ""
+
+#: templates/perfil.html:734
+msgid "No se pudo guardar la publicacion."
+msgstr ""
+
+#: templates/perfil.html:735
+msgid "Publicacion actualizada correctamente."
+msgstr ""
+
+#: templates/perfil.html:736
+msgid "Quieres eliminar esta publicacion por completo?"
+msgstr ""
+
+#: templates/perfil.html:737
+msgid "No se pudo eliminar la publicacion."
+msgstr ""
+
+#: templates/perfil.html:738
+msgid "Publicacion eliminada correctamente."
+msgstr ""
+
+#: templates/perfil.html:739
+#, fuzzy
+#| msgid "Nombre completo"
+msgid "Ver detalle completo"
+msgstr "Nombre completo"
+
+#: templates/perfil.html:740
+msgid "Ocultar detalle"
+msgstr ""
+
+#: templates/perfil.html:742
+msgid "Total a pagar"
+msgstr ""
+
+#: templates/perfil.html:744
+msgid "Ubicacion"
+msgstr ""
+
+#: templates/perfil.html:745
+msgid "Ubicacion general"
+msgstr ""
+
+#: templates/perfil.html:747
+msgid "No disponible"
+msgstr ""
+
+#: templates/perfil.html:748
+msgid "Resumen rapido del plato. Haz click si quieres ver mas opciones."
+msgstr ""
+
+#: templates/perfil.html:749
+msgid ""
+"Aqui puedes hacer cambios basicos del plato sin mostrar demasiada "
+"informacion al mismo tiempo."
+msgstr ""
+
+#: templates/perfil.html:751
+msgid "Titulo del plato"
+msgstr ""
+
+#: templates/perfil.html:753 templates/publicar.html:733
+msgid "Stock disponible"
+msgstr ""
+
+#: templates/perfil.html:754
+msgid "Maximo por venta"
+msgstr ""
+
+#: templates/perfil.html:756
+msgid "Activa"
+msgstr ""
+
+#: templates/perfil.html:757
+msgid "Pausada"
+msgstr ""
+
+#: templates/perfil.html:758
+msgid "Ingredientes"
+msgstr ""
+
+#: templates/perfil.html:759
+msgid "Ej: tortilla, carne, cebolla, cilantro"
+msgstr ""
+
+#: templates/perfil.html:760
+msgid "Informacion del menu"
+msgstr ""
+
+#: templates/perfil.html:761
+msgid "Eliminar publicacion"
+msgstr ""
+
+#: templates/perfil.html:762
+#, fuzzy
+#| msgid "Guardar contrasena"
+msgid "Guardar cambios"
+msgstr "Guardar contrasena"
+
+#: templates/perfil.html:763
+msgid ""
+"Transferencia iniciada en modo demo. En una integracion real aqui "
+"conectariamos la pasarela o payout."
+msgstr ""
+
+#: templates/perfil.html:764
+msgid "No se pudo cargar el perfil."
+msgstr ""
+
+#: templates/publicar.html:7 templates/publicar.html:673
+msgid "Publicar un platillo"
+msgstr ""
+
+#: templates/publicar.html:674
+msgid ""
+"Esta es la primera vista donde se fija la ubicacion real del producto. Desde "
+"aqui el sistema podra comparar la posicion del vendedor con la del comprador "
+"y mostrar distancias reales dentro del flujo de CUCU."
+msgstr ""
+
+#: templates/publicar.html:680
+msgid "Como ubicar tu punto de venta"
+msgstr ""
+
+#: templates/publicar.html:681
+msgid ""
+"Escribe una direccion (o un lugar) como EAFIT, pulsa Ubicar direccion, o "
+"mueve el marcador directamente sobre el mapa para guardar una ubicacion mas "
+"exacta."
+msgstr ""
+
+#: templates/publicar.html:685
+msgid "Ubicacion del punto de entrega"
+msgstr ""
+
+#: templates/publicar.html:687
+msgid "Mapa para ubicar el producto"
+msgstr ""
+
+#: templates/publicar.html:689
+msgid ""
+"Puedes escribir, hacer clic en el mapa, arrastrar el pin o usar tu ubicacion "
+"actual."
+msgstr ""
+
+#: templates/publicar.html:691
+msgid "Ubicar direccion"
+msgstr ""
+
+#: templates/publicar.html:692
+msgid "Usar mi ubicacion"
+msgstr ""
+
+#: templates/publicar.html:699
+msgid "Imagen del platillo"
+msgstr ""
+
+#: templates/publicar.html:701
+msgid "+ Anadir imagen"
+msgstr ""
+
+#: templates/publicar.html:702
+msgid "Quitar imagen"
+msgstr ""
+
+#: templates/publicar.html:709
+msgid "Aun no has anadido imagen"
+msgstr ""
+
+#: templates/publicar.html:710
+msgid "Cuando subas una foto, aqui aparecera la vista previa del platillo."
+msgstr ""
+
+#: templates/publicar.html:715
+msgid "Vista previa del platillo"
+msgstr ""
+
+#: templates/publicar.html:722
+#, fuzzy
+#| msgid "Nombre completo"
+msgid "Nombre del platillo"
+msgstr "Nombre completo"
+
+#: templates/publicar.html:737
+msgid "Maximo permitido por venta"
+msgstr ""
+
+#: templates/publicar.html:743
+msgid "Tipo de comida"
+msgstr ""
+
+#: templates/publicar.html:750
+msgid "Otra"
+msgstr ""
+
+#: templates/publicar.html:758
+msgid "+ Anadir ingrediente"
+msgstr ""
+
+#: templates/publicar.html:763
+msgid "Direccion"
+msgstr ""
+
+#: templates/publicar.html:773
+msgid ""
+"Describe porciones, ingredientes, presentacion y detalles importantes del "
+"pedido."
+msgstr ""
+
+#: templates/publicar.html:790
+msgid "Cancelar"
+msgstr ""
+
+#: templates/publicar.html:791
+msgid "Publicar platillo"
+msgstr ""
+
+#: templates/publicar.html:794
+msgid ""
+"Debes cumplir con nuestras normas comunitarias y ubicar correctamente tu "
+"punto de venta."
+msgstr ""
+
+#: templates/publicar.html:795
+msgid ""
+"El mapa guardara la ubicacion exacta del producto para que CUCU calcule "
+"distancias reales con respecto al comprador."
+msgstr ""
+
+#: templates/publicar.html:852
+msgid "Eliminar ingrediente"
+msgstr ""
+
+#: templates/publicar.html:853
+msgid "Anade un ingrediente"
+msgstr ""
+
+#: templates/publicar.html:854
+msgid "No se pudieron cargar sugerencias"
+msgstr ""
+
+#: templates/publicar.html:855
+msgid "No se pudo resolver la direccion"
+msgstr ""
+
+#: templates/publicar.html:856
+msgid "No se pudo ubicar la direccion"
+msgstr ""
+
+#: templates/publicar.html:857
+msgid "Direccion ubicada en el mapa."
+msgstr ""
+
+#: templates/publicar.html:858
+msgid "Ubicacion fijada en"
+msgstr ""
+
+#: templates/publicar.html:859
+msgid "Ajusta el pin o escribe una direccion exacta."
+msgstr ""
+
+#: templates/publicar.html:860
+msgid "Escribe primero una direccion para ubicarla en el mapa."
+msgstr ""
+
+#: templates/publicar.html:861
+msgid "Buscando la direccion en el mapa..."
+msgstr ""
+
+#: templates/publicar.html:862
+msgid "Este navegador no soporta geolocalizacion."
+msgstr ""
+
+#: templates/publicar.html:864
+msgid "Ubicacion actual fijada en el mapa."
+msgstr ""
+
+#: templates/publicar.html:865
+msgid "No se pudo obtener la ubicacion"
+msgstr ""
+
+#: templates/publicar.html:866
+msgid "Formulario reiniciado."
+msgstr ""
+
+#: templates/publicar.html:867
+msgid "Publicando..."
+msgstr ""
+
+#: templates/publicar.html:868
+msgid "No se pudo publicar el platillo."
+msgstr ""
+
+#: templates/publicar.html:869
+msgid "Platillo publicado y sincronizado con el catalogo."
+msgstr ""
+
+#: templates/recuperar_password.html:8
 msgid "Recuperar contrasena"
 msgstr "Recuperar contrasena"
 
+#: templates/recuperar_password.html:62
 msgid "Recupera tu acceso"
 msgstr "Recupera tu acceso"
 
+#: templates/recuperar_password.html:63
 msgid "Escribe tu correo y te enviaremos un enlace para cambiar la contrasena."
-msgstr "Escribe tu correo y te enviaremos un enlace para cambiar la contrasena."
+msgstr ""
+"Escribe tu correo y te enviaremos un enlace para cambiar la contrasena."
 
+#: templates/recuperar_password.html:69
 msgid "Enviar enlace"
 msgstr "Enviar enlace"
 
+#: templates/recuperar_password.html:71 templates/restablecer_password.html:73
 msgid "Volver al login"
 msgstr "Volver al login"
 
+#: templates/registro.html:8 templates/registro.html:295
+msgid "Crear cuenta"
+msgstr "Crear cuenta"
+
+#: templates/registro.html:265
+msgid "Crea tu cuenta"
+msgstr "Crea tu cuenta"
+
+#: templates/registro.html:266
+msgid "Unete a CUCU hoy mismo"
+msgstr "Unete a CUCU hoy mismo"
+
+#: templates/registro.html:267
+msgid "Ilustracion de registro"
+msgstr "Ilustracion de registro"
+
+#: templates/registro.html:274
+msgid "Nombre completo"
+msgstr "Nombre completo"
+
+#: templates/registro.html:289 templates/restablecer_password.html:66
+msgid "Confirma tu contrasena"
+msgstr "Confirma tu contrasena"
+
+#: templates/registro.html:290 templates/restablecer_password.html:67
+msgid "Mostrar u ocultar confirmacion de contrasena"
+msgstr "Mostrar u ocultar confirmacion de contrasena"
+
+#: templates/registro.html:294
+msgid "Al registrarte, aceptas nuestros"
+msgstr "Al registrarte, aceptas nuestros"
+
+#: templates/registro.html:294
+msgid "Terminos y Condiciones"
+msgstr "Terminos y Condiciones"
+
+#: templates/registro.html:298
+msgid "Ya tienes cuenta?"
+msgstr "Ya tienes cuenta?"
+
+#: templates/registro.html:316 templates/restablecer_password.html:79
+msgid "Las contraseñas no coinciden"
+msgstr ""
+
+#: templates/restablecer_password.html:8
 msgid "Restablecer contrasena"
 msgstr "Restablecer contrasena"
 
+#: templates/restablecer_password.html:54
+#: templates/restablecer_password.html:59
 msgid "Nueva contrasena"
 msgstr "Nueva contrasena"
 
+#: templates/restablecer_password.html:55
 msgid "Ingresa una contrasena nueva para recuperar tu cuenta."
 msgstr "Ingresa una contrasena nueva para recuperar tu cuenta."
 
+#: templates/restablecer_password.html:71
 msgid "Guardar contrasena"
 msgstr "Guardar contrasena"
+
+#: templates/seguimiento.html:4
+msgid "Seguimiento"
+msgstr ""
+
+#: templates/seguimiento.html:6
+msgid "Seguimiento en"
+msgstr ""
+
+#: templates/seguimiento.html:6
+msgid "tiempo real"
+msgstr ""
+
+#: templates/seguimiento.html:7
+msgid "Confirma tu pedido y mira el recorrido del repartidor."
+msgstr ""
+
+#: templates/seguimiento.html:264 templates/seguimiento.html:266
+msgid "Mapa de seguimiento"
+msgstr ""
+
+#: templates/seguimiento.html:265
+msgid "Mapa"
+msgstr ""
+
+#: templates/seguimiento.html:271
+#, fuzzy
+#| msgid "Confirma tu contrasena"
+msgid "Confirmacion"
+msgstr "Confirma tu contrasena"
+
+#: templates/seguimiento.html:275
+msgid "Repartidor"
+msgstr ""
+
+#: templates/seguimiento.html:282
+msgid "Pagaste"
+msgstr ""
+
+#: templates/seguimiento.html:283
+msgid "Total pedido"
+msgstr ""
+
+#: templates/seguimiento.html:284
+msgid "Propina"
+msgstr ""
+
+#: templates/seguimiento.html:285
+msgid "Total con propina"
+msgstr ""
+
+#: templates/seguimiento.html:288
+msgid "En camino"
+msgstr ""
+
+#: templates/seguimiento.html:290
+msgid "Estado del pedido"
+msgstr ""
+
+#: templates/seguimiento.html:291
+msgid "Repartidor asignado"
+msgstr ""
+
+#: templates/seguimiento.html:292 templates/seguimiento.html:326
+msgid "Repartidor ha llegado por tu pedido"
+msgstr ""
+
+#: templates/seguimiento.html:293
+msgid "Repartidor ha salido con tu pedido"
+msgstr ""
+
+#: templates/seguimiento.html:294 templates/seguimiento.html:328
+msgid "Tu pedido ha llegado a tu ubicacion"
+msgstr ""
+
+#: templates/seguimiento.html:299
+msgid "Propina (opcional)"
+msgstr ""
+
+#: templates/seguimiento.html:300
+msgid "Ej: 2000"
+msgstr ""
+
+#: templates/seguimiento.html:303
+msgid "Aplicar propina"
+msgstr ""
+
+#: templates/seguimiento.html:305
+msgid ""
+"La propina se muestra en el resumen (no se procesa como pago real todavia)."
+msgstr ""
+
+#: templates/seguimiento.html:324
+msgid "Asignando repartidor"
+msgstr ""
+
+#: templates/seguimiento.html:325
+msgid "Repartidor yendo por tu pedido"
+msgstr ""
+
+#: templates/seguimiento.html:327
+msgid "Repartidor en camino a tu ubicacion"
+msgstr ""
+
+#: templates/seguimiento.html:329
+msgid "Recogida"
+msgstr ""
+
+#: templates/seguimiento.html:330
+msgid "Faltan puntos de recogida o entrega para construir el mapa del pedido."
+msgstr ""
+
+#: templates/seguimiento.html:331
+msgid "No fue posible ubicar el punto inicial del repartidor."
+msgstr ""
+
+#: templates/seguimiento.html:332
+msgid "Calculando ruta real por las calles..."
+msgstr ""
+
+#: templates/seguimiento.html:333
+msgid ""
+"No fue posible cargar la ruta vial del pedido. Recarga la vista para "
+"reintentar."
+msgstr ""
+
+#: templates/seguimiento.html:334
+msgid "Falta pedido_id en la URL."
+msgstr ""
+
+#: templates/seguimiento.html:335
+msgid "Tu pedido fue entregado"
+msgstr ""
+
+#: templates/seguimiento.html:336
+msgid "Entregado"
+msgstr ""
+
+#: templates/seguimiento.html:337
+msgid "Producto"
+msgstr ""
+
+#: templates/seguimiento.html:338
+msgid "Ubicando puntos del pedido"
+msgstr ""
+
+#: templates/seguimiento.html:354
+msgid "Tu navegador no soporta geolocalizacion."
+msgstr ""
+
+#: templates/seguimiento.html:355
+msgid "Obteniendo tu ubicacion..."
+msgstr ""
+
+#: templates/seguimiento.html:356
+msgid ""
+"No se pudo obtener tu ubicacion. Activa permisos de ubicacion para ver la "
+"distancia."
+msgstr ""
+
+#: templates/seguimiento.html:357
+msgid "Ubicando tu direccion de entrega:"
+msgstr ""
+
+#: templates/seguimiento.html:358
+msgid ""
+"No se pudo ubicar tu direccion. Usando tu ubicacion actual como respaldo."
+msgstr ""

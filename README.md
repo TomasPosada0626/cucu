@@ -14,7 +14,6 @@ Este proyecto es una plataforma construida con un modelo híbrido: **Django (Mon
    ```bash
    cp .env.example .env
    ```
-   *Nota: Si tienes una clave de Google Maps, agrégala en `GOOGLE_MAPS_API_KEY` dentro del `.env` para habilitar mapas en el frontend.*
 
 2. **Levantar el Ecosistema**
    Ejecuta el siguiente comando en la raíz del proyecto para construir y levantar todos los servicios:

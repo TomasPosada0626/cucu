@@ -63,7 +63,6 @@ services:
     environment:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
-      - GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY:-}
     expose:
       - "8081"
     healthcheck:

@@ -10,7 +10,6 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 from .errors import ValidationError
-from .settings import GOOGLE_MAPS_API_KEY
 
 
 @dataclass
@@ -116,12 +115,6 @@ class GeocodingService:
         cached = self._geocode_cache_get(direccion_ctx)
         if cached is not None:
             return cached
-
-        if GOOGLE_MAPS_API_KEY:
-            result = self._google_geocode(direccion_ctx)
-            if result is not None:
-                self._geocode_cache_set(direccion_ctx, result)
-                return result
 
         result = self._nominatim_geocode(direccion_ctx, countrycodes=countrycodes)
         if result is not None:
@@ -333,25 +326,6 @@ class GeocodingService:
                 final_items = [exact_item, *remainder][:safe_limit]
         self._suggest_cache_set(q, safe_limit, final_items)
         return final_items
-
-    def _google_geocode(self, direccion_texto: str) -> GeocodedLocation | None:
-        params = urlencode({"address": direccion_texto, "key": GOOGLE_MAPS_API_KEY})
-        url = f"https://maps.googleapis.com/maps/api/geocode/json?{params}"
-        payload = self._fetch_json(url, headers={})
-
-        results = payload.get("results") or []
-        if not results:
-            return None
-
-        location = results[0].get("geometry", {}).get("location", {})
-        if "lat" not in location or "lng" not in location:
-            return None
-
-        return GeocodedLocation(
-            latitud=Decimal(str(location["lat"])),
-            longitud=Decimal(str(location["lng"])),
-            direccion_texto=results[0].get("formatted_address") or direccion_texto,
-        )
 
     def _nominatim_geocode(self, direccion_texto: str, *, countrycodes: str | None = None) -> GeocodedLocation | None:
         if time.time() < self._nominatim_backoff_until:

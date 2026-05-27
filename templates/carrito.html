@@ -342,9 +342,21 @@
       .replaceAll("'", '&#39;');
   }
 
-  function sellerName(id) {
-    const names = ['Andrea Martínez', 'Roberto López', 'Valeria Ruiz', 'Luis García', 'Carla Jiménez', 'Mario Sánchez'];
-    return names[Number(id || 0) % names.length];
+  function sellerName(publicacion, id) {
+    const fromPublicacion = String(
+      publicacion?.seller_name ||
+      publicacion?.usuario_nombre ||
+      publicacion?.autor_nombre ||
+      ''
+    ).trim();
+    if (fromPublicacion) return fromPublicacion;
+
+    const sellerId = Number(publicacion?.usuario_id || 0);
+    if (Number.isFinite(sellerId) && sellerId > 0) {
+      return `Vendedor #${sellerId}`;
+    }
+
+    return `Vendedor #${Number(id || 0) || 0}`;
   }
 
   function fakeDistanceKm(id) {
@@ -492,7 +504,7 @@
       subtotal += lineTotal;
 
       const distance = fakeDistanceKm(id);
-      const seller = sellerName(id);
+      const seller = sellerName(pub, id);
       const image = imageForCartItem(pub, index, id);
 
       return `

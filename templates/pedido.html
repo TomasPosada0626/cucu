@@ -2159,8 +2159,20 @@
     }
 
     function sellerName(publicacion) {
-      const names = ['Andrea Martínez', 'Roberto López', 'Valeria Ruiz', 'Luis García', 'Carla Jiménez', 'Mario Sánchez'];
-      return names[Number(publicacion.id || 0) % names.length];
+      const fromPublicacion = String(
+        publicacion?.seller_name ||
+        publicacion?.usuario_nombre ||
+        publicacion?.autor_nombre ||
+        ''
+      ).trim();
+      if (fromPublicacion) return fromPublicacion;
+
+      const sellerId = Number(publicacion?.usuario_id || 0);
+      if (Number.isFinite(sellerId) && sellerId > 0) {
+        return `Vendedor #${sellerId}`;
+      }
+
+      return `Vendedor #${Number(publicacion.id || 0) || 0}`;
     }
 
     function detailPreset(publicacion) {
@@ -2650,11 +2662,24 @@
       priceSliderActive.style.width = `${Math.max(0, right - left)}%`;
     }
 
+    function categorySearchText(category) {
+      const key = String(category || '').trim().toLowerCase();
+      const categoryTerms = {
+        mexicana: ['mexicana', 'mexicano', 'tacos', 'antojitos'],
+        italiana: ['italiana', 'italiano', 'pasta', 'pizza', 'lasagna'],
+        sana: ['sana', 'saludable', 'fit', 'light', 'ensalada'],
+        postres: ['postres', 'postre', 'dulce', 'dessert'],
+        otra: ['otra'],
+      };
+      return (categoryTerms[key] || [key]).join(' ');
+    }
+
     function applyFilters() {
       const textQuery = String(searchInput.value || '').trim().toLowerCase();
 
       filteredPublicaciones = publicaciones.filter((publicacion) => {
-        const hayTexto = !textQuery || `${publicacion.titulo} ${publicacion.descripcion || ''} ${publicacion.ubicacion?.direccion_texto || ''}`.toLowerCase().includes(textQuery);
+        const searchableText = `${publicacion.titulo || ''} ${publicacion.descripcion || ''} ${publicacion.ubicacion?.direccion_texto || ''} ${categorySearchText(publicacion.category)}`.toLowerCase();
+        const hayTexto = !textQuery || searchableText.includes(textQuery);
         const hayCategoria = selectedCategory === 'all' || publicacion.category === selectedCategory;
         const precio = Number(publicacion.precio || 0);
         const hayPrecio = precio >= selectedMinPrice && precio <= selectedMaxPrice;

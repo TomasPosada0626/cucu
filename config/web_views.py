@@ -1,7 +1,5 @@
 from django.shortcuts import render
 
-from .settings import GOOGLE_MAPS_API_KEY
-
 
 def ui_index(request):
     return render(request, "index.html")
@@ -24,7 +22,7 @@ def ui_restablecer_password(request):
 
 
 def ui_pedido(request):
-    return render(request, "pedido.html", {"google_maps_api_key": GOOGLE_MAPS_API_KEY})
+    return render(request, "pedido.html")
 
 
 def ui_carrito(request):
@@ -40,7 +38,7 @@ def ui_seguimiento(request):
 
 
 def ui_publicar(request):
-    return render(request, "publicar.html", {"google_maps_api_key": GOOGLE_MAPS_API_KEY})
+    return render(request, "publicar.html")
 
 
 def ui_pago(request):

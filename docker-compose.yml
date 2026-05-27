@@ -202,7 +202,8 @@ services:
     container_name: cucu-celery-worker
     command: celery -A config worker --loglevel=info
     environment:
-      - DEBUG=True
+      - DEBUG=False
+      - ALLOWED_HOSTS=localhost,127.0.0.1,54.173.64.109
       - DJANGO_SETTINGS_MODULE=config.settings
       - GEO_SERVICE_URL=http://geo-service:8081
       - NOTIFICATIONS_SERVICE_URL=http://notifications-service:8082

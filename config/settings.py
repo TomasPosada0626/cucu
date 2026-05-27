@@ -44,11 +44,12 @@ _load_local_env_file(BASE_DIR / ".env.local")
 SECRET_KEY = 'django-insecure-vquk_qvq%k*v_&@=7g-t1wd2-_o@u&wkq!bi!rndxqic*g*yko'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 
-# Development/test hosts
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]", "testserver"]
-
+ALLOWED_HOSTS = os.getenv(
+    "ALLOWED_HOSTS",
+    "localhost,127.0.0.1,[::1],testserver"
+).split(",")
 
 # Application definition
 # Es lo que define que mostrará la app

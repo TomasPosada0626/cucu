@@ -1,4 +1,5 @@
 # Proyecto CUCU - Entregable 2
+<img width="1191" height="707" alt="image" src="https://github.com/user-attachments/assets/dc99b69f-c6b5-45a6-9abd-fae4f4a72edf" />
 
 Este proyecto es una plataforma construida con un modelo híbrido: **Django (Monolito para vistas y lógica central) + Flask (Microservicios especializados)** y servicios de apoyo como RabbitMQ y Redis. Todo orquestado con **Docker Compose** y expuesto a través de un **API Gateway (Nginx)**.
 

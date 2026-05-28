@@ -67,4 +67,4 @@ docker compose logs -f celery-worker
 ```
 
 Para instrucciones sobre el despliegue en la nube, revisa [README_DEPLOY_AWS.md](./README_DEPLOY_AWS.md).
-Para la revisión de cumplimiento de requisitos, revisa [docs/checklist_entrega_2.md](./docs/checklist_entrega_2.md).
+Para la revisión de cumplimiento de requisitos, revisa [Entregable2](../../wiki/Entregable2).

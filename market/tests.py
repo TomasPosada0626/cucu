@@ -329,3 +329,56 @@ class PublicacionGeoTests(TestCase):
 		self.assertEqual(response.status_code, 204)
 		self.assertFalse(Publicacion.objects.filter(id=publicacion.id).exists())
 		self.assertFalse(Ubicacion.objects.filter(id=ubicacion.id).exists())
+
+
+class PublicOrderHistoryApiTests(TestCase):
+	def setUp(self):
+		self.client = APIClient()
+
+		seller = User(username="seller2@example.com", email="seller2@example.com", nombre="Seller2")
+		seller.set_password("secret12345")
+		seller.save()
+
+		buyer = User(username="buyer2@example.com", email="buyer2@example.com", nombre="Buyer2")
+		buyer.set_password("secret12345")
+		buyer.save()
+
+		publicacion = Publicacion.objects.create(
+			titulo="Burrito",
+			descripcion="Grande",
+			precio=15000,
+			usuario=seller,
+		)
+
+		pedido = Pedido.objects.create(
+			telefono="3001234567",
+			direccion_entrega="Calle 1",
+			total=15000,
+			publicacion=publicacion,
+			usuario=buyer,
+		)
+
+		pedido.items.create(publicacion=publicacion, cantidad=2, precio_unitario=7500)
+
+	def test_public_history_endpoint_allows_anonymous(self):
+		response = self.client.get("/api/aliados/historial-pedidos")
+
+		self.assertEqual(response.status_code, 200)
+		payload = response.json()
+		self.assertIn("results", payload)
+		self.assertGreaterEqual(payload["count"], 1)
+		self.assertEqual(response["Access-Control-Allow-Origin"], "*")
+
+		first = payload["results"][0]
+		self.assertIn("id", first)
+		self.assertIn("total", first)
+		self.assertIn("items", first)
+		self.assertNotIn("telefono", first)
+
+	def test_public_history_endpoint_respects_limit_param(self):
+		response = self.client.get("/api/aliados/historial-pedidos?limit=1")
+
+		self.assertEqual(response.status_code, 200)
+		payload = response.json()
+		self.assertEqual(payload["limit"], 1)
+		self.assertLessEqual(len(payload["results"]), 1)

@@ -22,6 +22,12 @@ class CardGateway(PaymentGateway):
         return 0 < amount <= 1_000_000
 
 
+@dataclass(frozen=True)
+class PseGateway(PaymentGateway):
+    def authorize(self, *, amount: float) -> bool:
+        return amount > 0
+
+
 class PaymentGatewayFactory:
     @staticmethod
     def get_gateway(*, method: str) -> PaymentGateway:
@@ -30,4 +36,6 @@ class PaymentGatewayFactory:
             return CashGateway()
         if normalized_method in {"card", "tarjeta"}:
             return CardGateway()
+        if normalized_method in {"pse"}:
+            return PseGateway()
         raise ValidationError("Método de pago no soportado")

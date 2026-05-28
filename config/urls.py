@@ -36,6 +36,7 @@ from .web_views import (
     ui_restablecer_password,
     ui_aceptar_pedido,
     ui_notificaciones,
+    ui_api_externa,
 )
 
 urlpatterns = [
@@ -53,6 +54,7 @@ urlpatterns = [
     path('ui/checkout/', ui_checkout, name='ui-checkout'),
     path('ui/seguimiento/', ui_seguimiento, name='ui-seguimiento'),
     path('ui/pago/', ui_pago, name='ui-pago'),
+    path('ui/api-externa/', ui_api_externa, name='ui-api-externa'),
     #--------------
     path('ui/aceptar-pedido/', ui_aceptar_pedido, name='ui-aceptar-pedido'),
     path('ui/notificaciones/', ui_notificaciones, name='ui-notificaciones'),

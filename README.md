@@ -23,7 +23,7 @@ Este proyecto es una plataforma construida con un modelo híbrido: **Django (Mon
 2. **Levantar el Ecosistema**
    Ejecuta el siguiente comando en la raíz del proyecto para construir y levantar todos los servicios:
    ```bash
-   docker compose up --build -d
+-   docker compose up --build -d
    ```
 
 3. **Verificar los Servicios**

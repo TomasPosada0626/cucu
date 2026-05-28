@@ -80,11 +80,10 @@
 <div class="api-grid">
   <section class="api-card">
     <h3>{% trans "Consumir API de equipo aliado" %}</h3>
-    <label>
+    <label for="allyUrlInput">
       {% trans "URL JSON del aliado" %}
-      <input id="allyUrlInput" type="url" placeholder="https://equipo-aliado.com/api/endpoint" required />
+      <input id="allyUrlInput" type="url" placeholder="https://equipo-aliado.com/api/endpoint" required aria-label="{% trans 'URL JSON del aliado' %}" />
     </label>
-    <p class="helper">{% trans "Este formulario llama tu backend en /api/aliados/consumir para evitar bloqueos de CORS en el navegador." %}</p>
     <div class="api-actions">
       <button id="consumeBtn" class="btn btn-primary" type="button">{% trans "Consultar API" %}</button>
       <button id="clearBtn" class="btn btn-secondary" type="button">{% trans "Limpiar" %}</button>
@@ -93,9 +92,9 @@
 
   <section class="api-card">
     <h3>{% trans "Tu API para otros equipos" %}</h3>
-    <label>
+    <label for="myApiUrl">
       {% trans "Endpoint de historial de pedidos" %}
-      <input id="myApiUrl" type="text" readonly />
+      <input id="myApiUrl" type="text" readonly aria-label="{% trans 'Endpoint de historial de pedidos' %}" value="http://98.90.207.183/api/aliados/historial-pedidos" />
     </label>
     <p class="helper">{% trans "Comparte esta URL. Responde JSON con los pedidos recientes y soporta ?limit=50." %}</p>
   </section>
@@ -117,7 +116,7 @@
   const statusBox = document.getElementById('statusBox');
   const jsonOutput = document.getElementById('jsonOutput');
 
-  myApiUrl.value = `${window.location.origin}/api/historial-pedidos`;
+  // myApiUrl.value = `http://98.90.207.183/api/historial-pedidos`;
 
   function setStatus(message, ok = false) {
     statusBox.textContent = message;

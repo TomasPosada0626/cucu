@@ -5,6 +5,8 @@ from rest_framework.views import APIView
 
 from common.exceptions import NotFoundError, PermissionDeniedError, ValidationError
 
+from ...infrastructure.models import Pedido
+
 from ...application.use_cases import (
     AcceptOrderUseCase,
     CreateOrderUseCase,
@@ -21,6 +23,7 @@ from ...application.use_cases import (
 from ..serializers.market_serializer import (
     PedidoCreateInputSerializer,
     PedidoOutputSerializer,
+    PedidoPublicHistorySerializer,
     PublicacionCreateInputSerializer,
     PublicacionNearbyQuerySerializer,
     PublicacionOutputSerializer,
@@ -185,3 +188,41 @@ class PedidoAceptarAPIView(APIView):
             return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(PedidoOutputSerializer(pedido).data, status=status.HTTP_200_OK)
+
+
+class HistorialPedidosPublicAPIView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request):
+        raw_limit = request.query_params.get("limit", "50")
+        try:
+            limit = int(raw_limit)
+        except (TypeError, ValueError):
+            return Response({"detail": "El parametro limit debe ser numerico"}, status=status.HTTP_400_BAD_REQUEST)
+
+        limit = max(1, min(limit, 200))
+        pedidos = (
+            Pedido.objects.select_related("publicacion")
+            .prefetch_related("items__publicacion")
+            .order_by("-fecha_creacion")[:limit]
+        )
+
+        response = Response(
+            {
+                "count": len(pedidos),
+                "limit": limit,
+                "results": PedidoPublicHistorySerializer(pedidos, many=True).data,
+            },
+            status=status.HTTP_200_OK,
+        )
+        response["Access-Control-Allow-Origin"] = "*"
+        response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
+        return response
+
+    def options(self, request):
+        response = Response(status=status.HTTP_200_OK)
+        response["Access-Control-Allow-Origin"] = "*"
+        response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
+        response["Access-Control-Allow-Headers"] = "Content-Type"
+        return response

@@ -518,7 +518,7 @@
               </div>
             </label>
             <div id="pseSection" class="payment-expand" hidden>
-              <p class="hint" style="margin: 0;">{% trans "PSE estara disponible mas adelante. Por ahora, selecciona efectivo o tarjeta." %}</p>
+              <p class="hint" style="margin: 0;">{% trans "Seras redirigido al flujo seguro de PSE para completar el pago." %}</p>
             </div>
           </div>
         </div>
@@ -560,7 +560,6 @@
   const TXT_TOTAL_HELP = '{% trans "Total:" %}';
   const TXT_ENTER_PAY = '{% trans "Ingresa el valor con el que pagaras." %}';
   const TXT_PROCESSING = '{% trans "Procesando..." %}';
-  const TXT_PSE_DISABLED = '{% trans "PSE todavia no esta disponible. Selecciona efectivo o tarjeta." %}';
   const TXT_CART_EMPTY = '{% trans "Tu carrito esta vacio." %}';
   const TXT_PHONE_REQ = '{% trans "El telefono es requerido." %}';
   const TXT_ADDRESS_REQ = '{% trans "La direccion de entrega es requerida." %}';
@@ -1145,7 +1144,7 @@
     cardSection.hidden = metodo !== 'tarjeta';
     pseSection.hidden = metodo !== 'pse';
 
-    submitBtn.disabled = isCartEmpty || metodo === 'pse';
+    submitBtn.disabled = isCartEmpty;
 
     if (metodo === 'efectivo') {
       const needs = Boolean(needsChange?.checked);
@@ -1229,12 +1228,6 @@
     const form = new FormData(e.target);
     const data = Object.fromEntries(form.entries());
     const metodo = String(data.metodo || '').trim();
-
-    if (metodo === 'pse') {
-      setOutMessage(TXT_PSE_DISABLED, 'err');
-      submitBtn.disabled = false;
-      return;
-    }
 
     const selection = sanitizeSelection(loadSelection());
     const publicacion_ids = selectionToPublicacionIds(selection);

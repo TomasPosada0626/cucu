@@ -726,6 +726,7 @@
         <a class="nav-link" data-nav="inicio" href="/">{% trans "Inicio" %}</a>
         <a class="nav-link" data-nav="compra" href="/ui/pedido/">{% trans "Compra" %}</a>
         <a class="nav-link" data-nav="vende" href="/ui/publicar/">{% trans "Vende" %}</a>
+        <a class="nav-link" data-nav="api-externa" href="/ui/api-externa/">{% trans "API Externa" %}</a>
       </nav>
       <div class="nav-tools">
         <form class="lang-form" action="/i18n/setlang/" method="post">
@@ -1120,6 +1121,7 @@
         '/': 'inicio',
         '/ui/pedido/': 'compra',
         '/ui/publicar/': 'vende',
+        '/ui/api-externa/': 'api-externa',
       };
       const activeNav = navMap[path];
       document.querySelectorAll('.nav-link[data-nav]').forEach((link) => {

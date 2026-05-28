@@ -55,3 +55,7 @@ def ui_aceptar_pedido(request):
 
 def ui_notificaciones(request):
     return render(request, "notificaciones.html")
+
+
+def ui_api_externa(request):
+    return render(request, "api_externa.html")

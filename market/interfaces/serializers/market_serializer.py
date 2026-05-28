@@ -192,3 +192,40 @@ class PedidoOutputSerializer(serializers.ModelSerializer):
             "items",
         ]
         read_only_fields = fields
+
+
+class PedidoPublicItemSerializer(serializers.ModelSerializer):
+    publicacion_titulo = serializers.CharField(source="publicacion.titulo", read_only=True)
+
+    class Meta:
+        model = PedidoItem
+        fields = [
+            "publicacion_id",
+            "publicacion_titulo",
+            "cantidad",
+            "precio_unitario",
+        ]
+        read_only_fields = fields
+
+
+class PedidoPublicHistorySerializer(serializers.ModelSerializer):
+    publicacion_titulo = serializers.CharField(source="publicacion.titulo", read_only=True)
+    items_count = serializers.SerializerMethodField()
+    items = PedidoPublicItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Pedido
+        fields = [
+            "id",
+            "fecha_creacion",
+            "estado",
+            "total",
+            "publicacion_id",
+            "publicacion_titulo",
+            "items_count",
+            "items",
+        ]
+        read_only_fields = fields
+
+    def get_items_count(self, obj):
+        return int(getattr(obj, "items_count", None) or obj.items.count())

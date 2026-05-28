@@ -1,0 +1,174 @@
+{% extends "base_app.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "API Externa" %} | CUCU{% endblock %}
+{% block eyebrow %}{% trans "Integracion" %}{% endblock %}
+{% block page_title %}{% trans "Consume una" %} <span>{% trans "API aliada" %}</span>{% endblock %}
+{% block page_lead %}{% trans "Pega una URL JSON de otro equipo y consulta su respuesta desde CUCU." %}{% endblock %}
+
+{% block head_extra %}
+<style>
+  .api-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+
+  .api-card {
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 14px 30px rgba(31, 36, 48, 0.06);
+    padding: 16px;
+  }
+
+  .api-card h3 {
+    margin: 0 0 10px;
+    font-size: 20px;
+    font-weight: 900;
+  }
+
+  .api-actions {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .helper {
+    margin: 8px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .status-box {
+    border-radius: 16px;
+    border: 1px solid rgba(31, 36, 48, 0.1);
+    padding: 12px;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+
+  .status-box.ok {
+    border-color: rgba(19, 162, 111, 0.35);
+    background: rgba(19, 162, 111, 0.1);
+    color: #0d7f57;
+  }
+
+  .status-box.err {
+    border-color: rgba(210, 74, 74, 0.35);
+    background: rgba(210, 74, 74, 0.1);
+    color: #ad2d2d;
+  }
+
+  pre.json-output {
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: #f7f9fd;
+    padding: 12px;
+    max-height: 420px;
+    overflow: auto;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="api-grid">
+  <section class="api-card">
+    <h3>{% trans "Consumir API de equipo aliado" %}</h3>
+    <label>
+      {% trans "URL JSON del aliado" %}
+      <input id="allyUrlInput" type="url" placeholder="https://equipo-aliado.com/api/endpoint" required />
+    </label>
+    <p class="helper">{% trans "Este formulario llama tu backend en /api/aliados/consumir para evitar bloqueos de CORS en el navegador." %}</p>
+    <div class="api-actions">
+      <button id="consumeBtn" class="btn btn-primary" type="button">{% trans "Consultar API" %}</button>
+      <button id="clearBtn" class="btn btn-secondary" type="button">{% trans "Limpiar" %}</button>
+    </div>
+  </section>
+
+  <section class="api-card">
+    <h3>{% trans "Tu API para otros equipos" %}</h3>
+    <label>
+      {% trans "Endpoint de historial de pedidos" %}
+      <input id="myApiUrl" type="text" readonly />
+    </label>
+    <p class="helper">{% trans "Comparte esta URL. Responde JSON con los pedidos recientes y soporta ?limit=50." %}</p>
+  </section>
+
+  <section class="api-card">
+    <h3>{% trans "Respuesta" %}</h3>
+    <div id="statusBox" class="status-box">{% trans "Aun no hay consulta." %}</div>
+    <pre id="jsonOutput" class="json-output">{}</pre>
+  </section>
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+  const allyUrlInput = document.getElementById('allyUrlInput');
+  const consumeBtn = document.getElementById('consumeBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const myApiUrl = document.getElementById('myApiUrl');
+  const statusBox = document.getElementById('statusBox');
+  const jsonOutput = document.getElementById('jsonOutput');
+
+  myApiUrl.value = `${window.location.origin}/api/historial-pedidos`;
+
+  function setStatus(message, ok = false) {
+    statusBox.textContent = message;
+    statusBox.classList.remove('ok', 'err');
+    statusBox.classList.add(ok ? 'ok' : 'err');
+  }
+
+  function setJson(value) {
+    jsonOutput.textContent = JSON.stringify(value, null, 2);
+  }
+
+  consumeBtn.addEventListener('click', async () => {
+    const url = String(allyUrlInput.value || '').trim();
+    if (!url) {
+      setStatus('Debes ingresar una URL', false);
+      return;
+    }
+
+    consumeBtn.disabled = true;
+    setStatus('Consultando servicio aliado...', true);
+
+    try {
+      const response = await fetch('/api/aliados/consumir', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url }),
+      });
+
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        setStatus(payload.detail || 'No se pudo consumir la URL', false);
+        setJson(payload);
+        consumeBtn.disabled = false;
+        return;
+      }
+
+      setStatus(`Exito. Codigo HTTP aliado: ${payload.status_code}`, true);
+      setJson(payload.data ?? payload);
+    } catch (error) {
+      setStatus('Error de red al consumir la API aliada', false);
+      setJson({ error: String(error?.message || error) });
+    } finally {
+      consumeBtn.disabled = false;
+    }
+  });
+
+  clearBtn.addEventListener('click', () => {
+    allyUrlInput.value = '';
+    statusBox.classList.remove('ok', 'err');
+    statusBox.textContent = 'Aun no hay consulta.';
+    jsonOutput.textContent = '{}';
+  });
+</script>
+{% endblock %}

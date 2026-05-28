@@ -5,6 +5,7 @@ Este proyecto es una plataforma construida con un modelo híbrido: **Django (Mon
 
 
 ## Dirección ip elástica:   [cucu](http://98.90.207.183/)
+http://98.90.207.183/
 
 
 ## Requisitos Previos

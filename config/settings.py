@@ -34,6 +34,7 @@ def _load_local_env_file(path: Path) -> None:
             os.environ.setdefault(key, value)
 
 
+_load_local_env_file(BASE_DIR / ".env")
 _load_local_env_file(BASE_DIR / ".env.local")
 
 
@@ -41,10 +42,14 @@ _load_local_env_file(BASE_DIR / ".env.local")
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-vquk_qvq%k*v_&@=7g-t1wd2-_o@u&wkq!bi!rndxqic*g*yko'
+SECRET_KEY = os.environ.get("SECRET_KEY")
+if not SECRET_KEY:
+    raise RuntimeError(
+        "SECRET_KEY no está definido. Copia .env.example a .env y define SECRET_KEY."
+    )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", "True").lower() == "true"
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
 ALLOWED_HOSTS = os.getenv(
     "ALLOWED_HOSTS",

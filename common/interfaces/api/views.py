@@ -1,7 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+import ipaddress
 import json
+import socket
 from urllib import error as url_error
 from urllib import parse as url_parse
 from urllib import request as url_request
@@ -69,8 +71,26 @@ class ConsumeExternalJsonAPIView(APIView):
             raise ValueError("La URL no es valida")
 
         host = (parsed.hostname or "").lower()
-        if host in {"localhost", "127.0.0.1", "0.0.0.0", "::1"}:
-            raise ValueError("No se permite consumir hosts locales")
+        if not host:
+            raise ValueError("La URL no es valida")
+
+        try:
+            addr_infos = socket.getaddrinfo(host, None)
+        except socket.gaierror:
+            raise ValueError("No fue posible resolver el host de la URL")
+
+        for _family, _type, _proto, _canonname, sockaddr in addr_infos:
+            ip = ipaddress.ip_address(sockaddr[0])
+            if (
+                ip.is_private
+                or ip.is_loopback
+                or ip.is_link_local
+                or ip.is_reserved
+                or ip.is_multicast
+                or ip.is_unspecified
+            ):
+                raise ValueError("No se permite consumir hosts locales o privados")
+
         return candidate
 
     def post(self, request):

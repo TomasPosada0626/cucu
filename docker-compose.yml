@@ -34,6 +34,7 @@ services:
     command: gunicorn --bind 0.0.0.0:8000 --workers 4 config.wsgi:application
     environment:
       - DEBUG=True
+      - SECRET_KEY=${SECRET_KEY}
       - DJANGO_SETTINGS_MODULE=config.settings
       - GEO_SERVICE_URL=http://geo-service:8081
       - NOTIFICATIONS_SERVICE_URL=http://notifications-service:8082
@@ -84,8 +85,8 @@ services:
       - PAYMENTS_DATABASE_PATH=/app/data/payments.db
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_PORT=5672
-      - RABBITMQ_USER=guest
-      - RABBITMQ_PASSWORD=guest
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
       - RABBITMQ_PAYMENTS_QUEUE=payments.events
     depends_on:
       - rabbitmq
@@ -112,8 +113,8 @@ services:
       - NOTIFICATIONS_DATABASE_PATH=/app/data/notifications.db
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_PORT=5672
-      - RABBITMQ_USER=guest
-      - RABBITMQ_PASSWORD=guest
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
       - RABBITMQ_PAYMENTS_QUEUE=payments.events
     depends_on:
       - rabbitmq
@@ -138,7 +139,7 @@ services:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
       - AUTH_DATABASE_PATH=/app/data/auth.db
-      - AUTH_JWT_SECRET=${AUTH_JWT_SECRET:-change-me-in-production}
+      - AUTH_JWT_SECRET=${AUTH_JWT_SECRET}
       - AUTH_ACCESS_TOKEN_TTL_MINUTES=${AUTH_ACCESS_TOKEN_TTL_MINUTES:-15}
       - AUTH_REFRESH_TOKEN_TTL_DAYS=${AUTH_REFRESH_TOKEN_TTL_DAYS:-30}
     volumes:
@@ -203,6 +204,7 @@ services:
     command: celery -A config worker --loglevel=info
     environment:
       - DEBUG=False
+      - SECRET_KEY=${SECRET_KEY}
       - ALLOWED_HOSTS=localhost,127.0.0.1,54.173.64.109
       - DJANGO_SETTINGS_MODULE=config.settings
       - GEO_SERVICE_URL=http://geo-service:8081
@@ -228,8 +230,8 @@ services:
       - NOTIFICATIONS_DATABASE_PATH=/app/data/notifications.db
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_PORT=5672
-      - RABBITMQ_USER=guest
-      - RABBITMQ_PASSWORD=guest
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
       - RABBITMQ_PAYMENTS_QUEUE=payments.events
     depends_on:
       - rabbitmq
@@ -242,13 +244,13 @@ services:
     image: rabbitmq:3.13-management
     container_name: cucu-rabbitmq
     environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
     expose:
       - "5672"
       - "15672"
     ports:
-      - "15672:15672"
+      - "127.0.0.1:15672:15672"
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "ping"]
       interval: 20s

@@ -311,6 +311,8 @@
 <script>
   const auth = window.CUCUAuth;
   const tracking = window.CUCUTracking;
+  const SIMULATE_TRACKING = {{ SIMULATE_COURIER_TRACKING|yesno:"true,false" }};
+  const TXT_WAITING_REAL_COURIER = '{% trans "Buscando repartidor disponible..." %}';
   const TXT_ASSIGNING = '{% trans "Asignando repartidor" %}';
   const TXT_TO_PICKUP = '{% trans "Repartidor yendo por tu pedido" %}';
   const TXT_AT_PICKUP = '{% trans "Repartidor ha llegado por tu pedido" %}';
@@ -1186,6 +1188,22 @@
     }
 
     clearTimeline();
+
+    if (!SIMULATE_TRACKING) {
+      // Todavia no existe un sistema real de repartidores (ver roadmap): se
+      // muestran los puntos reales de recogida/entrega, pero sin inventar
+      // movimiento de un repartidor que no existe.
+      courierStart = null;
+      renderTrackingMap();
+      setMarkerVisible(courierMarker, false);
+      statusValue.textContent = TXT_WAITING_REAL_COURIER;
+      etaValue.textContent = '—';
+      window.setTimeout(() => {
+        try { google.maps.event.trigger(map, 'resize'); } catch {}
+      }, 50);
+      return;
+    }
+
     courierStart = pickups[0] ? buildCourierStartPoint(pickups[0]) : null;
     renderTrackingMap();
     statusValue.textContent = TXT_LOCATING;

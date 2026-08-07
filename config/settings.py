@@ -114,6 +114,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'config.context_processors.google_maps',
+                'config.context_processors.courier_tracking',
             ],
         },
     },
@@ -216,6 +217,11 @@ NOTIFICATIONS_SERVICE_TIMEOUT_SECONDS = float(os.environ.get("NOTIFICATIONS_SERV
 DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "no-reply@cucu.local")
 EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
 EMAIL_VERIFICATION_CODE_TTL_MINUTES = int(os.environ.get("EMAIL_VERIFICATION_CODE_TTL_MINUTES", "10"))
+
+# Aun no existe un sistema real de repartidores (ver roadmap). Mientras tanto,
+# esto permite mostrar el flujo completo de seguimiento para demos/sustentacion
+# sin fingir movimiento real una vez que se apague.
+SIMULATE_COURIER_TRACKING = os.environ.get("SIMULATE_COURIER_TRACKING", "True").strip().lower() == "true"
 
 CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "redis://redis:6379/0")
 CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND", CELERY_BROKER_URL)

@@ -27,7 +27,7 @@ class LoginTests(TestCase):
 	def test_login_success_returns_token_and_user(self):
 		payload = {"email": self.email, "password": self.password}
 		response = self.client.post(
-			"/login",
+			"/api/login",
 			data=json.dumps(payload),
 			content_type="application/json",
 		)
@@ -50,7 +50,7 @@ class LoginTests(TestCase):
 	def test_login_invalid_credentials_returns_401(self):
 		payload = {"email": self.email, "password": "wrong-password"}
 		response = self.client.post(
-			"/login",
+			"/api/login",
 			data=json.dumps(payload),
 			content_type="application/json",
 		)
@@ -61,7 +61,7 @@ class LoginTests(TestCase):
 	def test_login_email_is_case_insensitive(self):
 		payload = {"email": self.email.upper(), "password": self.password}
 		response = self.client.post(
-			"/login",
+			"/api/login",
 			data=json.dumps(payload),
 			content_type="application/json",
 		)

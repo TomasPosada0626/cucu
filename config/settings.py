@@ -79,13 +79,11 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "accounts",
-    "trust",
     "geo",
     "market",
     "payments",
     "transactions",
     "notifications",
-    "ratings",
 ]
 
 # Es indicarle a django que usaremos un modelo personalizado, no el predeterminado que

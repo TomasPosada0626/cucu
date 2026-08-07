@@ -43,7 +43,7 @@ class PagoCreateTests(TestCase):
 
 	def test_create_pago_authorized_and_associated(self):
 		response = self.client.post(
-			"/pago",
+			"/api/pago",
 			{
 				"pedido_id": self.pedido.id,
 				"metodo": "cash",
@@ -71,7 +71,7 @@ class PagoCreateTests(TestCase):
 		)
 
 		response = self.client.post(
-			"/pago",
+			"/api/pago",
 			{"pedido_id": other_pedido.id, "metodo": "cash", "monto": 20.0},
 			format="json",
 		)

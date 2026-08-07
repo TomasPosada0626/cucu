@@ -113,6 +113,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'config.context_processors.google_maps',
             ],
         },
     },
@@ -205,6 +206,8 @@ SIMPLE_JWT = {
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+GOOGLE_MAPS_API_KEY = os.environ.get("GOOGLE_MAPS_API_KEY", "").strip()
 
 GEO_SERVICE_URL = os.environ.get("GEO_SERVICE_URL", "http://geo-service:8081")
 GEO_SERVICE_TIMEOUT_SECONDS = float(os.environ.get("GEO_SERVICE_TIMEOUT_SECONDS", "2.5"))

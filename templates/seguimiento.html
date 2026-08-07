@@ -12,12 +12,6 @@
 {% block hero_points %}{% endblock %}
 
 {% block head_extra %}
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin=""
-  />
   <style>
     .page-grid { grid-template-columns: minmax(0, 1fr); }
     .hero-panel { display: none; }
@@ -313,11 +307,7 @@
 {% endblock %}
 
 {% block page_scripts %}
-<script
-  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-  crossorigin=""
-></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&libraries=places"></script>
 <script>
   const auth = window.CUCUAuth;
   const tracking = window.CUCUTracking;
@@ -581,15 +571,14 @@
   const MIN_PICKUP_TRAVEL_SECONDS = 8;
   const MIN_DELIVERY_TRAVEL_SECONDS = 28;
 
-  const map = L.map('map', { zoomControl: false, attributionControl: true });
-  L.control.zoom({ position: 'bottomright' }).addTo(map);
-  map.setView([DEFAULT_MAP_CENTER.lat, DEFAULT_MAP_CENTER.lng], 6);
-
-  const base = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    subdomains: 'abcd',
-    maxZoom: 20,
-    attribution: '&copy; OpenStreetMap &copy; CARTO'
-  }).addTo(map);
+  const map = new google.maps.Map(document.getElementById('map'), {
+    center: DEFAULT_MAP_CENTER,
+    zoom: 6,
+    mapTypeControl: false,
+    streetViewControl: false,
+    fullscreenControl: false,
+    zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_BOTTOM },
+  });
 
   let pickups = [];
   let destination = null;
@@ -609,40 +598,62 @@
   let routeEndsAtMs = 0;
   let travelLegSeconds = [];
 
+  function pinIcon(fillColor, glyphPath) {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="34" height="40" viewBox="0 0 34 40">
+      <path d="M17 0C7.6 0 0 7.6 0 17c0 11.5 17 23 17 23s17-11.5 17-23C34 7.6 26.4 0 17 0Z" fill="${fillColor}"/>
+      <g transform="translate(9,7) scale(0.72)"><path d="${glyphPath}" fill="#fff"/></g>
+    </svg>`;
+    return {
+      url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
+      scaledSize: new google.maps.Size(34, 40),
+      anchor: new google.maps.Point(17, 40),
+    };
+  }
+
+  function pinIconLetter(fillColor, letter) {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="34" height="40" viewBox="0 0 34 40">
+      <path d="M17 0C7.6 0 0 7.6 0 17c0 11.5 17 23 17 23s17-11.5 17-23C34 7.6 26.4 0 17 0Z" fill="${fillColor}"/>
+      <text x="17" y="21" font-family="Outfit, Arial, sans-serif" font-weight="800" font-size="16" fill="#fff" text-anchor="middle" dominant-baseline="middle">${letter}</text>
+    </svg>`;
+    return {
+      url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
+      scaledSize: new google.maps.Size(34, 40),
+      anchor: new google.maps.Point(17, 40),
+    };
+  }
+
+  const DELIVERY_GLYPH = 'M12 3.2 3 10.4V21a1 1 0 0 0 1 1h5.5a1 1 0 0 0 1-1v-5h3v5a1 1 0 0 0 1 1H20a1 1 0 0 0 1-1V10.4l-9-7.2Zm0 2.56 7 5.6V20h-3.5v-5a1 1 0 0 0-1-1h-5a1 1 0 0 0-1 1v5H5v-8.64l7-5.6Z';
+  const PICKUP_COLOR = '#2563eb'; // vendedor: punto de recogida
+  const DELIVERY_COLOR = '#ff6a1a'; // tu ubicacion: punto de entrega (mismo naranja de marca)
+
   const pickupMarkers = [];
-  const pickupIcon = L.divIcon({
-    className: '',
-    html: '<div class="map-pin pickup" title="Punto de recogida"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2a1 1 0 0 1 1 1v6a2 2 0 0 0 4 0V3a1 1 0 1 1 2 0v6a4 4 0 0 1-3 3.874V22a1 1 0 1 1-2 0v-9.126A4 4 0 0 1 6 9V3a1 1 0 0 1 1-1Zm9 0a1 1 0 0 1 1 1v8.586l1.293 1.293a1 1 0 0 1-1.414 1.414L16 13.414V22a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1Z"/></svg></div>',
-    iconSize: [34, 34],
-    iconAnchor: [17, 30],
-  });
+  const pickupIcon = pinIconLetter(PICKUP_COLOR, 'C');
+  const deliveryIcon = pinIcon(DELIVERY_COLOR, DELIVERY_GLYPH);
 
-  const deliveryIcon = L.divIcon({
-    className: '',
-    html: '<div class="map-pin delivery" title="Punto de entrega"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2 3 10.4V21a1 1 0 0 0 1 1h5.5a1 1 0 0 0 1-1v-5h3v5a1 1 0 0 0 1 1H20a1 1 0 0 0 1-1V10.4l-9-7.2Zm0 2.56 7 5.6V20h-3.5v-5a1 1 0 0 0-1-1h-5a1 1 0 0 0-1 1v5H5v-8.64l7-5.6Z"/></svg></div>',
-    iconSize: [34, 34],
-    iconAnchor: [17, 30],
-  });
-
-  const destMarker = L.marker(DEFAULT_MAP_CENTER, { title: 'Tu ubicación', icon: deliveryIcon }).addTo(map);
-  destMarker.setOpacity(0);
+  const destMarker = new google.maps.Marker({ position: DEFAULT_MAP_CENTER, title: 'Tu ubicación', icon: deliveryIcon, map });
+  destMarker.setVisible(false);
 
   const routeColor = getComputedStyle(document.documentElement).getPropertyValue('--accent')?.trim() || '#ff6a1a';
 
-  const courierIcon = L.divIcon({
-    className: '',
-    html: '<div class="courier-marker" title="Repartidor">🛵</div>',
-    iconSize: [34, 34],
-    iconAnchor: [17, 30],
-  });
+  const COURIER_COLOR = '#1f2430'; // distinto del naranja (destino) y el azul (vendedor)
+  const courierIcon = {
+    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 34 34">
+        <rect x="1" y="1" width="32" height="32" rx="12" fill="${COURIER_COLOR}" stroke="#fff" stroke-width="2"/>
+        <text x="17" y="23" font-size="18" text-anchor="middle">🛵</text>
+      </svg>`
+    ),
+    scaledSize: new google.maps.Size(34, 34),
+    anchor: new google.maps.Point(17, 30),
+  };
 
-  const courierMarker = L.marker(DEFAULT_MAP_CENTER, { icon: courierIcon, title: 'Repartidor' }).addTo(map);
-  courierMarker.setOpacity(0);
-  const routeLine = L.polyline([], { color: routeColor, weight: 4, opacity: 0.9 }).addTo(map);
+  const courierMarker = new google.maps.Marker({ position: DEFAULT_MAP_CENTER, icon: courierIcon, title: 'Repartidor', map });
+  courierMarker.setVisible(false);
+  const routeLine = new google.maps.Polyline({ path: [], strokeColor: routeColor, strokeWeight: 4, strokeOpacity: 0.9, map });
 
   function setMarkerVisible(marker, visible) {
-    if (!marker?.setOpacity) return;
-    marker.setOpacity(visible ? 1 : 0);
+    if (!marker?.setVisible) return;
+    marker.setVisible(visible);
   }
 
   function clearTimeline() {
@@ -655,11 +666,13 @@
     pickups.forEach((p) => points.push(p));
     if (destination) points.push(destination);
     if (!points.length) {
-      map.setView([DEFAULT_MAP_CENTER.lat, DEFAULT_MAP_CENTER.lng], 6);
+      map.setCenter(DEFAULT_MAP_CENTER);
+      map.setZoom(6);
       return;
     }
-    const bounds = L.latLngBounds(points.map((p) => [p.lat, p.lng]));
-    map.fitBounds(bounds.pad(0.25));
+    const bounds = new google.maps.LatLngBounds();
+    points.forEach((p) => bounds.extend(p));
+    map.fitBounds(bounds, 60);
   }
 
   function setDistanceText(km) {
@@ -871,7 +884,7 @@
   }
 
   function resetPickupMarkers() {
-    pickupMarkers.forEach((m) => map.removeLayer(m));
+    pickupMarkers.forEach((m) => m.setMap(null));
     pickupMarkers.length = 0;
   }
 
@@ -879,26 +892,26 @@
     resetPickupMarkers();
     pickups.forEach((p, idx) => {
       const title = pickups.length === 1 ? TXT_PICKUP : `${TXT_PICKUP} ${idx + 1}`;
-      const marker = L.marker(p, { title, icon: pickupIcon }).addTo(map);
+      const marker = new google.maps.Marker({ position: p, title, icon: pickupIcon, map });
       pickupMarkers.push(marker);
     });
 
     if (destination) {
-      destMarker.setLatLng(destination);
+      destMarker.setPosition(destination);
       setMarkerVisible(destMarker, true);
     } else {
       setMarkerVisible(destMarker, false);
     }
 
     if (courierStart) {
-      courierMarker.setLatLng(courierStart);
+      courierMarker.setPosition(courierStart);
     } else {
       setMarkerVisible(courierMarker, false);
     }
 
-    routeLine.setLatLngs(Array.isArray(roadPath) ? roadPath : []);
+    routeLine.setPath(Array.isArray(roadPath) ? roadPath : []);
     fit();
-    try { map.invalidateSize(); } catch {}
+    try { google.maps.event.trigger(map, 'resize'); } catch {}
   }
 
   function restoreTrackingFromPlan(plan) {
@@ -982,7 +995,7 @@
     if (!route?.path?.length || !route?.legSeconds?.length) {
       out.classList.add('err');
       out.textContent = TXT_ROUTE_ERROR;
-      routeLine.setLatLngs([]);
+      routeLine.setPath([]);
       return false;
     }
 
@@ -1056,7 +1069,7 @@
     const courierPos = pointAtDistance(roadPath, roadCum, travelledMeters) || roadPath[0];
 
     if (stage !== 'assigning') {
-      courierMarker.setLatLng(courierPos);
+      courierMarker.setPosition(courierPos);
     }
 
     const remainingKm = Math.max(0, (routeDistanceMeters - travelledMeters) / 1000);
@@ -1073,7 +1086,8 @@
     if (!pedidoId) {
       out.classList.add('err');
       out.textContent = TXT_MISSING_PEDIDO_ID;
-      map.setView([DEFAULT_MAP_CENTER.lat, DEFAULT_MAP_CENTER.lng], 6);
+      map.setCenter(DEFAULT_MAP_CENTER);
+      map.setZoom(6);
       return;
     }
 
@@ -1104,7 +1118,8 @@
     if (!res.ok) {
       out.classList.add('err');
       out.textContent = JSON.stringify({ status: res.status, body: pedido }, null, 2);
-      map.setView([DEFAULT_MAP_CENTER.lat, DEFAULT_MAP_CENTER.lng], 6);
+      map.setCenter(DEFAULT_MAP_CENTER);
+      map.setZoom(6);
       return;
     }
 
@@ -1175,7 +1190,7 @@
     renderTrackingMap();
     statusValue.textContent = TXT_LOCATING;
     window.setTimeout(() => {
-      try { map.invalidateSize(); } catch {}
+      try { google.maps.event.trigger(map, 'resize'); } catch {}
     }, 50);
 
     const existingPlan = tracking?.readTrackingPlan ? tracking.readTrackingPlan(pedidoId) : null;
@@ -1184,7 +1199,8 @@
     if (!restoredPlan || needsRouteUpgrade) {
       const ready = await setupTrackingRoute(Number(existingPlan?.startedAt || last?.createdAt || Date.now()));
       if (!ready) {
-        map.setView([destination.lat, destination.lng], 14);
+        map.setCenter(destination);
+        map.setZoom(14);
         return;
       }
     }

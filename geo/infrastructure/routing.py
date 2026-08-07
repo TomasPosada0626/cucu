@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 from urllib.parse import quote, urlencode
 from urllib.request import Request, urlopen
 
@@ -46,10 +47,46 @@ def _decode_polyline6(encoded: str) -> list[list[float]]:
     return coordinates
 
 
+def _decode_polyline5(encoded: str) -> list[list[float]]:
+    """Decodifica el algoritmo de polyline estandar de Google (precision 5)."""
+    coordinates: list[list[float]] = []
+    index = 0
+    lat = 0
+    lon = 0
+    factor = 100_000
+
+    while index < len(encoded):
+        result = 1
+        shift = 0
+        while True:
+            byte = ord(encoded[index]) - 63 - 1
+            index += 1
+            result += byte << shift
+            shift += 5
+            if byte < 0x1F:
+                break
+        lat += ~(result >> 1) if result & 1 else (result >> 1)
+
+        result = 1
+        shift = 0
+        while True:
+            byte = ord(encoded[index]) - 63 - 1
+            index += 1
+            result += byte << shift
+            shift += 5
+            if byte < 0x1F:
+                break
+        lon += ~(result >> 1) if result & 1 else (result >> 1)
+
+        coordinates.append([lon / factor, lat / factor])
+
+    return coordinates
+
+
 class RouteService:
     def get_route(self, *, coords: str):
         route = None
-        for fetcher in (self._fetch_osrm_route, self._fetch_valhalla_route):
+        for fetcher in (self._fetch_google_route, self._fetch_osrm_route, self._fetch_valhalla_route):
             try:
                 route = fetcher(coords)
             except Exception:
@@ -57,6 +94,62 @@ class RouteService:
             if route:
                 return route
         return None
+
+    def _fetch_google_route(self, coords: str):
+        api_key = os.environ.get("GOOGLE_MAPS_API_KEY", "").strip()
+        if not api_key:
+            return None
+
+        points = []
+        for pair in str(coords or "").split(";"):
+            lon_str, lat_str = pair.split(",")
+            points.append((float(lat_str), float(lon_str)))
+
+        if len(points) < 2:
+            return None
+
+        origin = f"{points[0][0]},{points[0][1]}"
+        destination = f"{points[-1][0]},{points[-1][1]}"
+        params = {
+            "origin": origin,
+            "destination": destination,
+            "key": api_key,
+        }
+        if len(points) > 2:
+            waypoints = "|".join(f"{lat},{lon}" for lat, lon in points[1:-1])
+            params["waypoints"] = waypoints
+
+        url = f"https://maps.googleapis.com/maps/api/directions/json?{urlencode(params)}"
+        payload = _fetch_json(url, headers={"Accept": "application/json"}, timeout=6)
+
+        if payload.get("status") != "OK":
+            return None
+
+        routes = payload.get("routes") or []
+        if not routes:
+            return None
+
+        route = routes[0]
+        overview = (route.get("overview_polyline") or {}).get("points") or ""
+        geometry = _decode_polyline5(overview) if overview else []
+        legs = route.get("legs") or []
+        if not geometry or not legs:
+            return None
+
+        normalized_legs = [
+            {
+                "duration": float((leg.get("duration") or {}).get("value") or 0),
+                "distance": float((leg.get("distance") or {}).get("value") or 0),
+            }
+            for leg in legs
+        ]
+
+        return {
+            "duration": sum(leg["duration"] for leg in normalized_legs),
+            "distance": sum(leg["distance"] for leg in normalized_legs),
+            "geometry": geometry,
+            "legs": normalized_legs,
+        }
 
     def _fetch_osrm_route(self, coords: str):
         params = urlencode({

@@ -1,12 +1,16 @@
-# CUCU Comida casera en cocas cerca de ti
+# CUCU — Comida casera en cocas cerca de ti
+
 <img width="1191" height="707" alt="image" src="https://github.com/user-attachments/assets/dc99b69f-c6b5-45a6-9abd-fae4f4a72edf" />
 
-Este proyecto es una plataforma construida con un modelo híbrido: **Django (Monolito para vistas y lógica central) + Flask (Microservicios especializados)** y servicios de apoyo como RabbitMQ y Redis. Todo orquestado con **Docker Compose** y expuesto a través de un **API Gateway (Nginx)**.
+CUCU es un marketplace local de comida casera: conecta a personas que tienen porciones adicionales de comida ("cocas") con usuarios cercanos que buscan una alternativa rápida, económica y casera para alimentarse. La ubicación geográfica es el eje del producto: publicaciones, notificaciones y cierre de la transacción dependen de la cercanía entre comprador y vendedor.
 
+El proyecto está construido con un modelo híbrido: **Django (monolito para vistas y lógica central) + Flask (microservicios especializados)**, con **RabbitMQ** y **Redis** como servicios de apoyo. Todo se orquesta con **Docker Compose** y se expone a través de un **API Gateway (Nginx)**.
 
-## Dirección ip elástica:   [cucu](http://98.90.207.183/)
-http://98.90.207.183/
+Más contexto de negocio y las entregas académicas del proyecto están en la [Wiki](../../wiki).
 
+## Estado del proyecto
+
+Este repo es un fork activo mantenido por [@TomasPosada0626](https://github.com/TomasPosada0626) a partir del trabajo original en equipo. Hay una hoja de ruta de mejoras en curso — ver los [Issues](../../issues) para el detalle y prioridad de cada frente (seguridad, arquitectura limpia, tests, microservicios).
 
 ## Requisitos Previos
 
@@ -16,15 +20,16 @@ http://98.90.207.183/
 ## Ejecución Local con Docker Compose
 
 1. **Configurar Variables de Entorno**
-   Copia el archivo de ejemplo para crear tus variables locales:
+   Copia el archivo de ejemplo para crear tus variables locales. **Nunca comitees `.env`** — ya está en `.gitignore`, y tanto Django como Docker Compose lo leen automáticamente:
    ```bash
    cp .env.example .env
    ```
+   Ajusta al menos `SECRET_KEY`, `AUTH_JWT_SECRET` y `RABBITMQ_PASSWORD` con valores propios (no dejes los placeholders del ejemplo si vas a exponer el servicio).
 
 2. **Levantar el Ecosistema**
    Ejecuta el siguiente comando en la raíz del proyecto para construir y levantar todos los servicios:
    ```bash
--   docker compose up --build -d
+   docker compose up --build -d
    ```
 
 3. **Verificar los Servicios**
@@ -69,3 +74,11 @@ docker compose logs -f celery-worker
 
 Para instrucciones sobre el despliegue en la nube, revisa [README_DEPLOY_AWS.md](./README_DEPLOY_AWS.md).
 Para la revisión de cumplimiento de requisitos, revisa [Entregable2](../../wiki/Entregable2).
+
+## Colaboradores
+
+Proyecto desarrollado en equipo:
+
+- [Laura Indaburu](https://github.com/Lauraindabur)
+- [Athina Cappelletti](https://github.com/Athina7-7)
+- [Tomas Posada](https://github.com/TomasPosada0626)

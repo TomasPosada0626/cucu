@@ -5,3 +5,8 @@ venv/
 db.sqlite3
 .env
 .env.local
+
+# Herramientas locales de Claude, no se versionan
+CLAUDE.md
+graphify-out/
+.claude/

@@ -56,6 +56,16 @@ ALLOWED_HOSTS = os.getenv(
     "localhost,127.0.0.1,[::1],testserver"
 ).split(",")
 
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
+    if origin.strip()
+]
+
+# Nginx termina TLS y reenvia X-Forwarded-Proto; sin esto Django cree que
+# toda peticion llega por HTTP y falla la verificacion CSRF de forms HTTPS.
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 # Application definition
 # Es lo que define que mostrará la app
 INSTALLED_APPS = [

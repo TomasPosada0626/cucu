@@ -36,7 +36,6 @@ Este repo es un fork activo mantenido por [@TomasPosada0626](https://github.com/
    - **Frontend/Monolito Django:** Navega a `http://localhost/` (Nginx redirigirá automáticamente a Django).
    - **Healthcheck Nginx:** `http://localhost/health`
    - **Endpoint Microservicio Flask (pagos):** `http://localhost/api/v2/payments`
-   - **Endpoint Terceros/Aliados:** `http://localhost/api/external-services`
    - **Disparar Tarea Asíncrona:** `POST http://localhost/api/trigger-task`
 
 4. **Traducciones (i18n)**
@@ -57,17 +56,12 @@ Este repo es un fork activo mantenido por [@TomasPosada0626](https://github.com/
 curl -X GET http://localhost/api/publicaciones
 ```
 
-**2. Probar consumo de APIs Terceros y Servicio Aliado (Patrón Adapter)**
-```bash
-curl -X GET http://localhost/api/external-services?email=usuario@ejemplo.com
-```
-
-**3. Probar Tarea Asíncrona (Celery)**
+**2. Probar Tarea Asíncrona (Celery)**
 ```bash
 curl -X POST http://localhost/api/trigger-task -H "Content-Type: application/json" -d '{"email":"admin@cucu.local"}'
 ```
 
-**4. Logs de Celery Worker (Para ver ejecución de tarea asíncrona)**
+**3. Logs de Celery Worker (Para ver ejecución de tarea asíncrona)**
 ```bash
 docker compose logs -f celery-worker
 ```

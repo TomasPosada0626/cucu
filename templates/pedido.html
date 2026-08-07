@@ -90,6 +90,17 @@
       background: linear-gradient(135deg, var(--accent), var(--accent-deep));
       box-shadow: 0 8px 18px rgba(242, 92, 16, 0.22);
       flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 15px;
+      line-height: 1;
+    }
+    .brand-mark::before {
+      content: 'C';
     }
 
     .nav-center {
@@ -1525,7 +1536,6 @@
         <a class="nav-link" href="/">{% trans "Inicio" %}</a>
         <a class="nav-link active" href="/ui/pedido/">{% trans "Compra" %}</a>
         <a class="nav-link" href="/ui/publicar/">{% trans "Vende" %}</a>
-        <a class="nav-link" href="/ui/api-externa/">{% trans "API Externa" %}</a>
       </nav>
 
       <div class="nav-actions">

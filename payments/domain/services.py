@@ -1,17 +1,28 @@
+from __future__ import annotations
+
 import logging
 
 from django.utils import timezone
 
 from common.exceptions import NotFoundError, ValidationError
-
-from market.infrastructure.models import Pedido
 from transactions.domain.builders import ensure_transaccion_for_pedido
 
 from ..infrastructure.gateways import PaymentGatewayFactory
-from ..infrastructure.models import Pago
-
+from .repositories import PagoRepository, PedidoLookupRepository
 
 logger = logging.getLogger(__name__)
+
+
+def _default_pedido_lookup_repository() -> PedidoLookupRepository:
+    from ..infrastructure.repositories_impl import DjangoPedidoLookupRepository
+
+    return DjangoPedidoLookupRepository()
+
+
+def _default_pago_repository() -> PagoRepository:
+    from ..infrastructure.repositories_impl import DjangoPagoRepository
+
+    return DjangoPagoRepository()
 
 
 class PaymentService:
@@ -20,15 +31,18 @@ class PaymentService:
         *,
         gateway_factory=PaymentGatewayFactory,
         ensure_transaccion_func=ensure_transaccion_for_pedido,
+        pedido_lookup_repository: PedidoLookupRepository | None = None,
+        pago_repository: PagoRepository | None = None,
     ):
         self._gateway_factory = gateway_factory
         self._ensure_transaccion = ensure_transaccion_func
+        self._pedido_lookup_repository = pedido_lookup_repository or _default_pedido_lookup_repository()
+        self._pago_repository = pago_repository or _default_pago_repository()
 
-    def register_payment(self, *, user, pedido_id: int, metodo: str, monto: float | None = None) -> Pago:
-        try:
-            pedido = Pedido.objects.get(id=pedido_id)
-        except Pedido.DoesNotExist as exc:
-            raise NotFoundError("Pedido no encontrado") from exc
+    def register_payment(self, *, user, pedido_id: int, metodo: str, monto: float | None = None):
+        pedido = self._pedido_lookup_repository.get_by_id(pedido_id)
+        if pedido is None:
+            raise NotFoundError("Pedido no encontrado")
 
         if pedido.usuario_id != user.id:
             raise ValidationError("No puedes pagar un pedido que no es tuyo")
@@ -48,7 +62,7 @@ class PaymentService:
         gateway = self._gateway_factory.get_gateway(method=metodo)
         authorized = gateway.authorize(amount=float(monto_to_charge))
 
-        pago = Pago.objects.create(
+        pago = self._pago_repository.create(
             pedido=pedido,
             metodo=metodo,
             monto=monto_to_charge,
@@ -72,4 +86,3 @@ class PaymentService:
             logger.exception("No se pudo encolar la notificacion asincrona del pago", extra={"pago_id": pago.id})
 
         return pago
-

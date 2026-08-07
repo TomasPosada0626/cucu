@@ -1,34 +1,50 @@
 from __future__ import annotations
 
-from decimal import Decimal
-from math import asin, cos, radians, sin, sqrt
+from math import asin, cos, radians, sin
 from typing import Callable
-
-from django.db import transaction
-from django.db.models import F, FloatField, Sum, Value
-from django.db.models.functions import Coalesce
 
 from common.exceptions import NotFoundError, PermissionDeniedError, ValidationError
 from geo.domain.services import GeocodingService
-from geo.infrastructure.models import Ubicacion
 from notifications.domain.services import NotificacionService
 
-from ..infrastructure.models import Pedido, Publicacion
 from .builders import PedidoBuilder
+from .repositories import PedidoRepository, PublicacionRepository, UbicacionRepository
 
 
-TERMINAL_ORDER_STATES = {"ENTREGADO", "FINALIZADO", "COMPLETADO", "CANCELADO"}
+def _default_publicacion_repository() -> PublicacionRepository:
+    from ..infrastructure.repositories_impl import DjangoPublicacionRepository
+
+    return DjangoPublicacionRepository()
+
+
+def _default_pedido_repository() -> PedidoRepository:
+    from ..infrastructure.repositories_impl import DjangoPedidoRepository
+
+    return DjangoPedidoRepository()
+
+
+def _default_ubicacion_repository() -> UbicacionRepository:
+    from ..infrastructure.repositories_impl import DjangoUbicacionRepository
+
+    return DjangoUbicacionRepository()
 
 
 class AcceptOrderService:
-    def __init__(self, *, notificacion_service: NotificacionService | None = None):
+    def __init__(
+        self,
+        *,
+        pedido_repository: PedidoRepository | None = None,
+        notificacion_service: NotificacionService | None = None,
+    ):
+        self._pedido_repository = pedido_repository or _default_pedido_repository()
         self._notificacion_service = notificacion_service or NotificacionService()
 
-    def accept_order(self, *, user, pedido_id: int) -> Pedido:
-        try:
-            pedido = Pedido.objects.select_related("publicacion", "usuario").get(id=pedido_id)
-        except Pedido.DoesNotExist as exc:
-            raise NotFoundError("Pedido no encontrado") from exc
+    def accept_order(self, *, user, pedido_id: int):
+        # El pedido lo acepta el vendedor (dueno de la publicacion), no el
+        # comprador, asi que se busca por id sin filtrar por usuario dueno.
+        pedido = self._pedido_repository.get_by_id_with_relations(pedido_id)
+        if pedido is None:
+            raise NotFoundError("Pedido no encontrado")
 
         if pedido.publicacion.usuario_id != user.id:
             raise PermissionDeniedError("Solo el dueño de la publicación puede aceptar el pedido")
@@ -37,7 +53,7 @@ class AcceptOrderService:
             raise ValidationError("Solo se pueden aceptar pedidos en estado PENDIENTE")
 
         pedido.estado = "ACEPTADO"
-        pedido.save(update_fields=["estado"])
+        self._pedido_repository.save_estado(pedido)
 
         self._notificacion_service.enviar(
             usuario=pedido.usuario,
@@ -49,11 +65,19 @@ class AcceptOrderService:
 
 
 class CatalogService:
-    def __init__(self, *, geocoding_service: GeocodingService | None = None):
+    def __init__(
+        self,
+        *,
+        publicacion_repository: PublicacionRepository | None = None,
+        ubicacion_repository: UbicacionRepository | None = None,
+        geocoding_service: GeocodingService | None = None,
+    ):
+        self._publicacion_repository = publicacion_repository or _default_publicacion_repository()
+        self._ubicacion_repository = ubicacion_repository or _default_ubicacion_repository()
         self._geocoding_service = geocoding_service or GeocodingService()
 
     def list_publicaciones(self):
-        return Publicacion.objects.select_related("ubicacion").all().order_by("-id")
+        return self._publicacion_repository.list_all()
 
     def list_publicaciones_cercanas(
         self,
@@ -69,11 +93,7 @@ class CatalogService:
             longitud=longitud,
             direccion_texto=direccion_texto,
         )
-        publicaciones = (
-            Publicacion.objects.select_related("ubicacion")
-            .filter(estado="ACTIVA", ubicacion__isnull=False)
-            .order_by("-id")
-        )
+        publicaciones = self._publicacion_repository.list_active_with_location()
 
         cercanas = []
         for publicacion in publicaciones:
@@ -109,18 +129,18 @@ class CatalogService:
         direccion_texto: str,
         latitud=None,
         longitud=None,
-    ) -> Publicacion:
+    ):
         latitud_resuelta, longitud_resuelta, direccion_resuelta = self._resolve_location_for_publicacion(
             direccion_texto=direccion_texto,
             latitud=latitud,
             longitud=longitud,
         )
-        ubicacion = Ubicacion.objects.create(
+        ubicacion = self._ubicacion_repository.create(
             direccion_texto=direccion_resuelta,
             latitud=latitud_resuelta,
             longitud=longitud_resuelta,
         )
-        return Publicacion.objects.create(
+        return self._publicacion_repository.create(
             titulo=titulo.strip(),
             descripcion=descripcion.strip(),
             categoria=self._clean_categoria(categoria),
@@ -134,87 +154,68 @@ class CatalogService:
         )
 
     def list_publicaciones_for_user(self, *, user):
-        line_total = F("pedido_items__cantidad") * F("pedido_items__precio_unitario")
-        return (
-            Publicacion.objects.select_related("ubicacion")
-            .filter(usuario=user)
-            .annotate(
-                total_vendido=Coalesce(Sum("pedido_items__cantidad"), 0),
-                saldo_generado=Coalesce(Sum(line_total, output_field=FloatField()), Value(0.0)),
-            )
-            .order_by("-fecha_publicacion", "-id")
-        )
+        return self._publicacion_repository.list_for_user(user)
 
-    def update_publicacion(self, *, user, publicacion_id: int, **changes) -> Publicacion:
-        try:
-            publicacion = Publicacion.objects.select_related("ubicacion").get(id=publicacion_id)
-        except Publicacion.DoesNotExist as exc:
-            raise NotFoundError("Publicación no encontrada") from exc
+    def update_publicacion(self, *, user, publicacion_id: int, **changes):
+        publicacion = self._publicacion_repository.get_by_id(publicacion_id)
+        if publicacion is None:
+            raise NotFoundError("Publicación no encontrada")
 
         if publicacion.usuario_id != user.id:
             raise PermissionDeniedError("Solo puedes actualizar tus propias publicaciones")
 
-        update_fields: list[str] = []
+        clean_changes: dict = {}
 
         if "titulo" in changes:
-            publicacion.titulo = str(changes["titulo"] or "").strip()
-            if not publicacion.titulo:
+            titulo = str(changes["titulo"] or "").strip()
+            if not titulo:
                 raise ValidationError("El título es requerido")
-            update_fields.append("titulo")
+            clean_changes["titulo"] = titulo
 
         if "descripcion" in changes:
-            publicacion.descripcion = str(changes["descripcion"] or "").strip()
-            if not publicacion.descripcion:
+            descripcion = str(changes["descripcion"] or "").strip()
+            if not descripcion:
                 raise ValidationError("La descripción es requerida")
-            update_fields.append("descripcion")
+            clean_changes["descripcion"] = descripcion
 
         if "categoria" in changes:
-            publicacion.categoria = self._clean_categoria(changes.get("categoria"))
-            update_fields.append("categoria")
+            clean_changes["categoria"] = self._clean_categoria(changes.get("categoria"))
 
         if "ingredientes" in changes:
-            publicacion.ingredientes = self._clean_ingredientes(changes.get("ingredientes"))
-            update_fields.append("ingredientes")
+            clean_changes["ingredientes"] = self._clean_ingredientes(changes.get("ingredientes"))
 
         if "stock" in changes:
-            publicacion.stock = max(0, int(changes.get("stock") or 0))
-            update_fields.append("stock")
+            clean_changes["stock"] = max(0, int(changes.get("stock") or 0))
 
         if "maximo_por_venta" in changes:
-            publicacion.maximo_por_venta = max(1, int(changes.get("maximo_por_venta") or 1))
-            update_fields.append("maximo_por_venta")
+            clean_changes["maximo_por_venta"] = max(1, int(changes.get("maximo_por_venta") or 1))
 
         if "precio" in changes:
             precio = float(changes.get("precio") or 0)
             if precio <= 0:
                 raise ValidationError("El precio debe ser mayor a 0")
-            publicacion.precio = precio
-            update_fields.append("precio")
+            clean_changes["precio"] = precio
 
         if "estado" in changes:
-            publicacion.estado = str(changes.get("estado") or "ACTIVA").strip().upper()
-            update_fields.append("estado")
+            clean_changes["estado"] = str(changes.get("estado") or "ACTIVA").strip().upper()
 
-        if not update_fields:
+        if not clean_changes:
             raise ValidationError("No hay cambios para guardar")
 
-        publicacion.save(update_fields=update_fields)
+        self._publicacion_repository.update(publicacion, **clean_changes)
         return publicacion
 
     def delete_publicacion(self, *, user, publicacion_id: int) -> None:
-        try:
-            publicacion = Publicacion.objects.select_related("ubicacion").get(id=publicacion_id)
-        except Publicacion.DoesNotExist as exc:
-            raise NotFoundError("Publicación no encontrada") from exc
+        publicacion = self._publicacion_repository.get_by_id(publicacion_id)
+        if publicacion is None:
+            raise NotFoundError("Publicación no encontrada")
 
         if publicacion.usuario_id != user.id:
             raise PermissionDeniedError("Solo puedes eliminar tus propias publicaciones")
 
         ubicacion = publicacion.ubicacion
-        publicacion.delete()
-
-        if ubicacion is not None and not ubicacion.publicaciones.exists():
-            ubicacion.delete()
+        self._publicacion_repository.delete(publicacion)
+        self._ubicacion_repository.delete_if_orphan(ubicacion)
 
     @staticmethod
     def _clean_ingredientes(ingredientes: list[str] | None) -> list[str]:
@@ -266,17 +267,21 @@ class CatalogService:
             sin(delta_latitud / 2) ** 2
             + cos(origen_latitud) * cos(destino_latitud) * sin(delta_longitud / 2) ** 2
         )
-        return 2 * radio_tierra_km * asin(sqrt(a))
+        return 2 * radio_tierra_km * asin(a**0.5)
 
 
 class OrderService:
     def __init__(
         self,
         *,
-        pedido_builder_factory: Callable[[], PedidoBuilder] = PedidoBuilder,
+        pedido_repository: PedidoRepository | None = None,
+        pedido_builder_factory: Callable[[], PedidoBuilder] | None = None,
         notificacion_service: NotificacionService | None = None,
     ):
-        self._pedido_builder_factory = pedido_builder_factory
+        self._pedido_repository = pedido_repository or _default_pedido_repository()
+        self._pedido_builder_factory = pedido_builder_factory or (
+            lambda: PedidoBuilder(pedido_repository=self._pedido_repository)
+        )
         self._notificacion_service = notificacion_service or NotificacionService()
 
     def create_order(
@@ -286,20 +291,15 @@ class OrderService:
         telefono: str,
         direccion_entrega: str,
         direccion_entrega_detalles: str = "",
-        direccion_entrega_latitud: Decimal | None = None,
-        direccion_entrega_longitud: Decimal | None = None,
+        direccion_entrega_latitud=None,
+        direccion_entrega_longitud=None,
         publicacion_id: int | None = None,
         publicacion_ids: list[int] | None = None,
         total: float | None = None,
-    ) -> Pedido:
+    ):
         _ = total
 
-        active_order = (
-            Pedido.objects.filter(usuario=user)
-            .exclude(estado__in=TERMINAL_ORDER_STATES)
-            .order_by("-fecha_creacion")
-            .first()
-        )
+        active_order = self._pedido_repository.get_active_for_user(user)
         if active_order is not None:
             raise ValidationError(
                 f"Ya tienes un pedido activo (#{active_order.id}). Debes esperar a que sea entregado para crear otro."
@@ -311,17 +311,16 @@ class OrderService:
             direccion_entrega_longitud=direccion_entrega_longitud,
         )
 
-        with transaction.atomic():
-            pedido_builder = self._pedido_builder_factory()
-            pedido = (
-                pedido_builder.for_user(user)
-                .with_telefono(telefono)
-                .with_delivery_address(direccion_entrega, direccion_entrega_detalles)
-                .with_delivery_coordinates(latitud_resuelta, longitud_resuelta)
-                .with_publicacion_id(publicacion_id)
-                .with_publicacion_ids(publicacion_ids)
-                .build()
-            )
+        pedido_builder = self._pedido_builder_factory()
+        pedido = (
+            pedido_builder.for_user(user)
+            .with_telefono(telefono)
+            .with_delivery_address(direccion_entrega, direccion_entrega_detalles)
+            .with_delivery_coordinates(latitud_resuelta, longitud_resuelta)
+            .with_publicacion_id(publicacion_id)
+            .with_publicacion_ids(publicacion_ids)
+            .build()
+        )
 
         self._notificacion_service.enviar(
             usuario=pedido.publicacion.usuario,
@@ -331,29 +330,21 @@ class OrderService:
 
         return pedido
 
-    def get_order_for_user(self, *, user, pedido_id: int) -> Pedido:
-        try:
-            return Pedido.objects.prefetch_related("items__publicacion").get(
-                id=pedido_id,
-                usuario=user,
-            )
-        except Pedido.DoesNotExist as exc:
-            raise NotFoundError("Pedido no encontrado") from exc
+    def get_order_for_user(self, *, user, pedido_id: int):
+        pedido = self._pedido_repository.get_for_user(user, pedido_id)
+        if pedido is None:
+            raise NotFoundError("Pedido no encontrado")
+        return pedido
 
-    def mark_order_delivered(self, *, user, pedido_id: int) -> Pedido:
-        try:
-            pedido = Pedido.objects.select_related("publicacion", "usuario").get(
-                id=pedido_id,
-                usuario=user,
-            )
-        except Pedido.DoesNotExist as exc:
-            raise NotFoundError("Pedido no encontrado") from exc
+    def mark_order_delivered(self, *, user, pedido_id: int):
+        pedido = self._pedido_repository.get_for_user(user, pedido_id)
+        if pedido is None:
+            raise NotFoundError("Pedido no encontrado")
 
         if pedido.estado == "ENTREGADO":
             return pedido
 
-        pedido.estado = "ENTREGADO"
-        pedido.save(update_fields=["estado"])
+        self._pedido_repository.mark_delivered(pedido)
 
         self._notificacion_service.enviar(
             usuario=pedido.publicacion.usuario,
@@ -364,18 +355,14 @@ class OrderService:
         return pedido
 
     def list_orders_for_user(self, *, user):
-        return (
-            Pedido.objects.prefetch_related("items__publicacion", "pagos")
-            .filter(usuario=user)
-            .order_by("-fecha_creacion")
-        )
+        return self._pedido_repository.list_for_user(user)
 
     def _resolve_delivery_coordinates(
         self,
         *,
         direccion_entrega: str,
-        direccion_entrega_latitud: Decimal | None,
-        direccion_entrega_longitud: Decimal | None,
+        direccion_entrega_latitud,
+        direccion_entrega_longitud,
     ):
         if direccion_entrega_latitud is not None and direccion_entrega_longitud is not None:
             return direccion_entrega_latitud, direccion_entrega_longitud

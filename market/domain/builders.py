@@ -1,20 +1,16 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from decimal import Decimal
 
-from django.db import transaction
+from common.exceptions import ValidationError
 
-from common.exceptions import NotFoundError, ValidationError
-
-from ..infrastructure.models import Pedido, PedidoItem, Publicacion
-
-
-DELIVERY_FEE_COP = 5000.0
+from .repositories import PedidoRepository
 
 
 @dataclass
 class PedidoBuilder:
+    pedido_repository: PedidoRepository = field(default=None)  # type: ignore[assignment]
     user = None
     telefono: str | None = None
     direccion_entrega: str | None = None
@@ -23,6 +19,12 @@ class PedidoBuilder:
     direccion_entrega_longitud: Decimal | None = None
     publicacion_id: int | None = None
     publicacion_ids: list[int] | None = None
+
+    def __post_init__(self) -> None:
+        if self.pedido_repository is None:
+            from ..infrastructure.repositories_impl import DjangoPedidoRepository
+
+            self.pedido_repository = DjangoPedidoRepository()
 
     def for_user(self, user):
         self.user = user
@@ -50,7 +52,7 @@ class PedidoBuilder:
         self.publicacion_ids = publicacion_ids
         return self
 
-    def build(self) -> Pedido:
+    def build(self):
         if self.user is None:
             raise ValueError("user es requerido")
 
@@ -86,60 +88,12 @@ class PedidoBuilder:
             pid_int = int(pid)
             counts[pid_int] = counts.get(pid_int, 0) + 1
 
-        with transaction.atomic():
-            publicaciones = list(
-                Publicacion.objects.select_for_update().select_related("usuario").filter(id__in=list(counts.keys()))
-            )
-            if len(publicaciones) != len(counts):
-                found_ids = {p.id for p in publicaciones}
-                missing = [pid for pid in counts.keys() if pid not in found_ids]
-                raise NotFoundError(f"Publicación no encontrada: {missing[0]}")
-
-            publicaciones_by_id = {p.id: p for p in publicaciones}
-            computed_total = 0.0
-            for pub_id, qty in counts.items():
-                publicacion = publicaciones_by_id[pub_id]
-                if str(publicacion.estado or "").upper() != "ACTIVA":
-                    raise ValidationError(f"La publicación '{publicacion.titulo}' no está disponible")
-                if int(publicacion.stock or 0) < int(qty):
-                    raise ValidationError(
-                        f"Stock insuficiente para '{publicacion.titulo}'. Disponibles: {int(publicacion.stock or 0)}"
-                    )
-                maximo_por_venta = max(1, int(publicacion.maximo_por_venta or 1))
-                if int(qty) > maximo_por_venta:
-                    raise ValidationError(
-                        f"Solo puedes pedir hasta {maximo_por_venta} unidad{'es' if maximo_por_venta != 1 else ''} de '{publicacion.titulo}' por compra"
-                    )
-                computed_total += float(publicacion.precio) * int(qty)
-
-            computed_total += float(DELIVERY_FEE_COP)
-
-            if computed_total <= 0:
-                raise ValidationError("El total debe ser mayor a 0")
-
-            first_publicacion = publicaciones_by_id[next(iter(counts.keys()))]
-
-            pedido = Pedido.objects.create(
-                usuario=self.user,
-                publicacion=first_publicacion,
-                telefono=telefono,
-                direccion_entrega=direccion_entrega,
-                direccion_entrega_detalles=direccion_entrega_detalles,
-                direccion_entrega_latitud=self.direccion_entrega_latitud,
-                direccion_entrega_longitud=self.direccion_entrega_longitud,
-                total=computed_total,
-            )
-
-            for pub_id, qty in counts.items():
-                pub = publicaciones_by_id[pub_id]
-                PedidoItem.objects.create(
-                    pedido=pedido,
-                    publicacion=pub,
-                    cantidad=int(qty),
-                    precio_unitario=float(pub.precio),
-                )
-                pub.stock = max(0, int(pub.stock or 0) - int(qty))
-                pub.save(update_fields=["stock"])
-
-            return pedido
-
+        return self.pedido_repository.create_order(
+            user=self.user,
+            telefono=telefono,
+            direccion_entrega=direccion_entrega,
+            direccion_entrega_detalles=direccion_entrega_detalles,
+            direccion_entrega_latitud=self.direccion_entrega_latitud,
+            direccion_entrega_longitud=self.direccion_entrega_longitud,
+            counts=counts,
+        )

@@ -14,10 +14,13 @@ services:
       - rabbitmq
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - staticfiles_volume:/app/staticfiles:ro
       - media_volume:/app/media:ro
+      - ./certbot-webroot:/var/www/certbot:ro
+      - ./certbot-etc:/etc/letsencrypt:ro
     healthcheck:
       test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost/health || exit 1"]
       interval: 20s

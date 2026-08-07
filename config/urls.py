@@ -57,9 +57,6 @@ urlpatterns = [
     path('ui/aceptar-pedido/', ui_aceptar_pedido, name='ui-aceptar-pedido'),
     path('ui/notificaciones/', ui_notificaciones, name='ui-notificaciones'),
 
-    path('', include('accounts.interfaces.api.urls')),
-    path('', include('market.interfaces.api.urls')),
-    path('', include('payments.interfaces.api.urls')),
     path('api/', include('notifications.interfaces.api.urls')),
     path('api/', include('geo.interfaces.api.urls')),
 

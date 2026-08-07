@@ -6,6 +6,10 @@ db.sqlite3
 .env
 .env.local
 
+# Artefactos generados / contenido de usuarios, no se versionan
+/staticfiles/
+/media/
+
 # Herramientas locales de Claude, no se versionan
 CLAUDE.md
 graphify-out/

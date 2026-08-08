@@ -10,6 +10,7 @@ class User(AbstractUser):
     reputacion_promedio = models.FloatField(default=0.0)
     total_ventas = models.IntegerField(default=0)
     total_compras = models.IntegerField(default=0)
+    es_repartidor = models.BooleanField(default=False)
 
     def __str__(self):
         return self.email or self.username

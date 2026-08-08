@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <style>
+      .skin { fill: #f6cca4; }
+      .skin-shade { fill: #eab98c; }
+      .jacket { fill: #ff6a17; }
+      .jacket-shade { fill: #e85c0f; }
+      .jacket-light { fill: #ff8a45; }
+      .grey { fill: #d8d6dc; }
+      .grey-dark { fill: #b9b7c0; }
+      .ink { fill: #24262f; }
+      .white { fill: #fdfcfb; }
+    </style>
+  </defs>
+
+  <!-- scooter body -->
+  <g>
+    <ellipse class="grey" cx="200" cy="332" rx="118" ry="10" opacity="0.35"/>
+    <path class="grey-dark" d="M96 300 q-14 0 -14 16 a20 20 0 1 0 40 0 q0 -16 -14 -16z"/>
+    <circle class="ink" cx="112" cy="316" r="13"/>
+    <circle class="white" cx="112" cy="316" r="4.5"/>
+    <path class="grey-dark" d="M262 300 q-14 0 -14 16 a20 20 0 1 0 40 0 q0 -16 -14 -16z"/>
+    <circle class="ink" cx="278" cy="316" r="13"/>
+    <circle class="white" cx="278" cy="316" r="4.5"/>
+    <path class="grey" d="M108 306 q10 -34 46 -34 h72 q30 0 46 20 l14 14 q6 6 -2 10 h-160 q-20 0 -16 -10z"/>
+    <rect class="jacket" x="118" y="252" width="52" height="34" rx="10"/>
+    <rect class="jacket-light" x="124" y="258" width="40" height="8" rx="4"/>
+    <path class="grey-dark" d="M150 252 v-36 q0 -8 8 -8 h10 q8 0 8 8 v6" fill="none" stroke="#b9b7c0" stroke-width="8" stroke-linecap="round"/>
+    <rect class="ink" x="150" y="204" width="30" height="9" rx="4.5"/>
+  </g>
+
+  <!-- delivery box on back -->
+  <g>
+    <rect class="jacket" x="222" y="196" width="60" height="58" rx="8"/>
+    <rect class="jacket-shade" x="222" y="234" width="60" height="20" rx="8"/>
+    <circle class="white" cx="252" cy="222" r="15"/>
+    <path class="jacket" d="M252 210 a12 12 0 0 1 0 24 a12 12 0 0 1 0 -24z" opacity="0"/>
+    <text x="252" y="230" font-family="Arial, sans-serif" font-weight="800" font-size="18" fill="#ff6a17" text-anchor="middle">C</text>
+  </g>
+
+  <!-- courier body -->
+  <g>
+    <path class="jacket" d="M158 262 q4 -46 46 -50 q44 -4 54 34 l10 44 q3 14 -12 16 l-88 8 q-16 1 -16 -14z"/>
+    <path class="jacket-shade" d="M170 296 l88 -8 q6 20 -6 24 l-70 8 q-16 2 -12 -24z"/>
+
+    <path class="skin" d="M150 236 q-18 14 -10 34 q6 14 24 10 l16 -30 q-8 -20 -30 -14z"/>
+    <path class="skin" d="M258 240 q18 10 14 32 q-4 14 -22 12 l-20 -28 q6 -20 28 -16z"/>
+    <rect class="grey-dark" x="140" y="262" width="26" height="10" rx="5" transform="rotate(-18 153 267)"/>
+    <rect class="grey-dark" x="252" y="266" width="26" height="10" rx="5" transform="rotate(20 265 271)"/>
+
+    <circle class="skin" cx="204" cy="182" r="38"/>
+    <path class="skin-shade" d="M170 190 a38 38 0 0 0 34 30 v-14 q-20 -4 -34 -16z"/>
+
+    <path class="ink" d="M168 176 q4 -34 36 -36 q34 -2 40 28 q2 10 -2 10 q-4 -18 -20 -20 q2 8 -4 10 q-24 6 -34 -2 q-6 8 -14 6 q-4 -2 -2 -6 q-2 6 -8 6 q-4 0 4 -14 q0 12 4 18z" opacity="0"/>
+
+    <!-- helmet -->
+    <path class="jacket" d="M160 176 a44 44 0 0 1 88 0 q0 8 -6 8 h-76 q-6 0 -6 -8z"/>
+    <path class="jacket-shade" d="M160 176 a44 44 0 0 1 12 -31 q-6 14 -4 31z"/>
+    <rect class="ink" x="168" y="182" width="72" height="20" rx="10"/>
+    <rect class="white" x="176" y="186" width="56" height="10" rx="5" opacity="0.85"/>
+    <circle class="jacket" cx="248" cy="192" r="7"/>
+
+    <!-- face -->
+    <circle class="ink" cx="192" cy="196" r="3.4"/>
+    <circle class="ink" cx="212" cy="196" r="3.4"/>
+    <path d="M196 210 q8 6 16 0" stroke="#c98a5c" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <circle class="skin-shade" cx="182" cy="204" r="5" opacity="0.55"/>
+  </g>
+
+  <!-- ground shadow -->
+  <ellipse class="grey" cx="196" cy="342" rx="140" ry="8" opacity="0.25"/>
+</svg>

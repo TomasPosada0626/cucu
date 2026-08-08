@@ -22,7 +22,7 @@ class RegisterUserUseCase:
         self._policy_service = policy_service or AccountPolicyService()
         self._password_validator = password_validator
 
-    def execute(self, *, nombre: str, email: str, password: str) -> UserDTO:
+    def execute(self, *, nombre: str, email: str, password: str, es_repartidor: bool = False) -> UserDTO:
         normalized_name = self._policy_service.normalize_name(nombre)
         normalized_email = self._policy_service.normalize_email(email)
         self._password_validator(password)
@@ -35,6 +35,7 @@ class RegisterUserUseCase:
                 nombre=normalized_name,
                 email=normalized_email,
                 password=password,
+                es_repartidor=es_repartidor,
             )
         except IntegrityError as exc:
             raise ConflictError("El email ya está registrado") from exc

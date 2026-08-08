@@ -387,7 +387,7 @@
     async function tryRestoreSession() {
       const existingToken = localStorage.getItem('token');
       if (existingToken) {
-        window.location.href = '/';
+        window.location.href = localStorage.getItem('es_repartidor') === '1' ? '/ui/repartidor/' : '/';
         return;
       }
 
@@ -408,8 +408,11 @@
 
       localStorage.setItem('token', String(payload.access));
       if (payload.refresh) localStorage.setItem('refresh', String(payload.refresh));
-      await prefetchNearbyCatalog(String(payload.access));
-      window.location.href = '/';
+      const esRepartidor = localStorage.getItem('es_repartidor') === '1';
+      if (!esRepartidor) {
+        await prefetchNearbyCatalog(String(payload.access));
+      }
+      window.location.href = esRepartidor ? '/ui/repartidor/' : '/';
     }
 
     tryRestoreSession();
@@ -440,12 +443,16 @@
       if (res.ok && json && typeof json === 'object') {
         if (json.access) localStorage.setItem('token', String(json.access));
         if (json.refresh) localStorage.setItem('refresh', String(json.refresh));
+        localStorage.setItem('es_repartidor', json.user && json.user.es_repartidor ? '1' : '0');
       }
 
       if (res.ok && json && typeof json === 'object' && json.access) {
-        await prefetchNearbyCatalog(String(json.access));
+        const target = json.user && json.user.es_repartidor ? '/ui/repartidor/' : '/';
+        if (!json.user || !json.user.es_repartidor) {
+          await prefetchNearbyCatalog(String(json.access));
+        }
         setTimeout(() => {
-          window.location.href = '/';
+          window.location.href = target;
         }, 700);
       } else {
         const errorMsg = json?.detail || json?.error || 'Credenciales incorrectas. Verifica tu correo y contraseña.';

@@ -5,6 +5,11 @@ class RegisterInputSerializer(serializers.Serializer):
     nombre = serializers.CharField(max_length=150)
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True, min_length=6)
+    tipo_cuenta = serializers.ChoiceField(choices=["usuario", "repartidor"], default="usuario")
+
+    def validate(self, attrs):
+        attrs["es_repartidor"] = attrs.pop("tipo_cuenta", "usuario") == "repartidor"
+        return attrs
 
 
 class LoginInputSerializer(serializers.Serializer):
@@ -35,3 +40,4 @@ class UserOutputSerializer(serializers.Serializer):
     reputacion_promedio = serializers.FloatField(read_only=True)
     total_ventas = serializers.IntegerField(read_only=True)
     total_compras = serializers.IntegerField(read_only=True)
+    es_repartidor = serializers.BooleanField(read_only=True, default=False)

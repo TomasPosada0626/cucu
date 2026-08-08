@@ -14,6 +14,7 @@ class UserDTO:
     reputacion_promedio: float
     total_ventas: int
     total_compras: int
+    es_repartidor: bool = False
 
     @classmethod
     def from_model(cls, user) -> "UserDTO":
@@ -26,6 +27,7 @@ class UserDTO:
             reputacion_promedio=float(getattr(user, "reputacion_promedio", 0.0) or 0.0),
             total_ventas=int(getattr(user, "total_ventas", 0) or 0),
             total_compras=int(getattr(user, "total_compras", 0) or 0),
+            es_repartidor=bool(getattr(user, "es_repartidor", False)),
         )
 
 

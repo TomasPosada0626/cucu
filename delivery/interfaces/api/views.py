@@ -22,10 +22,11 @@ from ..serializers.delivery_serializer import (
     PedidoCercanoOutputSerializer,
     UbicacionInputSerializer,
 )
+from .permissions import IsRepartidor
 
 
 class DisponibilidadAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsRepartidor]
 
     def post(self, request):
         serializer = DisponibilidadInputSerializer(data=request.data)
@@ -38,7 +39,7 @@ class DisponibilidadAPIView(APIView):
 
 
 class PedidosCercanosAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsRepartidor]
 
     def get(self, request):
         try:
@@ -53,7 +54,7 @@ class PedidosCercanosAPIView(APIView):
 
 
 class AceptarPedidoAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsRepartidor]
 
     def post(self, request, pedido_id: int):
         try:
@@ -69,7 +70,7 @@ class AceptarPedidoAPIView(APIView):
 
 
 class UbicacionAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsRepartidor]
 
     def post(self, request):
         serializer = UbicacionInputSerializer(data=request.data)
@@ -86,7 +87,7 @@ class UbicacionAPIView(APIView):
 
 
 class AsignacionActivaAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsRepartidor]
 
     def get(self, request):
         asignacion = AsignacionActivaUseCase().execute(usuario=request.user)
@@ -95,7 +96,7 @@ class AsignacionActivaAPIView(APIView):
 
 
 class MarcarSalioAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsRepartidor]
 
     def post(self, request, pedido_id: int):
         try:
@@ -111,7 +112,7 @@ class MarcarSalioAPIView(APIView):
 
 
 class MarcarFinalizadoAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsRepartidor]
 
     def post(self, request, pedido_id: int):
         try:

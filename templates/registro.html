@@ -279,7 +279,7 @@
     <section class="hero">
       <h1>{% trans "Crea tu cuenta" %}</h1>
       <p>{% trans "Unete a CUCU hoy mismo" %}</p>
-      <div class="art" aria-hidden="true"><img src="{% static 'images/2.png' %}" alt="{% trans 'Ilustracion de registro' %}" /></div>
+      <div class="art" aria-hidden="true"><img id="heroArt" src="{% static 'images/2.png' %}" alt="{% trans 'Ilustracion de registro' %}" /></div>
     </section>
 
     <section class="form-wrap">
@@ -292,6 +292,18 @@
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16v10H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m5 8 7 5 7-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <input name="email" type="email" required autocomplete="email" placeholder="{% trans 'Correo electronico' %}" />
         </div>
+        <div class="mini-label" style="margin: 4px 0 2px;">{% trans "Quiero registrarme como" %}</div>
+        <div style="display:flex; gap:12px; margin-bottom: 14px;">
+          <label style="display:flex; align-items:center; gap:8px; font-weight:800; cursor:pointer;">
+            <input type="radio" name="tipoCuenta" value="usuario" checked />
+            {% trans "Usuario (comprar/vender)" %}
+          </label>
+          <label style="display:flex; align-items:center; gap:8px; font-weight:800; cursor:pointer;">
+            <input type="radio" name="tipoCuenta" value="repartidor" />
+            {% trans "Repartidor" %}
+          </label>
+        </div>
+        <p class="hint" style="margin: -8px 0 14px;">{% trans "Una cuenta de repartidor solo puede repartir pedidos, no comprar ni vender." %}</p>
         <div class="field">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 11h10v9H7z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11V8a3 3 0 1 1 6 0v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
           <input name="password" type="password" required autocomplete="new-password" placeholder="{% trans 'Contrasena' %}" />
@@ -336,6 +348,25 @@
       if (emailInput && !emailInput.value) emailInput.value = lastEmail;
     }
 
+    const heroArt = document.getElementById('heroArt');
+    const ART_USUARIO = '{% static "images/2.png" %}';
+    const ART_REPARTIDOR = '{% static "images/repartidor.svg" %}';
+    const ALT_USUARIO = '{% trans "Ilustracion de registro" %}';
+    const ALT_REPARTIDOR = '{% trans "Ilustracion de repartidor" %}';
+    document.querySelectorAll('input[name="tipoCuenta"]').forEach((radio) => {
+      radio.addEventListener('change', () => {
+        if (!heroArt) return;
+        const esRepartidor = radio.value === 'repartidor' && radio.checked;
+        if (esRepartidor) {
+          heroArt.src = ART_REPARTIDOR;
+          heroArt.alt = ALT_REPARTIDOR;
+        } else if (radio.checked) {
+          heroArt.src = ART_USUARIO;
+          heroArt.alt = ALT_USUARIO;
+        }
+      });
+    });
+
     document.querySelectorAll('.toggle-password').forEach((button) => {
       button.addEventListener('click', () => {
         const target = document.querySelector(`input[name="${button.dataset.target}"]`);
@@ -368,6 +399,7 @@
           nombre: data.nombre,
           email: data.email,
           password: data.password,
+          tipo_cuenta: data.tipoCuenta || 'usuario',
         }),
       });
 

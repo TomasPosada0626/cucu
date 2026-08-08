@@ -13,11 +13,12 @@ class DjangoUserRepository:
     def get_by_id(self, user_id: int) -> User | None:
         return User.objects.filter(id=user_id).first()
 
-    def create_user(self, *, nombre: str, email: str, password: str) -> User:
+    def create_user(self, *, nombre: str, email: str, password: str, es_repartidor: bool = False) -> User:
         user = User(
             username=email,
             email=email,
             nombre=nombre,
+            es_repartidor=es_repartidor,
         )
         user.set_password(password)
         user.save()

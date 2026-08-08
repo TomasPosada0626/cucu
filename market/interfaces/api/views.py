@@ -42,6 +42,12 @@ class PublicacionListCreateAPIView(APIView):
         )
 
     def post(self, request):
+        if getattr(request.user, "es_repartidor", False):
+            return Response(
+                {"detail": "Las cuentas de repartidor no pueden publicar platos"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
         serializer = PublicacionCreateInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -76,6 +82,12 @@ class PedidoCreateAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        if getattr(request.user, "es_repartidor", False):
+            return Response(
+                {"detail": "Las cuentas de repartidor no pueden comprar pedidos"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
         serializer = PedidoCreateInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 

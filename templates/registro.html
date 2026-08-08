@@ -171,14 +171,6 @@
         linear-gradient(180deg, #fff8f0 0%, #fff3e7 100%);
       box-shadow: var(--shadow);
       overflow: hidden;
-      transition: background 0.25s ease, box-shadow 0.25s ease;
-    }
-
-    .art.is-repartidor {
-      background:
-        radial-gradient(circle at 50% 42%, rgba(255,255,255,0.1), transparent 62%),
-        linear-gradient(180deg, #1c1e26 0%, #101116 100%);
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.32);
     }
 
     .art img {
@@ -423,7 +415,7 @@
     const heroArt = document.getElementById('heroArt');
     const roleHint = document.getElementById('roleHint');
     const ART_USUARIO = '{% static "images/2.png" %}';
-    const ART_REPARTIDOR = '{% static "images/3.png" %}';
+    const ART_REPARTIDOR = '{% static "images/4.png" %}';
     const ALT_USUARIO = '{% trans "Ilustracion de registro" %}';
     const ALT_REPARTIDOR = '{% trans "Ilustracion de repartidor" %}';
     document.querySelectorAll('input[name="tipoCuenta"]').forEach((radio) => {
@@ -433,8 +425,6 @@
         if (heroArt) {
           heroArt.src = esRepartidor ? ART_REPARTIDOR : ART_USUARIO;
           heroArt.alt = esRepartidor ? ALT_REPARTIDOR : ALT_USUARIO;
-          const artFrame = heroArt.closest('.art');
-          if (artFrame) artFrame.classList.toggle('is-repartidor', esRepartidor);
         }
         if (roleHint) roleHint.hidden = !esRepartidor;
       });

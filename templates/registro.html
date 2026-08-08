@@ -100,6 +100,67 @@
       font-size: 17px;
     }
 
+    .role-switch {
+      width: 100%;
+      max-width: 360px;
+      display: flex;
+      gap: 6px;
+      padding: 6px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.8);
+      box-shadow: 0 12px 28px rgba(255,255,255,0.42);
+    }
+
+    .role-input {
+      position: absolute;
+      opacity: 0;
+      width: 1px;
+      height: 1px;
+      pointer-events: none;
+    }
+
+    .role-option {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 10px;
+      border-radius: 13px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .role-option svg {
+      width: 19px;
+      height: 19px;
+      flex: 0 0 auto;
+    }
+
+    .role-input:checked + .role-option {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff;
+      box-shadow: 0 14px 26px rgba(255, 96, 16, 0.28);
+    }
+
+    .role-input:focus-visible + .role-option {
+      outline: 2px solid var(--accent-2);
+      outline-offset: 2px;
+    }
+
+    .role-hint {
+      margin: -4px 0 0;
+      max-width: 340px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
     .art {
       width: min(100%, 278px);
       aspect-ratio: 1;
@@ -279,6 +340,21 @@
     <section class="hero">
       <h1>{% trans "Crea tu cuenta" %}</h1>
       <p>{% trans "Unete a CUCU hoy mismo" %}</p>
+
+      <div class="role-switch" role="radiogroup" aria-label="{% trans 'Tipo de cuenta' %}">
+        <input type="radio" id="roleUsuario" name="tipoCuenta" value="usuario" checked class="role-input" />
+        <label for="roleUsuario" class="role-option">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" stroke-width="1.8"/><path d="M5 19a7 7 0 0 1 14 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          {% trans "Usuario" %}
+        </label>
+        <input type="radio" id="roleRepartidor" name="tipoCuenta" value="repartidor" class="role-input" />
+        <label for="roleRepartidor" class="role-option">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="6.5" cy="18.5" r="2.4" stroke="currentColor" stroke-width="1.8"/><circle cx="17.5" cy="18.5" r="2.4" stroke="currentColor" stroke-width="1.8"/><path d="M4 18.5h1.6L8.2 9h5.6l1.2 3.4h2.9c1 0 1.9.8 1.9 1.9v4.2h-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.4 12.4h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          {% trans "Repartidor" %}
+        </label>
+      </div>
+      <p class="role-hint">{% trans "Una cuenta de repartidor solo puede repartir pedidos, no comprar ni vender." %}</p>
+
       <div class="art" aria-hidden="true"><img id="heroArt" src="{% static 'images/2.png' %}" alt="{% trans 'Ilustracion de registro' %}" /></div>
     </section>
 
@@ -292,18 +368,6 @@
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16v10H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m5 8 7 5 7-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <input name="email" type="email" required autocomplete="email" placeholder="{% trans 'Correo electronico' %}" />
         </div>
-        <div class="mini-label" style="margin: 4px 0 2px;">{% trans "Quiero registrarme como" %}</div>
-        <div style="display:flex; gap:12px; margin-bottom: 14px;">
-          <label style="display:flex; align-items:center; gap:8px; font-weight:800; cursor:pointer;">
-            <input type="radio" name="tipoCuenta" value="usuario" checked />
-            {% trans "Usuario (comprar/vender)" %}
-          </label>
-          <label style="display:flex; align-items:center; gap:8px; font-weight:800; cursor:pointer;">
-            <input type="radio" name="tipoCuenta" value="repartidor" />
-            {% trans "Repartidor" %}
-          </label>
-        </div>
-        <p class="hint" style="margin: -8px 0 14px;">{% trans "Una cuenta de repartidor solo puede repartir pedidos, no comprar ni vender." %}</p>
         <div class="field">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 11h10v9H7z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11V8a3 3 0 1 1 6 0v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
           <input name="password" type="password" required autocomplete="new-password" placeholder="{% trans 'Contrasena' %}" />
@@ -382,6 +446,8 @@
       out.className = 'out';
       out.style.display = 'block';
       const data = Object.fromEntries(new FormData(e.target).entries());
+      const tipoCuentaInput = document.querySelector('input[name="tipoCuenta"]:checked');
+      data.tipoCuenta = tipoCuentaInput ? tipoCuentaInput.value : 'usuario';
 
       if (String(data.password || '') !== String(data.confirmPassword || '')) {
         out.classList.add('err');

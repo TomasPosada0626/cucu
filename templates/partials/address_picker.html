@@ -133,20 +133,72 @@
   }
 
   .addr-picker-suggestions {
-    display: grid;
+    display: none;
     gap: 4px;
-    max-height: 160px;
+    padding: 6px;
+    border-radius: 18px;
+    border: 1px solid rgba(31, 36, 48, 0.1);
+    background: #fff;
+    box-shadow: 0 14px 34px rgba(36, 38, 45, 0.08);
+    max-height: 240px;
     overflow-y: auto;
   }
 
+  .addr-picker-suggestions.is-open { display: grid; }
+
   .addr-picker-suggestion {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
     text-align: left;
-    padding: 8px 12px;
-    border-radius: 10px;
+    padding: 10px 10px;
+    border-radius: 14px;
     border: 0;
-    background: rgba(31, 36, 48, 0.04);
+    background: transparent;
     cursor: pointer;
+    color: #24262f;
+  }
+
+  .addr-picker-suggestion:hover,
+  .addr-picker-suggestion:focus {
+    outline: none;
+    background: rgba(31, 36, 48, 0.04);
+  }
+
+  .addr-picker-suggestion svg {
+    flex: 0 0 auto;
+    width: 18px;
+    height: 18px;
+    margin-top: 1px;
+    color: #ff6a17;
+  }
+
+  .addr-picker-suggestion .texts { min-width: 0; }
+
+  .addr-picker-suggestion .title {
+    display: block;
+    font-weight: 800;
     font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .addr-picker-suggestion .subtitle {
+    display: block;
+    color: #73727c;
+    font-size: 12px;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .addr-picker-loading {
+    padding: 10px 12px;
+    color: #73727c;
+    font-size: 12px;
   }
 
   .addr-picker-form .save-btn {
@@ -325,7 +377,11 @@
           alert(TXT_LOCATE_ERROR);
           return;
         }
-        openAddForm({ direccion_texto: payload.direccion_texto, latitud: lat, longitud: lng });
+        openAddForm({
+          direccion_texto: payload.direccion_texto,
+          latitud: Number(lat.toFixed(6)),
+          longitud: Number(lng.toFixed(6)),
+        });
       }, () => {
         useCurrentBtn.textContent = `📍 Usar mi ubicacion actual`;
         alert(TXT_LOCATE_ERROR);
@@ -349,6 +405,7 @@
       searchInput.value = '';
       nombreInput.value = '';
       detallesInput.value = '';
+      suggestionsEl.classList.remove('is-open');
       suggestionsEl.innerHTML = '';
       selectedHint.textContent = '';
       pendingSelection = null;
@@ -369,14 +426,20 @@
       const query = searchInput.value.trim();
       window.clearTimeout(suggestionTimer);
       if (query.length < 4) {
+        suggestionsEl.classList.remove('is-open');
         suggestionsEl.innerHTML = '';
         return;
       }
       suggestionTimer = window.setTimeout(async () => {
         const items = await fetchSuggestions(query);
+        suggestionsEl.classList.toggle('is-open', items.length > 0);
         suggestionsEl.innerHTML = items.map((it, idx) => `
           <button class="addr-picker-suggestion" type="button" data-idx="${idx}">
-            ${escapeHtml(it.primary || it.display_name)}
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s6-5.3 6-11a6 6 0 1 0-12 0c0 5.7 6 11 6 11Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 13.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z" stroke="currentColor" stroke-width="1.8"/></svg>
+            <span class="texts">
+              <span class="title">${escapeHtml(it.primary || it.display_name)}</span>
+              <span class="subtitle">${escapeHtml(it.secondary || it.display_name)}</span>
+            </span>
           </button>
         `).join('');
         suggestionsEl.querySelectorAll('.addr-picker-suggestion').forEach((btn) => {
@@ -384,13 +447,14 @@
             const item = items[Number(btn.dataset.idx)];
             if (!item) return;
             searchInput.value = item.primary || item.display_name;
+            suggestionsEl.classList.remove('is-open');
+            suggestionsEl.innerHTML = '';
             pendingSelection = {
               direccion_texto: item.primary || item.display_name,
-              latitud: Number(item.latitud),
-              longitud: Number(item.longitud),
+              latitud: Number(Number(item.latitud).toFixed(6)),
+              longitud: Number(Number(item.longitud).toFixed(6)),
             };
             selectedHint.textContent = `✓ ${searchInput.value}`;
-            suggestionsEl.innerHTML = '';
           });
         });
       }, 300);
@@ -414,13 +478,20 @@
           nombre,
           direccion_texto: pendingSelection.direccion_texto,
           detalles: detallesInput.value.trim(),
-          latitud: pendingSelection.latitud,
-          longitud: pendingSelection.longitud,
+          latitud: Number(Number(pendingSelection.latitud).toFixed(6)),
+          longitud: Number(Number(pendingSelection.longitud).toFixed(6)),
         }),
       });
       saveBtn.disabled = false;
       if (!response.ok) {
-        alert('No se pudo guardar la direccion.');
+        let message = 'No se pudo guardar la direccion.';
+        if (payload && typeof payload === 'object') {
+          for (const value of Object.values(payload)) {
+            if (typeof value === 'string' && value.trim()) { message = value.trim(); break; }
+            if (Array.isArray(value) && typeof value[0] === 'string' && value[0].trim()) { message = value[0].trim(); break; }
+          }
+        }
+        alert(message);
         return;
       }
       closeAddForm();

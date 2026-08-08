@@ -6,13 +6,23 @@
 {% block page_title %}{% trans "Pedidos" %} <span>{% trans "cerca de ti" %}</span>{% endblock %}
 {% block page_lead %}{% trans "Activa tu disponibilidad para ver pedidos listos para recoger cerca de tu ubicacion." %}{% endblock %}
 {% block hero_actions %}
-  <a class="btn btn-secondary" href="/ui/perfil/">{% trans "Perfil" %}</a>
+  <a class="btn btn-secondary" href="/ui/repartidor/perfil/">{% trans "Perfil" %}</a>
 {% endblock %}
 {% block hero_points %}{% endblock %}
 {% block section_title %}{% trans "Pedidos disponibles" %}{% endblock %}
 {% block section_hint %}{% trans "Solo se muestran pedidos ya confirmados por el vendedor y sin repartidor asignado." %}{% endblock %}
 
 {% block content %}
+      <div class="toolbar" style="gap:14px; flex-wrap:wrap;">
+        <div style="display:flex; align-items:center; gap:10px; font-weight:800; background:rgba(31,36,48,0.03); padding:10px 16px; border-radius:16px;">
+          <span style="color:var(--muted); font-weight:600;">{% trans "Hoy" %}</span>
+          <span id="hoyTotal">$0</span>
+          <span style="color:var(--muted); font-weight:600;">·</span>
+          <span id="hoyViajes">0</span>
+          <span style="color:var(--muted); font-weight:600;">{% trans "viajes" %}</span>
+        </div>
+      </div>
+
       <div class="toolbar">
         <label style="display:flex;align-items:center;gap:10px;font-weight:800;">
           <input type="checkbox" id="toggleActivo" />
@@ -42,6 +52,14 @@
     const TXT_KM = 'km';
 
     auth.ensureAuthenticatedSession();
+
+    async function loadResumenHoy() {
+      const result = await auth.authenticatedFetch('/api/repartidor/resumen');
+      if (!result || !result.response.ok) return;
+      const hoy = result.payload?.hoy || { total: 0, viajes: 0 };
+      document.getElementById('hoyTotal').textContent = formatMoneyCOP(hoy.total);
+      document.getElementById('hoyViajes').textContent = String(hoy.viajes || 0);
+    }
 
     const list = document.getElementById('list');
     const geoHint = document.getElementById('geoHint');
@@ -165,5 +183,7 @@
     document.getElementById('reloadBtn').addEventListener('click', () => {
       if (toggleActivo.checked) loadPedidos();
     });
+
+    loadResumenHoy();
   </script>
 {% endblock %}

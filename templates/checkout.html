@@ -12,6 +12,7 @@
 {% block hero_points %}{% endblock %}
 
 {% block head_extra %}
+  {% include "partials/address_picker.html" %}
   <style>
     .page-grid {
       grid-template-columns: minmax(0, 1fr);
@@ -412,6 +413,9 @@
               <div class="address-suggestions" id="checkoutAddressSuggestions" aria-label="{% trans 'Sugerencias globales de direccion' %}"></div>
             </div>
             <div class="field-help">{% trans "Mientras escribes, te mostramos sugerencias globales para que escojas una mas precisa." %}</div>
+            <button class="btn btn-secondary" id="openAddressPickerBtn" type="button" style="margin-top:8px;">
+              📍 {% trans "Elegir de mis direcciones" %}
+            </button>
           </label>
 
           <label>
@@ -602,6 +606,22 @@
   let highlightedAddressSuggestionIndex = -1;
   let addressRequestSeq = 0;
   const addressSuggestionCache = new Map();
+
+  document.getElementById('openAddressPickerBtn')?.addEventListener('click', () => {
+    window.CUCUAddressPicker?.open((addr) => {
+      direccionBaseInput.value = addr.direccion_texto;
+      selectedAddressSuggestion = {
+        display_name: addr.direccion_texto,
+        shortText: addr.direccion_texto,
+        latitud: addr.latitud,
+        longitud: addr.longitud,
+      };
+      const detallesEl = document.querySelector('textarea[name="direccion_detalles"]');
+      if (detallesEl && !detallesEl.value.trim() && addr.detalles) {
+        detallesEl.value = addr.detalles;
+      }
+    });
+  });
 
   function escapeHtml(value) {
     return String(value || '')
@@ -956,6 +976,12 @@
   function extractErrorMessage(payload, fallback) {
     if (typeof payload?.detail === 'string' && payload.detail.trim()) return payload.detail.trim();
     if (typeof payload?.message === 'string' && payload.message.trim()) return payload.message.trim();
+    if (payload && typeof payload === 'object') {
+      for (const value of Object.values(payload)) {
+        if (typeof value === 'string' && value.trim()) return value.trim();
+        if (Array.isArray(value) && typeof value[0] === 'string' && value[0].trim()) return value[0].trim();
+      }
+    }
     if (typeof fallback === 'string' && fallback.trim()) return fallback.trim();
     return TXT_REQ_FAILED;
   }

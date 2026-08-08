@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from ...infrastructure.models import DireccionGuardada
+
 
 class RegisterInputSerializer(serializers.Serializer):
     nombre = serializers.CharField(max_length=150)
@@ -41,3 +43,19 @@ class UserOutputSerializer(serializers.Serializer):
     total_ventas = serializers.IntegerField(read_only=True)
     total_compras = serializers.IntegerField(read_only=True)
     es_repartidor = serializers.BooleanField(read_only=True, default=False)
+
+
+class DireccionGuardadaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DireccionGuardada
+        fields = [
+            "id",
+            "nombre",
+            "direccion_texto",
+            "detalles",
+            "latitud",
+            "longitud",
+            "es_predeterminada",
+            "creado_en",
+        ]
+        read_only_fields = ["id", "creado_en"]

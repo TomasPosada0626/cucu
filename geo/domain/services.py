@@ -47,6 +47,22 @@ class GeocodingService:
         self._geocode_cache_set(direccion, result)
         return result
 
+    def reverse_geocode(self, *, latitud: float, longitud: float) -> GeocodedLocation:
+        params = urlencode({"latlng": f"{latitud},{longitud}", "key": self._api_key()})
+        data = self._fetch_json(f"https://maps.googleapis.com/maps/api/geocode/json?{params}")
+        if not data or data.get("status") != "OK":
+            raise ValidationError("No se pudo determinar la dirección de esa ubicación")
+
+        results = data.get("results") or []
+        if not results:
+            raise ValidationError("No se pudo determinar la dirección de esa ubicación")
+
+        return GeocodedLocation(
+            latitud=Decimal(str(latitud)),
+            longitud=Decimal(str(longitud)),
+            direccion_texto=results[0].get("formatted_address") or "",
+        )
+
     def suggest_addresses(self, *, query: str, limit: int = 5) -> list[dict]:
         q = (query or "").strip()
         if not q:

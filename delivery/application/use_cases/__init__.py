@@ -59,6 +59,22 @@ class MarcarFinalizadoUseCase:
         return self._service.marcar_finalizado(usuario=usuario, pedido_id=pedido_id)
 
 
+class HistorialEntregasUseCase:
+    def __init__(self, *, service: DeliveryService | None = None):
+        self._service = service or DeliveryService()
+
+    def execute(self, *, usuario):
+        return self._service.historial_entregas(usuario=usuario)
+
+
+class ResumenRepartidorUseCase:
+    def __init__(self, *, service: DeliveryService | None = None):
+        self._service = service or DeliveryService()
+
+    def execute(self, *, usuario):
+        return self._service.resumen(usuario=usuario)
+
+
 class EstadoParaCompradorUseCase:
     def __init__(self, *, service: DeliveryService | None = None):
         self._service = service or DeliveryService()

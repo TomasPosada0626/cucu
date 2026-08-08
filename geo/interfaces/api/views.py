@@ -5,8 +5,13 @@ from rest_framework.views import APIView
 
 from common.exceptions import ValidationError
 
-from ...application import GeocodeAddressUseCase, GetRouteUseCase, SuggestAddressesUseCase
-from ..serializers.geo_serializer import GeocodeQuerySerializer, GeocodeSuggestQuerySerializer, RouteQuerySerializer
+from ...application import GeocodeAddressUseCase, GetRouteUseCase, ReverseGeocodeUseCase, SuggestAddressesUseCase
+from ..serializers.geo_serializer import (
+    GeocodeQuerySerializer,
+    GeocodeSuggestQuerySerializer,
+    ReverseGeocodeQuerySerializer,
+    RouteQuerySerializer,
+)
 
 
 class GeocodeAPIView(APIView):
@@ -47,6 +52,31 @@ class GeocodeSuggestAPIView(APIView):
             return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({"items": items}, status=status.HTTP_200_OK)
+
+
+class ReverseGeocodeAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        serializer = ReverseGeocodeQuerySerializer(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            loc = ReverseGeocodeUseCase().execute(
+                latitud=serializer.validated_data["latitud"],
+                longitud=serializer.validated_data["longitud"],
+            )
+        except ValidationError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(
+            {
+                "direccion_texto": loc.direccion_texto,
+                "latitud": float(loc.latitud),
+                "longitud": float(loc.longitud),
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 class RouteAPIView(APIView):

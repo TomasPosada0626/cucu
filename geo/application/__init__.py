@@ -1,3 +1,3 @@
-from .use_cases import GeocodeAddressUseCase, GetRouteUseCase, SuggestAddressesUseCase
+from .use_cases import GeocodeAddressUseCase, GetRouteUseCase, ReverseGeocodeUseCase, SuggestAddressesUseCase
 
-__all__ = ["GeocodeAddressUseCase", "GetRouteUseCase", "SuggestAddressesUseCase"]
+__all__ = ["GeocodeAddressUseCase", "GetRouteUseCase", "ReverseGeocodeUseCase", "SuggestAddressesUseCase"]

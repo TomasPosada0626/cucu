@@ -28,6 +28,8 @@ class AsignacionRepository(Protocol):
 
     def mark_finalizado(self, asignacion: Any) -> None: ...
 
+    def list_historial(self, usuario: Any) -> list[Any]: ...
+
 
 @runtime_checkable
 class PedidoDeliveryRepository(Protocol):

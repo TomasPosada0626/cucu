@@ -1111,6 +1111,22 @@
     })();
 
     (function () {
+      if (localStorage.getItem('es_repartidor') === '1') {
+        document.querySelectorAll('.nav-link[data-nav="compra"], .nav-link[data-nav="vende"]').forEach((link) => {
+          link.style.display = 'none';
+        });
+        const cartLinkEl = document.getElementById('cartLink');
+        if (cartLinkEl) cartLinkEl.style.display = 'none';
+        const profileLinkEl = document.getElementById('profileLink');
+        if (profileLinkEl) profileLinkEl.href = '/ui/repartidor/perfil/';
+        const inicioLinkEl = document.querySelector('.nav-link[data-nav="inicio"]');
+        if (inicioLinkEl) inicioLinkEl.href = '/ui/repartidor/';
+        const brandLinkEl = document.querySelector('a.brand');
+        if (brandLinkEl) brandLinkEl.href = '/ui/repartidor/';
+      }
+    })();
+
+    (function () {
       const lastPedidoId = localStorage.getItem('last_pedido_id');
       const cartSelection = window.CUCUStorage.loadCartSelection();
       const cartCount = document.getElementById('cartCount');
@@ -1136,6 +1152,9 @@
         '/': 'inicio',
         '/ui/pedido/': 'compra',
         '/ui/publicar/': 'vende',
+        '/ui/repartidor/': 'inicio',
+        '/ui/repartidor/perfil/': 'inicio',
+        '/ui/repartidor/entrega/': 'inicio',
       };
       const activeNav = navMap[path];
       document.querySelectorAll('.nav-link[data-nav]').forEach((link) => {

@@ -1,6 +1,8 @@
 from django.urls import path
 
 from .views import (
+    DireccionGuardadaDetailAPIView,
+    DireccionGuardadaListCreateAPIView,
     LoginAPIView,
     MeAPIView,
     PasswordResetConfirmAPIView,
@@ -22,4 +24,8 @@ urlpatterns = [
     path("password-reset/confirm/", PasswordResetConfirmAPIView.as_view(), name="password-reset-confirm-slash"),
     path("me", MeAPIView.as_view(), name="me"),
     path("me/", MeAPIView.as_view(), name="me-slash"),
+    path("direcciones", DireccionGuardadaListCreateAPIView.as_view(), name="direcciones-list-create"),
+    path("direcciones/", DireccionGuardadaListCreateAPIView.as_view(), name="direcciones-list-create-slash"),
+    path("direcciones/<int:direccion_id>", DireccionGuardadaDetailAPIView.as_view(), name="direcciones-detail"),
+    path("direcciones/<int:direccion_id>/", DireccionGuardadaDetailAPIView.as_view(), name="direcciones-detail-slash"),
 ]

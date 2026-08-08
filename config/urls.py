@@ -38,6 +38,7 @@ from .web_views import (
     ui_notificaciones,
     ui_repartidor,
     ui_repartidor_entrega,
+    ui_repartidor_perfil,
 )
 
 urlpatterns = [
@@ -60,6 +61,7 @@ urlpatterns = [
     path('ui/notificaciones/', ui_notificaciones, name='ui-notificaciones'),
     path('ui/repartidor/', ui_repartidor, name='ui-repartidor'),
     path('ui/repartidor/entrega/', ui_repartidor_entrega, name='ui-repartidor-entrega'),
+    path('ui/repartidor/perfil/', ui_repartidor_perfil, name='ui-repartidor-perfil'),
 
     path('api/', include('notifications.interfaces.api.urls')),
     path('api/', include('geo.interfaces.api.urls')),

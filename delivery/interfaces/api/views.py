@@ -10,16 +10,20 @@ from ...application import (
     ActualizarUbicacionUseCase,
     AsignacionActivaUseCase,
     EstadoParaCompradorUseCase,
+    HistorialEntregasUseCase,
     ListarPedidosCercanosUseCase,
     MarcarFinalizadoUseCase,
     MarcarSalioUseCase,
+    ResumenRepartidorUseCase,
     SetDisponibilidadUseCase,
 )
 from ..serializers.delivery_serializer import (
     AsignacionOutputSerializer,
     DisponibilidadInputSerializer,
     EstadoEntregaOutputSerializer,
+    HistorialEntregasOutputSerializer,
     PedidoCercanoOutputSerializer,
+    ResumenRepartidorOutputSerializer,
     UbicacionInputSerializer,
 )
 from .permissions import IsRepartidor
@@ -125,6 +129,22 @@ class MarcarFinalizadoAPIView(APIView):
             return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(AsignacionOutputSerializer(asignacion).data, status=status.HTTP_200_OK)
+
+
+class HistorialEntregasAPIView(APIView):
+    permission_classes = [IsAuthenticated, IsRepartidor]
+
+    def get(self, request):
+        data = HistorialEntregasUseCase().execute(usuario=request.user)
+        return Response(HistorialEntregasOutputSerializer(data).data, status=status.HTTP_200_OK)
+
+
+class ResumenRepartidorAPIView(APIView):
+    permission_classes = [IsAuthenticated, IsRepartidor]
+
+    def get(self, request):
+        data = ResumenRepartidorUseCase().execute(usuario=request.user)
+        return Response(ResumenRepartidorOutputSerializer(data).data, status=status.HTTP_200_OK)
 
 
 class EstadoEntregaAPIView(APIView):

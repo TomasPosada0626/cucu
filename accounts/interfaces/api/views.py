@@ -16,8 +16,10 @@ from ...application.use_cases import (
 )
 from ...infrastructure.auth import DjangoAuthService
 from ...infrastructure.external_services import DjangoEmailService
+from ...infrastructure.models import DireccionGuardada
 from ...infrastructure.repositories_impl import DjangoUserRepository
 from ..serializers.user_serializer import (
+    DireccionGuardadaSerializer,
     LoginInputSerializer,
     PasswordResetConfirmInputSerializer,
     PasswordResetRequestInputSerializer,
@@ -146,3 +148,47 @@ class MeAPIView(APIView):
     def get(self, request):
         user_dto = GetUserProfileUseCase().execute(user=request.user)
         return Response(UserOutputSerializer(user_dto).data, status=status.HTTP_200_OK)
+
+
+class DireccionGuardadaListCreateAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        direcciones = DireccionGuardada.objects.filter(usuario=request.user)
+        return Response(DireccionGuardadaSerializer(direcciones, many=True).data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        serializer = DireccionGuardadaSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        if serializer.validated_data.get("es_predeterminada"):
+            DireccionGuardada.objects.filter(usuario=request.user).update(es_predeterminada=False)
+
+        direccion = DireccionGuardada.objects.create(usuario=request.user, **serializer.validated_data)
+        return Response(DireccionGuardadaSerializer(direccion).data, status=status.HTTP_201_CREATED)
+
+
+class DireccionGuardadaDetailAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, direccion_id: int):
+        direccion = DireccionGuardada.objects.filter(usuario=request.user, id=direccion_id).first()
+        if direccion is None:
+            return Response({"detail": "Dirección no encontrada"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = DireccionGuardadaSerializer(direccion, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+
+        if serializer.validated_data.get("es_predeterminada"):
+            DireccionGuardada.objects.filter(usuario=request.user).exclude(id=direccion.id).update(
+                es_predeterminada=False
+            )
+
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def delete(self, request, direccion_id: int):
+        deleted, _ = DireccionGuardada.objects.filter(usuario=request.user, id=direccion_id).delete()
+        if not deleted:
+            return Response({"detail": "Dirección no encontrada"}, status=status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_204_NO_CONTENT)

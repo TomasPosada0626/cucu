@@ -60,6 +60,13 @@ class DjangoAsignacionRepository:
         asignacion.finalizado_en = timezone.now()
         asignacion.save(update_fields=["estado", "finalizado_en"])
 
+    def list_historial(self, usuario) -> list[Asignacion]:
+        return list(
+            Asignacion.objects.select_related("pedido", "pedido__publicacion", "pedido__publicacion__ubicacion")
+            .filter(repartidor=usuario)
+            .order_by("-asignado_en")
+        )
+
 
 class DjangoPedidoDeliveryRepository:
     def list_pending_near(self, *, latitud: float, longitud: float, radius_km: float) -> list:

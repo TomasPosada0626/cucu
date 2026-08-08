@@ -63,3 +63,7 @@ def ui_repartidor(request):
 
 def ui_repartidor_entrega(request):
     return render(request, "repartidor_entrega.html")
+
+
+def ui_repartidor_perfil(request):
+    return render(request, "repartidor_perfil.html")

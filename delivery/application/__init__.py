@@ -3,9 +3,11 @@ from .use_cases import (
     ActualizarUbicacionUseCase,
     AsignacionActivaUseCase,
     EstadoParaCompradorUseCase,
+    HistorialEntregasUseCase,
     ListarPedidosCercanosUseCase,
     MarcarFinalizadoUseCase,
     MarcarSalioUseCase,
+    ResumenRepartidorUseCase,
     SetDisponibilidadUseCase,
 )
 
@@ -14,8 +16,10 @@ __all__ = [
     "ActualizarUbicacionUseCase",
     "AsignacionActivaUseCase",
     "EstadoParaCompradorUseCase",
+    "HistorialEntregasUseCase",
     "ListarPedidosCercanosUseCase",
     "MarcarFinalizadoUseCase",
     "MarcarSalioUseCase",
+    "ResumenRepartidorUseCase",
     "SetDisponibilidadUseCase",
 ]

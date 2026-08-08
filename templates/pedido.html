@@ -10,6 +10,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16.png' %}" />
   <link rel="apple-touch-icon" href="{% static 'images/apple-touch-icon.png' %}" />
   <meta name="color-scheme" content="light" />
+  {% include "partials/address_picker.html" %}
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
 
@@ -1580,6 +1581,7 @@
         <div class="state-actions">
           <button class="btn btn-secondary" type="button" id="bannerLocateBtn">{% trans "Usar ubicacion" %}</button>
           <button class="btn btn-secondary" type="button" id="bannerAddressBtn">{% trans "Escribir direccion" %}</button>
+          <button class="btn btn-secondary" type="button" id="bannerSavedAddressBtn">📍 {% trans "Mis direcciones" %}</button>
         </div>
 
         <div class="address-inline" id="addressInline" aria-label="{% trans 'Buscar por direccion' %}">
@@ -2656,6 +2658,19 @@
       loadPublicaciones();
       closeAddressInline();
     }
+
+    document.getElementById('bannerSavedAddressBtn')?.addEventListener('click', () => {
+      window.CUCUAddressPicker?.open((addr) => {
+        if (addressInput) addressInput.value = addr.direccion_texto;
+        searchAddress = addr.direccion_texto;
+        userLocation = {
+          lat: Number(Number(addr.latitud).toFixed(6)),
+          lng: Number(Number(addr.longitud).toFixed(6)),
+        };
+        setLocationBanner(`Buscando platos cerca de ${searchAddress}.`, true);
+        loadPublicaciones();
+      });
+    });
 
     function clampPrice(value) {
       const rounded = Math.round(Number(value || MIN_PRICE_LIMIT) / PRICE_STEP) * PRICE_STEP;

@@ -20,3 +20,8 @@ class RouteQuerySerializer(serializers.Serializer):
 class GeocodeSuggestQuerySerializer(serializers.Serializer):
     q = serializers.CharField(max_length=255, allow_blank=False)
     limit = serializers.IntegerField(required=False, min_value=1, max_value=10)
+
+
+class ReverseGeocodeQuerySerializer(serializers.Serializer):
+    latitud = serializers.FloatField(min_value=-90, max_value=90)
+    longitud = serializers.FloatField(min_value=-180, max_value=180)

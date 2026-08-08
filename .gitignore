@@ -14,3 +14,7 @@ db.sqlite3
 CLAUDE.md
 graphify-out/
 .claude/
+
+# Stack Docker local (nginx sin HTTPS), solo para pruebas en esta maquina
+docker-compose.override.yml
+nginx.local.conf

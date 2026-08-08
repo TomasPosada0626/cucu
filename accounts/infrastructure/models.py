@@ -14,3 +14,20 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email or self.username
+
+
+class DireccionGuardada(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name="direcciones_guardadas")
+    nombre = models.CharField(max_length=80)
+    direccion_texto = models.CharField(max_length=255)
+    detalles = models.CharField(max_length=255, blank=True, default="")
+    latitud = models.DecimalField(max_digits=9, decimal_places=6)
+    longitud = models.DecimalField(max_digits=9, decimal_places=6)
+    es_predeterminada = models.BooleanField(default=False)
+    creado_en = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-es_predeterminada", "-creado_en"]
+
+    def __str__(self):
+        return f"{self.nombre} ({self.usuario_id})"

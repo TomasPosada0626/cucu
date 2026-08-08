@@ -52,6 +52,38 @@ class AsignacionOutputSerializer(serializers.Serializer):
         return float(ubicacion.longitud) if ubicacion else None
 
 
+class HistorialEntregaItemSerializer(serializers.Serializer):
+    pedido_id = serializers.IntegerField()
+    titulo = serializers.SerializerMethodField()
+    direccion_entrega = serializers.CharField(source="pedido.direccion_entrega")
+    total = serializers.FloatField(source="pedido.total")
+    estado = serializers.CharField()
+    asignado_en = serializers.DateTimeField()
+    finalizado_en = serializers.DateTimeField(allow_null=True)
+
+    def get_titulo(self, obj):
+        return obj.pedido.publicacion.titulo
+
+
+class HistorialEntregasOutputSerializer(serializers.Serializer):
+    total_entregas = serializers.IntegerField()
+    items = HistorialEntregaItemSerializer(many=True)
+
+
+class ResumenPeriodoSerializer(serializers.Serializer):
+    total = serializers.FloatField()
+    viajes = serializers.IntegerField()
+
+
+class ResumenSemanaSerializer(ResumenPeriodoSerializer):
+    proximo_pago = serializers.DateTimeField()
+
+
+class ResumenRepartidorOutputSerializer(serializers.Serializer):
+    hoy = ResumenPeriodoSerializer()
+    semana = ResumenSemanaSerializer()
+
+
 class EstadoEntregaOutputSerializer(serializers.Serializer):
     estado_entrega = serializers.CharField(allow_null=True)
     repartidor = serializers.CharField(allow_null=True)

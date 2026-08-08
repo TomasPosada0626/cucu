@@ -1,0 +1,307 @@
+{% extends "base_app.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Mi perfil" %} | CUCU{% endblock %}
+{% block eyebrow %}{% trans "Repartidor" %}{% endblock %}
+{% block page_title %}{% trans "Mi" %} <span>{% trans "perfil" %}</span>{% endblock %}
+{% block page_lead %}{% trans "Revisa cuanto llevas acumulado esta semana y tu historial completo de entregas." %}{% endblock %}
+{% block hero_actions %}
+  <a class="btn btn-primary" href="/ui/repartidor/">{% trans "Ver pedidos" %}</a>
+{% endblock %}
+{% block hero_points %}{% endblock %}
+
+{% block head_extra %}
+  <style>
+    .page-grid { grid-template-columns: minmax(0, 1fr); }
+    .hero-panel { display: none; }
+    .section-title, .section-hint { display: none; }
+    .surface { padding-top: 0; }
+
+    .profile-shell {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      gap: 18px;
+      padding: 0 22px 24px;
+      align-items: start;
+    }
+
+    .profile-card,
+    .workspace-card {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 24px;
+      box-shadow: 0 18px 54px rgba(31, 36, 48, 0.06);
+    }
+
+    .profile-card {
+      padding: 18px;
+      display: grid;
+      gap: 16px;
+      position: sticky;
+      top: 96px;
+    }
+
+    .profile-avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--accent-soft), #fff7f1);
+      display: grid;
+      place-items: center;
+      color: var(--accent-deep);
+      font-family: 'Outfit', sans-serif;
+      font-size: 34px;
+      font-weight: 800;
+      box-shadow: inset 0 0 0 1px rgba(255, 106, 26, 0.12);
+    }
+
+    .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .profile-name {
+      margin: 0;
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      letter-spacing: -0.03em;
+    }
+
+    .profile-sub,
+    .profile-line,
+    .field-help {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .profile-stack {
+      display: grid;
+      gap: 10px;
+    }
+
+    .profile-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: rgba(31, 36, 48, 0.03);
+    }
+
+    .mini-stats {
+      display: grid;
+      gap: 10px;
+    }
+
+    .mini-stat {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-radius: 16px;
+      background: rgba(31, 36, 48, 0.03);
+    }
+
+    .mini-stat span { color: var(--muted); font-size: 13px; }
+    .mini-stat strong { font-family: 'Outfit', sans-serif; font-size: 17px; }
+
+    .payout-card {
+      border-radius: 18px;
+      padding: 14px;
+      background: linear-gradient(135deg, rgba(255,106,26,0.1), rgba(255,106,26,0.03));
+      display: grid;
+      gap: 4px;
+    }
+
+    .payout-amount {
+      font-family: 'Outfit', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+    }
+
+    .workspace { display: grid; gap: 16px; }
+
+    .workspace-card {
+      padding: 20px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .delivery-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: rgba(31, 36, 48, 0.03);
+    }
+
+    .delivery-row .titulo { font-weight: 800; }
+    .delivery-row .meta { color: var(--muted); font-size: 13px; }
+    .delivery-row .total { font-family: 'Outfit', sans-serif; font-weight: 800; }
+
+    .estado-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      background: rgba(25, 165, 123, 0.12);
+      color: #126b51;
+    }
+
+    .estado-pill.en-curso {
+      background: rgba(255, 106, 26, 0.12);
+      color: var(--accent-deep);
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <div class="profile-shell">
+    <aside class="profile-card">
+      <div class="profile-avatar" id="profileAvatar">RP</div>
+
+      <div>
+        <h3 class="profile-name" id="profileName">{% trans "Cargando..." %}</h3>
+        <div class="profile-sub" id="profileEmail">-</div>
+        <div class="profile-sub" id="profileJoined">-</div>
+      </div>
+
+      <div class="mini-stats">
+        <div class="mini-stat"><span>{% trans "Entregas totales" %}</span><strong id="totalEntregas">0</strong></div>
+      </div>
+
+      <div class="payout-card">
+        <span class="profile-sub">{% trans "Acumulado esta semana" %}</span>
+        <span class="payout-amount" id="semanaTotal">$0</span>
+        <span class="profile-sub" id="semanaViajes">0 {% trans "viajes" %}</span>
+        <span class="profile-sub" id="proximoPago">-</span>
+      </div>
+
+      <div class="profile-stack">
+        <div class="profile-line"><span>✉</span><span id="profileEmailLine">-</span></div>
+        <div class="profile-line"><span>📅</span><span id="profileMemberLine">-</span></div>
+      </div>
+
+      <button class="btn btn-secondary" id="logoutBtn" type="button">{% trans "Cerrar sesion" %}</button>
+    </aside>
+
+    <section class="workspace">
+      <section class="workspace-card">
+        <div>
+          <h3>{% trans "Historial de entregas" %}</h3>
+          <div class="field-help">{% trans "Todas tus entregas, de la mas reciente a la mas antigua. Este historial nunca se reinicia." %}</div>
+        </div>
+        <div id="deliveriesHistory"></div>
+      </section>
+    </section>
+  </div>
+{% endblock %}
+
+{% block page_scripts %}
+  <script>
+    const auth = window.CUCUAuth;
+    const TXT_MEMBER_SINCE = '{% trans "Miembro desde" %}';
+    const TXT_USER_FALLBACK = '{% trans "Repartidor CUCU" %}';
+    const TXT_NO_DELIVERIES = '{% trans "Todavia no tienes entregas registradas." %}';
+    const TXT_NEXT_PAYOUT = '{% trans "Proximo pago" %}';
+    const TXT_ESTADOS = {
+      ASIGNADO: '{% trans "Asignado" %}',
+      LLEGO_RECOGIDA: '{% trans "En el restaurante" %}',
+      EN_CAMINO_ENTREGA: '{% trans "En camino" %}',
+      LLEGO_ENTREGA: '{% trans "En destino" %}',
+      FINALIZADO: '{% trans "Finalizado" %}',
+    };
+
+    auth.ensureAuthenticatedSession();
+
+    function formatMoneyCOP(value) {
+      return Number(value || 0).toLocaleString('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 });
+    }
+
+    function formatDate(value) {
+      if (!value) return '-';
+      return new Date(value).toLocaleString('es-CO', { dateStyle: 'medium', timeStyle: 'short' });
+    }
+
+    function escapeHtml(value) {
+      return String(value || '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    async function loadProfile() {
+      const result = await auth.authenticatedFetch('/api/me');
+      if (!result || !result.response.ok) return;
+      const data = result.payload || {};
+      const name = String(data.nombre || TXT_USER_FALLBACK).trim();
+      const email = String(data.email || '-').trim();
+
+      document.getElementById('profileName').textContent = name;
+      document.getElementById('profileEmail').textContent = email;
+      document.getElementById('profileJoined').textContent = `${TXT_MEMBER_SINCE} ${formatDate(data.fecha_registro)}`;
+      document.getElementById('profileEmailLine').textContent = email;
+      document.getElementById('profileMemberLine').textContent = formatDate(data.fecha_registro);
+      document.getElementById('profileAvatar').textContent =
+        name.split(/\s+/).slice(0, 2).map((part) => part[0] || '').join('').toUpperCase() || 'RP';
+    }
+
+    async function loadResumen() {
+      const result = await auth.authenticatedFetch('/api/repartidor/resumen');
+      if (!result || !result.response.ok) return;
+      const semana = result.payload?.semana || { total: 0, viajes: 0, proximo_pago: null };
+      document.getElementById('semanaTotal').textContent = formatMoneyCOP(semana.total);
+      document.getElementById('semanaViajes').textContent = `${semana.viajes || 0} viajes`;
+      document.getElementById('proximoPago').textContent = semana.proximo_pago
+        ? `${TXT_NEXT_PAYOUT}: ${formatDate(semana.proximo_pago)}`
+        : '';
+    }
+
+    async function loadHistorial() {
+      const container = document.getElementById('deliveriesHistory');
+      const result = await auth.authenticatedFetch('/api/repartidor/historial');
+      if (!result || !result.response.ok) {
+        container.innerHTML = `<div class="note-box">${TXT_NO_DELIVERIES}</div>`;
+        return;
+      }
+      const data = result.payload || {};
+      document.getElementById('totalEntregas').textContent = String(data.total_entregas || 0);
+
+      const items = Array.isArray(data.items) ? data.items : [];
+      if (!items.length) {
+        container.innerHTML = `<div class="note-box">${TXT_NO_DELIVERIES}</div>`;
+        return;
+      }
+
+      container.innerHTML = items.map((item) => {
+        const estadoLabel = TXT_ESTADOS[item.estado] || item.estado;
+        const pillClass = item.estado === 'FINALIZADO' ? 'estado-pill' : 'estado-pill en-curso';
+        return `
+          <div class="delivery-row">
+            <div>
+              <div class="titulo">${escapeHtml(item.titulo)} · <span class="${pillClass}">${escapeHtml(estadoLabel)}</span></div>
+              <div class="meta">${escapeHtml(item.direccion_entrega)} · ${formatDate(item.finalizado_en || item.asignado_en)}</div>
+            </div>
+            <div class="total">${formatMoneyCOP(item.total)}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      auth.clearSession();
+      window.location.href = '/ui/login/';
+    });
+
+    Promise.all([loadProfile(), loadResumen(), loadHistorial()]);
+  </script>
+{% endblock %}

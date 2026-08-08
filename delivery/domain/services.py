@@ -3,8 +3,17 @@ from __future__ import annotations
 from common.exceptions import ConflictError, NotFoundError, PermissionDeniedError, ValidationError
 from notifications.domain.services import NotificacionService
 
+from django.utils import timezone
+
 from .repositories import AsignacionRepository, PedidoDeliveryRepository, RepartidorRepository
-from .rules import LLEGO_ENTREGA, LLEGO_RECOGIDA, next_state_after_location_update, validate_can_mark_finalizado, validate_can_mark_salio
+from .rules import (
+    LLEGO_ENTREGA,
+    LLEGO_RECOGIDA,
+    current_payout_period,
+    next_state_after_location_update,
+    validate_can_mark_finalizado,
+    validate_can_mark_salio,
+)
 
 
 def _default_repartidor_repo() -> RepartidorRepository:
@@ -140,6 +149,37 @@ class DeliveryService:
             mensaje=f"Tu pedido #{asignacion.pedido.id} fue entregado. ¡Buen provecho!",
         )
         return asignacion
+
+    def historial_entregas(self, *, usuario):
+        historial = self._asignacion_repo.list_historial(usuario)
+        total_finalizadas = sum(1 for asignacion in historial if asignacion.estado == "FINALIZADO")
+        return {"total_entregas": total_finalizadas, "items": historial}
+
+    def resumen(self, *, usuario):
+        historial = self._asignacion_repo.list_historial(usuario)
+        finalizadas = [a for a in historial if a.estado == "FINALIZADO" and a.finalizado_en is not None]
+
+        ahora = timezone.now()
+        hoy_local = ahora.astimezone(current_payout_period(ahora)[0].tzinfo).date()
+        inicio_semana, fin_semana = current_payout_period(ahora)
+
+        del_dia = [a for a in finalizadas if a.finalizado_en.astimezone(inicio_semana.tzinfo).date() == hoy_local]
+        de_la_semana = [a for a in finalizadas if inicio_semana <= a.finalizado_en < fin_semana]
+
+        return {
+            "hoy": {
+                "total": sum(a.pedido.total for a in del_dia),
+                "viajes": len(del_dia),
+            },
+            "semana": {
+                "total": sum(a.pedido.total for a in de_la_semana),
+                "viajes": len(de_la_semana),
+                "proximo_pago": fin_semana,
+            },
+            "historial_total": {
+                "total_entregas": len(finalizadas),
+            },
+        }
 
     def estado_para_comprador(self, *, usuario, pedido_id: int):
         pedido = self._pedido_repo.get_by_id(pedido_id)

@@ -1,0 +1,196 @@
+{% extends "base_app.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Mi entrega" %} | CUCU{% endblock %}
+{% block eyebrow %}{% trans "Repartidor" %}{% endblock %}
+{% block page_title %}{% trans "Tu" %} <span>{% trans "entrega activa" %}</span>{% endblock %}
+{% block page_lead %}{% trans "Mantén el navegador abierto: tu ubicación se reporta automáticamente." %}{% endblock %}
+{% block hero_actions %}
+  <a class="btn btn-secondary" href="/ui/repartidor/">{% trans "Volver a pedidos" %}</a>
+{% endblock %}
+{% block hero_points %}{% endblock %}
+{% block section_title %}{% trans "Mapa" %}{% endblock %}
+{% block section_hint %}{% endblock %}
+
+{% block content %}
+      <div id="map" style="width:100%;height:420px;border-radius:18px;border:1px solid var(--line);"></div>
+
+      <div class="toolbar" style="margin-top:16px;">
+        <span class="counter" id="estadoLabel">{% trans "Cargando..." %}</span>
+      </div>
+
+      <div id="noActivo" class="note" style="display:none;">{% trans "No tienes ninguna entrega activa." %}</div>
+
+      <div id="panel" style="display:none; margin-top:12px; display:grid; gap:10px;">
+        <div class="note" id="direccionRecogidaNote"></div>
+        <div class="note" id="direccionEntregaNote"></div>
+        <div class="actions">
+          <button class="btn btn-primary" id="salioBtn" type="button" style="display:none;">{% trans "Salí con el pedido" %}</button>
+          <button class="btn btn-primary" id="finalizarBtn" type="button" style="display:none;">{% trans "Finalizar pedido" %}</button>
+        </div>
+      </div>
+{% endblock %}
+
+{% block page_scripts %}
+<script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}"></script>
+<script>
+  const auth = window.CUCUAuth;
+  const ESTADOS_TXT = {
+    ASIGNADO: '{% trans "Camino al restaurante" %}',
+    LLEGO_RECOGIDA: '{% trans "Llegaste al restaurante" %}',
+    EN_CAMINO_ENTREGA: '{% trans "Camino a la direccion de entrega" %}',
+    LLEGO_ENTREGA: '{% trans "Llegaste a la direccion de entrega" %}',
+    FINALIZADO: '{% trans "Pedido finalizado" %}',
+  };
+  const TXT_PICKUP_LABEL = '{% trans "Recoger en:" %}';
+  const TXT_DELIVERY_LABEL = '{% trans "Entregar en:" %}';
+  const TXT_GEO_UNSUPPORTED = '{% trans "Tu navegador no soporta geolocalizacion." %}';
+  const TXT_ACTION_ERROR = '{% trans "No se pudo completar la accion." %}';
+
+  auth.ensureAuthenticatedSession();
+
+  const estadoLabel = document.getElementById('estadoLabel');
+  const noActivo = document.getElementById('noActivo');
+  const panel = document.getElementById('panel');
+  const salioBtn = document.getElementById('salioBtn');
+  const finalizarBtn = document.getElementById('finalizarBtn');
+
+  const map = new google.maps.Map(document.getElementById('map'), {
+    center: { lat: 6.244203, lng: -75.581212 },
+    zoom: 13,
+    mapTypeControl: false,
+    streetViewControl: false,
+    fullscreenControl: false,
+  });
+
+  function pinIconLetter(fillColor, letter) {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="34" height="40" viewBox="0 0 34 40">
+      <path d="M17 0C7.6 0 0 7.6 0 17c0 11.5 17 23 17 23s17-11.5 17-23C34 7.6 26.4 0 17 0Z" fill="${fillColor}"/>
+      <text x="17" y="21" font-family="Outfit, Arial, sans-serif" font-weight="800" font-size="16" fill="#fff" text-anchor="middle" dominant-baseline="middle">${letter}</text>
+    </svg>`;
+    return {
+      url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
+      scaledSize: new google.maps.Size(34, 40),
+      anchor: new google.maps.Point(17, 40),
+    };
+  }
+
+  const pickupMarker = new google.maps.Marker({ map: null, icon: pinIconLetter('#2563eb', 'C'), title: 'Recogida' });
+  const deliveryMarker = new google.maps.Marker({ map: null, icon: pinIconLetter('#ff6a1a', '⌂'), title: 'Entrega' });
+  const meMarker = new google.maps.Marker({
+    map: null,
+    icon: {
+      url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30"><rect x="1" y="1" width="28" height="28" rx="10" fill="#1f2430" stroke="#fff" stroke-width="2"/><text x="15" y="20" font-size="16" text-anchor="middle">🛵</text></svg>'
+      ),
+      scaledSize: new google.maps.Size(30, 30),
+      anchor: new google.maps.Point(15, 26),
+    },
+    title: 'Tú',
+  });
+
+  let currentAsignacion = null;
+
+  function fitAll() {
+    const points = [];
+    if (pickupMarker.getMap()) points.push(pickupMarker.getPosition());
+    if (deliveryMarker.getMap()) points.push(deliveryMarker.getPosition());
+    if (meMarker.getMap()) points.push(meMarker.getPosition());
+    if (!points.length) return;
+    const bounds = new google.maps.LatLngBounds();
+    points.forEach((p) => bounds.extend(p));
+    map.fitBounds(bounds, 60);
+  }
+
+  function renderAsignacion(asignacion) {
+    currentAsignacion = asignacion;
+
+    if (!asignacion) {
+      noActivo.style.display = 'block';
+      panel.style.display = 'none';
+      estadoLabel.textContent = '';
+      pickupMarker.setMap(null);
+      deliveryMarker.setMap(null);
+      return;
+    }
+
+    noActivo.style.display = 'none';
+    panel.style.display = 'grid';
+    estadoLabel.textContent = ESTADOS_TXT[asignacion.estado] || asignacion.estado;
+
+    pickupMarker.setPosition({ lat: asignacion.direccion_recogida_latitud, lng: asignacion.direccion_recogida_longitud });
+    pickupMarker.setMap(map);
+    document.getElementById('direccionRecogidaNote').textContent = `${TXT_PICKUP_LABEL} ${asignacion.direccion_recogida}`;
+
+    deliveryMarker.setPosition({ lat: asignacion.direccion_entrega_latitud, lng: asignacion.direccion_entrega_longitud });
+    deliveryMarker.setMap(map);
+    document.getElementById('direccionEntregaNote').textContent = `${TXT_DELIVERY_LABEL} ${asignacion.direccion_entrega}`;
+
+    salioBtn.style.display = asignacion.estado === 'LLEGO_RECOGIDA' ? 'inline-flex' : 'none';
+    finalizarBtn.style.display = asignacion.estado === 'LLEGO_ENTREGA' ? 'inline-flex' : 'none';
+
+    fitAll();
+  }
+
+  async function cargarAsignacionActiva() {
+    const result = await auth.authenticatedFetch('/api/repartidor/asignacion-activa');
+    if (!result || !result.response.ok) return;
+    renderAsignacion(result.payload.asignacion);
+  }
+
+  async function reportarUbicacion(lat, lng) {
+    meMarker.setPosition({ lat, lng });
+    meMarker.setMap(map);
+    if (!pickupMarker.getMap() && !deliveryMarker.getMap()) fitAll();
+
+    const result = await auth.authenticatedFetch('/api/repartidor/ubicacion', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ latitud: lat, longitud: lng }),
+    });
+    if (result && result.response.ok && result.payload.asignacion) {
+      renderAsignacion(result.payload.asignacion);
+    }
+  }
+
+  function startWatchingLocation() {
+    if (!navigator.geolocation) {
+      estadoLabel.textContent = TXT_GEO_UNSUPPORTED;
+      return;
+    }
+    navigator.geolocation.watchPosition(
+      (pos) => reportarUbicacion(pos.coords.latitude, pos.coords.longitude),
+      () => {},
+      { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }
+    );
+  }
+
+  salioBtn.addEventListener('click', async () => {
+    if (!currentAsignacion) return;
+    salioBtn.disabled = true;
+    const result = await auth.authenticatedFetch(`/api/repartidor/pedidos/${encodeURIComponent(currentAsignacion.pedido_id)}/salio`, { method: 'POST' });
+    salioBtn.disabled = false;
+    if (!result || !result.response.ok) {
+      alert((result && result.payload && result.payload.detail) || TXT_ACTION_ERROR);
+      return;
+    }
+    renderAsignacion(result.payload);
+  });
+
+  finalizarBtn.addEventListener('click', async () => {
+    if (!currentAsignacion) return;
+    finalizarBtn.disabled = true;
+    const result = await auth.authenticatedFetch(`/api/repartidor/pedidos/${encodeURIComponent(currentAsignacion.pedido_id)}/finalizar`, { method: 'POST' });
+    finalizarBtn.disabled = false;
+    if (!result || !result.response.ok) {
+      alert((result && result.payload && result.payload.detail) || TXT_ACTION_ERROR);
+      return;
+    }
+    renderAsignacion(result.payload);
+    window.setTimeout(() => { window.location.href = '/ui/repartidor/'; }, 1200);
+  });
+
+  cargarAsignacionActiva();
+  startWatchingLocation();
+</script>
+{% endblock %}

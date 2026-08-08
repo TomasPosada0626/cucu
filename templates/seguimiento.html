@@ -1083,6 +1083,68 @@
     }
   }
 
+  let realStatusTimer = null;
+
+  async function pollRealStatus(pedidoId) {
+    const result = await auth.authenticatedFetch(`/api/pedidos/${encodeURIComponent(String(pedidoId))}/estado-entrega`);
+    if (!result || !result.response.ok) return;
+    const data = result.payload || {};
+
+    if (!data.estado_entrega) {
+      statusValue.textContent = TXT_WAITING_REAL_COURIER;
+      setMarkerVisible(courierMarker, false);
+      return;
+    }
+
+    if (data.repartidor) courierValue.textContent = data.repartidor;
+
+    clearTimeline();
+    setStepDone('assigned', true);
+    if (['LLEGO_RECOGIDA', 'EN_CAMINO_ENTREGA', 'LLEGO_ENTREGA', 'FINALIZADO'].includes(data.estado_entrega)) {
+      setStepDone('arrived_pickup', true);
+    }
+    if (['EN_CAMINO_ENTREGA', 'LLEGO_ENTREGA', 'FINALIZADO'].includes(data.estado_entrega)) {
+      setStepDone('left_pickup', true);
+    }
+    if (['LLEGO_ENTREGA', 'FINALIZADO'].includes(data.estado_entrega)) {
+      setStepDone('arrived_destination', true);
+    }
+
+    const estadoTexto = {
+      ASIGNADO: TXT_TO_PICKUP,
+      LLEGO_RECOGIDA: TXT_AT_PICKUP,
+      EN_CAMINO_ENTREGA: TXT_TO_DESTINATION,
+      LLEGO_ENTREGA: TXT_ARRIVED,
+      FINALIZADO: TXT_DELIVERED,
+    };
+    statusValue.textContent = estadoTexto[data.estado_entrega] || data.estado_entrega;
+
+    if (data.ubicacion) {
+      const courierPos = { lat: data.ubicacion.latitud, lng: data.ubicacion.longitud };
+      setMarkerVisible(courierMarker, true);
+      courierMarker.setPosition(courierPos);
+      if (destination) {
+        const km = haversineKm(courierPos, destination);
+        setDistanceText(km);
+      }
+    } else {
+      setMarkerVisible(courierMarker, false);
+    }
+
+    if (data.estado_entrega === 'FINALIZADO') {
+      await markPedidoDelivered();
+      statusValue.textContent = TXT_DELIVERED;
+      if (realStatusTimer) window.clearInterval(realStatusTimer);
+    }
+  }
+
+  function startRealStatusPolling(pedidoId) {
+    pollRealStatus(pedidoId).catch(() => {});
+    realStatusTimer = window.setInterval(() => {
+      pollRealStatus(pedidoId).catch(() => {});
+    }, 4000);
+  }
+
   async function main() {
     const pedidoId = safeNumber(getQueryParam('pedido_id'));
     if (!pedidoId) {
@@ -1190,9 +1252,6 @@
     clearTimeline();
 
     if (!SIMULATE_TRACKING) {
-      // Todavia no existe un sistema real de repartidores (ver roadmap): se
-      // muestran los puntos reales de recogida/entrega, pero sin inventar
-      // movimiento de un repartidor que no existe.
       courierStart = null;
       renderTrackingMap();
       setMarkerVisible(courierMarker, false);
@@ -1201,6 +1260,7 @@
       window.setTimeout(() => {
         try { google.maps.event.trigger(map, 'resize'); } catch {}
       }, 50);
+      startRealStatusPolling(pedidoId);
       return;
     }
 

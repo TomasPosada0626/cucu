@@ -36,6 +36,8 @@ from .web_views import (
     ui_restablecer_password,
     ui_aceptar_pedido,
     ui_notificaciones,
+    ui_repartidor,
+    ui_repartidor_entrega,
 )
 
 urlpatterns = [
@@ -56,6 +58,8 @@ urlpatterns = [
     #--------------
     path('ui/aceptar-pedido/', ui_aceptar_pedido, name='ui-aceptar-pedido'),
     path('ui/notificaciones/', ui_notificaciones, name='ui-notificaciones'),
+    path('ui/repartidor/', ui_repartidor, name='ui-repartidor'),
+    path('ui/repartidor/entrega/', ui_repartidor_entrega, name='ui-repartidor-entrega'),
 
     path('api/', include('notifications.interfaces.api.urls')),
     path('api/', include('geo.interfaces.api.urls')),
@@ -64,6 +68,7 @@ urlpatterns = [
     path('api/', include('market.interfaces.api.urls')),
     path('api/', include('payments.interfaces.api.urls')),
     path('api/', include('common.interfaces.api.urls')),
+    path('api/', include('delivery.interfaces.api.urls')),
 ]
 
 if settings.DEBUG:

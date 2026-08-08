@@ -1,0 +1,169 @@
+{% extends "base_app.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Repartidor" %} | CUCU{% endblock %}
+{% block eyebrow %}{% trans "Repartidor" %}{% endblock %}
+{% block page_title %}{% trans "Pedidos" %} <span>{% trans "cerca de ti" %}</span>{% endblock %}
+{% block page_lead %}{% trans "Activa tu disponibilidad para ver pedidos listos para recoger cerca de tu ubicacion." %}{% endblock %}
+{% block hero_actions %}
+  <a class="btn btn-secondary" href="/ui/perfil/">{% trans "Perfil" %}</a>
+{% endblock %}
+{% block hero_points %}{% endblock %}
+{% block section_title %}{% trans "Pedidos disponibles" %}{% endblock %}
+{% block section_hint %}{% trans "Solo se muestran pedidos ya confirmados por el vendedor y sin repartidor asignado." %}{% endblock %}
+
+{% block content %}
+      <div class="toolbar">
+        <label style="display:flex;align-items:center;gap:10px;font-weight:800;">
+          <input type="checkbox" id="toggleActivo" />
+          {% trans "Estoy disponible para repartir" %}
+        </label>
+        <button class="btn btn-secondary" id="reloadBtn" type="button">{% trans "Actualizar" %}</button>
+      </div>
+
+      <p class="note" id="geoHint"></p>
+
+      <div id="list" class="list" aria-live="polite">
+        <div class="note">{% trans "Activa tu disponibilidad para ver pedidos." %}</div>
+      </div>
+{% endblock %}
+
+{% block page_scripts %}
+  <script>
+    const auth = window.CUCUAuth;
+    const TXT_LOADING = '{% trans "Cargando pedidos cercanos..." %}';
+    const TXT_LOAD_ERROR = '{% trans "No se pudieron cargar los pedidos cercanos." %}';
+    const TXT_NONE = '{% trans "No hay pedidos cercanos por ahora." %}';
+    const TXT_GEO_UNSUPPORTED = '{% trans "Tu navegador no soporta geolocalizacion." %}';
+    const TXT_GEO_NEEDED = '{% trans "Necesitamos tu ubicacion para mostrarte pedidos cercanos." %}';
+    const TXT_ACCEPT = '{% trans "Aceptar" %}';
+    const TXT_REJECT = '{% trans "Rechazar" %}';
+    const TXT_ACCEPT_ERROR = '{% trans "No se pudo aceptar el pedido (puede que ya lo tomara otro repartidor)." %}';
+    const TXT_KM = 'km';
+
+    auth.ensureAuthenticatedSession();
+
+    const list = document.getElementById('list');
+    const geoHint = document.getElementById('geoHint');
+    const toggleActivo = document.getElementById('toggleActivo');
+    let dismissed = new Set();
+
+    function formatMoneyCOP(value) {
+      return Number(value || 0).toLocaleString('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 });
+    }
+
+    function getCurrentPosition() {
+      return new Promise((resolve) => {
+        if (!navigator.geolocation) {
+          geoHint.textContent = TXT_GEO_UNSUPPORTED;
+          resolve(null);
+          return;
+        }
+        navigator.geolocation.getCurrentPosition(
+          (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+          () => resolve(null),
+          { enableHighAccuracy: true, timeout: 8000 }
+        );
+      });
+    }
+
+    async function reportarUbicacion() {
+      const pos = await getCurrentPosition();
+      if (!pos) return false;
+      const result = await auth.authenticatedFetch('/api/repartidor/ubicacion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ latitud: pos.lat, longitud: pos.lng }),
+      });
+      return Boolean(result && result.response.ok);
+    }
+
+    async function setDisponibilidad(activo) {
+      await auth.authenticatedFetch('/api/repartidor/disponibilidad', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ activo }),
+      });
+    }
+
+    async function aceptarPedido(pedidoId, btn) {
+      btn.disabled = true;
+      const result = await auth.authenticatedFetch(`/api/repartidor/pedidos/${encodeURIComponent(pedidoId)}/aceptar`, {
+        method: 'POST',
+      });
+      if (!result || !result.response.ok) {
+        btn.disabled = false;
+        alert((result && result.payload && result.payload.detail) || TXT_ACCEPT_ERROR);
+        return;
+      }
+      window.location.href = `/ui/repartidor/entrega/?pedido_id=${encodeURIComponent(pedidoId)}`;
+    }
+
+    function rechazarPedido(pedidoId, row) {
+      dismissed.add(pedidoId);
+      row.remove();
+    }
+
+    async function loadPedidos() {
+      list.innerHTML = `<div class="note">${TXT_LOADING}</div>`;
+
+      const ok = await reportarUbicacion();
+      if (!ok) {
+        geoHint.textContent = TXT_GEO_NEEDED;
+      } else {
+        geoHint.textContent = '';
+      }
+
+      const result = await auth.authenticatedFetch('/api/repartidor/pedidos-cercanos');
+      if (!result) return;
+      const { response: res, payload } = result;
+
+      if (!res.ok) {
+        list.innerHTML = `<div class="note">${TXT_LOAD_ERROR}</div>`;
+        return;
+      }
+
+      const items = (Array.isArray(payload?.items) ? payload.items : []).filter((p) => !dismissed.has(p.id));
+
+      if (!items.length) {
+        list.innerHTML = `<div class="note">${TXT_NONE}</div>`;
+        return;
+      }
+
+      list.innerHTML = items.map((p) => `
+        <div class="notif" data-id="${p.id}">
+          <div>
+            <div class="msg">${p.titulo}</div>
+            <div class="meta">
+              ${p.direccion_recogida} &nbsp;·&nbsp; ${p.distancia_km} ${TXT_KM} &nbsp;·&nbsp; ${formatMoneyCOP(p.total)}
+            </div>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-primary aceptar" data-id="${p.id}">${TXT_ACCEPT}</button>
+            <button class="btn btn-secondary rechazar" data-id="${p.id}">${TXT_REJECT}</button>
+          </div>
+        </div>
+      `).join('');
+
+      list.querySelectorAll('button.aceptar').forEach((btn) => {
+        btn.addEventListener('click', () => aceptarPedido(btn.dataset.id, btn));
+      });
+      list.querySelectorAll('button.rechazar').forEach((btn) => {
+        btn.addEventListener('click', () => rechazarPedido(btn.dataset.id, btn.closest('.notif')));
+      });
+    }
+
+    toggleActivo.addEventListener('change', async () => {
+      await setDisponibilidad(toggleActivo.checked);
+      if (toggleActivo.checked) {
+        await loadPedidos();
+      } else {
+        list.innerHTML = `<div class="note">{% trans "Activa tu disponibilidad para ver pedidos." %}</div>`;
+      }
+    });
+
+    document.getElementById('reloadBtn').addEventListener('click', () => {
+      if (toggleActivo.checked) loadPedidos();
+    });
+  </script>
+{% endblock %}

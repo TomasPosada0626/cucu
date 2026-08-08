@@ -84,6 +84,7 @@ INSTALLED_APPS = [
     "payments",
     "transactions",
     "notifications",
+    "delivery",
 ]
 
 # Es indicarle a django que usaremos un modelo personalizado, no el predeterminado que

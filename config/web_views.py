@@ -55,3 +55,11 @@ def ui_aceptar_pedido(request):
 
 def ui_notificaciones(request):
     return render(request, "notificaciones.html")
+
+
+def ui_repartidor(request):
+    return render(request, "repartidor_pedidos.html")
+
+
+def ui_repartidor_entrega(request):
+    return render(request, "repartidor_entrega.html")

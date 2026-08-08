@@ -171,6 +171,14 @@
         linear-gradient(180deg, #fff8f0 0%, #fff3e7 100%);
       box-shadow: var(--shadow);
       overflow: hidden;
+      transition: background 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .art.is-repartidor {
+      background:
+        radial-gradient(circle at 50% 42%, rgba(255,255,255,0.1), transparent 62%),
+        linear-gradient(180deg, #1c1e26 0%, #101116 100%);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.32);
     }
 
     .art img {
@@ -353,7 +361,7 @@
           {% trans "Repartidor" %}
         </label>
       </div>
-      <p class="role-hint">{% trans "Una cuenta de repartidor solo puede repartir pedidos, no comprar ni vender." %}</p>
+      <p id="roleHint" class="role-hint" hidden>{% trans "Una cuenta de repartidor solo puede repartir pedidos, no comprar ni vender." %}</p>
 
       <div class="art" aria-hidden="true"><img id="heroArt" src="{% static 'images/2.png' %}" alt="{% trans 'Ilustracion de registro' %}" /></div>
     </section>
@@ -413,21 +421,22 @@
     }
 
     const heroArt = document.getElementById('heroArt');
+    const roleHint = document.getElementById('roleHint');
     const ART_USUARIO = '{% static "images/2.png" %}';
-    const ART_REPARTIDOR = '{% static "images/repartidor.svg" %}';
+    const ART_REPARTIDOR = '{% static "images/3.png" %}';
     const ALT_USUARIO = '{% trans "Ilustracion de registro" %}';
     const ALT_REPARTIDOR = '{% trans "Ilustracion de repartidor" %}';
     document.querySelectorAll('input[name="tipoCuenta"]').forEach((radio) => {
       radio.addEventListener('change', () => {
-        if (!heroArt) return;
-        const esRepartidor = radio.value === 'repartidor' && radio.checked;
-        if (esRepartidor) {
-          heroArt.src = ART_REPARTIDOR;
-          heroArt.alt = ALT_REPARTIDOR;
-        } else if (radio.checked) {
-          heroArt.src = ART_USUARIO;
-          heroArt.alt = ALT_USUARIO;
+        if (!radio.checked) return;
+        const esRepartidor = radio.value === 'repartidor';
+        if (heroArt) {
+          heroArt.src = esRepartidor ? ART_REPARTIDOR : ART_USUARIO;
+          heroArt.alt = esRepartidor ? ALT_REPARTIDOR : ALT_USUARIO;
+          const artFrame = heroArt.closest('.art');
+          if (artFrame) artFrame.classList.toggle('is-repartidor', esRepartidor);
         }
+        if (roleHint) roleHint.hidden = !esRepartidor;
       });
     });
 

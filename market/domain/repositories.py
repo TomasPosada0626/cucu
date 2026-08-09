@@ -34,6 +34,8 @@ class PedidoRepository(Protocol):
 
     def save_estado(self, pedido: Any) -> None: ...
 
+    def set_propina(self, pedido: Any, propina: float) -> None: ...
+
     def create_order(
         self,
         *,

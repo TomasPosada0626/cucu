@@ -40,6 +40,7 @@ class Pedido(models.Model):
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     estado = models.CharField(max_length=20, default="PENDIENTE")
     total = models.FloatField()
+    propina = models.FloatField(default=0.0)
 
     publicacion = models.ForeignKey(
         "market.Publicacion",

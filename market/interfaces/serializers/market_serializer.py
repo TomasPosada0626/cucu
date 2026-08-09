@@ -187,11 +187,16 @@ class PedidoOutputSerializer(serializers.ModelSerializer):
             "fecha_creacion",
             "estado",
             "total",
+            "propina",
             "publicacion_id",
             "usuario_id",
             "items",
         ]
         read_only_fields = fields
+
+
+class PropinaInputSerializer(serializers.Serializer):
+    propina = serializers.FloatField(min_value=0)
 
 
 class PedidoPublicItemSerializer(serializers.ModelSerializer):

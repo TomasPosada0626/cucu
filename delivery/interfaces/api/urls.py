@@ -9,6 +9,7 @@ from .views import (
     MarcarFinalizadoAPIView,
     MarcarSalioAPIView,
     PedidosCercanosAPIView,
+    ResumenRepartidorAPIView,
     UbicacionAPIView,
 )
 
@@ -21,5 +22,6 @@ urlpatterns = [
     path("repartidor/pedidos/<int:pedido_id>/salio", MarcarSalioAPIView.as_view(), name="repartidor-salio"),
     path("repartidor/pedidos/<int:pedido_id>/finalizar", MarcarFinalizadoAPIView.as_view(), name="repartidor-finalizar"),
     path("repartidor/historial", HistorialEntregasAPIView.as_view(), name="repartidor-historial"),
+    path("repartidor/resumen", ResumenRepartidorAPIView.as_view(), name="repartidor-resumen"),
     path("pedidos/<int:pedido_id>/estado-entrega", EstadoEntregaAPIView.as_view(), name="pedido-estado-entrega"),
 ]

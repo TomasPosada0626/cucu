@@ -27,6 +27,14 @@ class MarkOrderDeliveredUseCase:
         return self._order_service.mark_order_delivered(user=user, pedido_id=pedido_id)
 
 
+class SetPropinaUseCase:
+    def __init__(self, *, order_service: OrderService | None = None):
+        self._order_service = order_service or OrderService()
+
+    def execute(self, *, user, pedido_id: int, propina: float):
+        return self._order_service.set_propina(user=user, pedido_id=pedido_id, propina=propina)
+
+
 class ListOrdersForUserUseCase:
     def __init__(self, *, order_service: OrderService | None = None):
         self._order_service = order_service or OrderService()

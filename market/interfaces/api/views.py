@@ -18,12 +18,14 @@ from ...application.use_cases import (
     ListPublicacionesForUserUseCase,
     ListPublicacionesUseCase,
     MarkOrderDeliveredUseCase,
+    SetPropinaUseCase,
     UpdatePublicacionUseCase,
 )
 from ..serializers.market_serializer import (
     PedidoCreateInputSerializer,
     PedidoOutputSerializer,
     PedidoPublicHistorySerializer,
+    PropinaInputSerializer,
     PublicacionCreateInputSerializer,
     PublicacionNearbyQuerySerializer,
     PublicacionOutputSerializer,
@@ -123,6 +125,23 @@ class PedidoMarkDeliveredAPIView(APIView):
             return Response({"detail": str(exc)}, status=status.HTTP_404_NOT_FOUND)
         except ValidationError as exc:
             return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(PedidoOutputSerializer(pedido).data, status=status.HTTP_200_OK)
+
+
+class PedidoSetPropinaAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, pedido_id: int):
+        serializer = PropinaInputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            pedido = SetPropinaUseCase().execute(
+                user=request.user, pedido_id=pedido_id, propina=serializer.validated_data["propina"]
+            )
+        except NotFoundError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_404_NOT_FOUND)
 
         return Response(PedidoOutputSerializer(pedido).data, status=status.HTTP_200_OK)
 

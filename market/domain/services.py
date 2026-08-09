@@ -354,6 +354,14 @@ class OrderService:
 
         return pedido
 
+    def set_propina(self, *, user, pedido_id: int, propina: float):
+        pedido = self._pedido_repository.get_for_user(user, pedido_id)
+        if pedido is None:
+            raise NotFoundError("Pedido no encontrado")
+
+        self._pedido_repository.set_propina(pedido, propina)
+        return pedido
+
     def list_orders_for_user(self, *, user):
         return self._pedido_repository.list_for_user(user)
 

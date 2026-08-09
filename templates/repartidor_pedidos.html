@@ -50,6 +50,9 @@
     const TXT_REJECT = '{% trans "Rechazar" %}';
     const TXT_ACCEPT_ERROR = '{% trans "No se pudo aceptar el pedido (puede que ya lo tomara otro repartidor)." %}';
     const TXT_KM = 'km';
+    const TXT_TO_PICKUP_SUFFIX = '{% trans "a recogida" %}';
+    const TXT_ROUTE_SUFFIX = '{% trans "de recorrido" %}';
+    const TXT_EARNING = '{% trans "Ganancia" %}';
 
     auth.ensureAuthenticatedSession();
 
@@ -153,7 +156,11 @@
           <div>
             <div class="msg">${p.titulo}</div>
             <div class="meta">
-              ${p.direccion_recogida} &nbsp;·&nbsp; ${p.distancia_km} ${TXT_KM} &nbsp;·&nbsp; ${formatMoneyCOP(p.total)}
+              ${p.direccion_recogida} &nbsp;·&nbsp; ${p.distancia_km} ${TXT_KM} ${TXT_TO_PICKUP_SUFFIX}
+              ${p.distancia_entrega_km != null ? `&nbsp;·&nbsp; ${p.distancia_entrega_km} ${TXT_KM} ${TXT_ROUTE_SUFFIX}` : ''}
+            </div>
+            <div class="meta" style="color: var(--accent, #ff6a17); font-weight: 800;">
+              ${TXT_EARNING}: ${formatMoneyCOP(p.ganancia)}
             </div>
           </div>
           <div style="display:flex; gap:8px;">

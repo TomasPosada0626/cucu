@@ -516,6 +516,18 @@
     localStorage.setItem(`tip_${pedidoId}`, String(Math.max(0, Math.floor(Number(value || 0)))));
   }
 
+  async function persistPropina(pedidoId, value) {
+    try {
+      await auth.authenticatedFetch(`/api/pedidos/${encodeURIComponent(String(pedidoId))}/propina`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ propina: Math.max(0, Math.floor(Number(value || 0))) }),
+      });
+    } catch {
+      // La propina ya quedo guardada en localStorage; si esto falla no bloqueamos la UI.
+    }
+  }
+
   function parseTipFromInput() {
     const digits = String(tipInput.value || '').replace(/\D+/g, '');
     const n = Number(digits || 0);
@@ -1157,7 +1169,7 @@
 
     currentPedidoId = pedidoId;
     pedidoIdValue.textContent = `#${pedidoId}`;
-    courierValue.textContent = pickCourierName(pedidoId);
+    courierValue.textContent = SIMULATE_TRACKING ? pickCourierName(pedidoId) : TXT_WAITING_REAL_COURIER;
 
     if (tracking?.syncDeliveredOrderIfNeeded) {
       await tracking.syncDeliveredOrderIfNeeded(pedidoId);
@@ -1322,6 +1334,7 @@
         }
 
         saveTip(pedidoId, tip);
+        persistPropina(pedidoId, tip);
         setTipLock(pedidoId, true);
         updateTotalsUI(currentOrderTotal || 0, tip);
         paidValue.textContent = formatMoneyCOP((currentOrderTotal || 0) + tip);
@@ -1335,6 +1348,7 @@
     }
 
     saveTip(pedidoId, tip);
+    persistPropina(pedidoId, tip);
     setTipLock(pedidoId, true);
     updateTotalsUI(currentOrderTotal || 0, tip);
     paidValue.textContent = formatMoneyCOP((currentOrderTotal || 0) + tip);

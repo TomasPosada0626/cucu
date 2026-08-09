@@ -12,6 +12,7 @@ from .orders import (
     GetOrderForUserUseCase,
     ListOrdersForUserUseCase,
     MarkOrderDeliveredUseCase,
+    SetPropinaUseCase,
 )
 
 __all__ = [
@@ -25,5 +26,6 @@ __all__ = [
     "ListPublicacionesForUserUseCase",
     "ListPublicacionesUseCase",
     "MarkOrderDeliveredUseCase",
+    "SetPropinaUseCase",
     "UpdatePublicacionUseCase",
 ]

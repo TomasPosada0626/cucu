@@ -1666,6 +1666,7 @@
       <section>
         <div class="catalog-head">
           <span class="result-inline" id="catalogHint">{% trans "Ajusta tus filtros o tu ubicacion." %}</span>
+          <button class="btn btn-secondary" type="button" id="changeAddressBtn">📍 {% trans "Cambiar direccion" %}</button>
         </div>
 
         <div class="catalog-grid" id="catalog"></div>
@@ -2659,7 +2660,7 @@
       closeAddressInline();
     }
 
-    document.getElementById('bannerSavedAddressBtn')?.addEventListener('click', () => {
+    function openSavedAddressPicker() {
       window.CUCUAddressPicker?.open((addr) => {
         if (addressInput) addressInput.value = addr.direccion_texto;
         searchAddress = addr.direccion_texto;
@@ -2670,7 +2671,10 @@
         setLocationBanner(`Buscando platos cerca de ${searchAddress}.`, true);
         loadPublicaciones();
       });
-    });
+    }
+
+    document.getElementById('bannerSavedAddressBtn')?.addEventListener('click', openSavedAddressPicker);
+    document.getElementById('changeAddressBtn')?.addEventListener('click', openSavedAddressPicker);
 
     function clampPrice(value) {
       const rounded = Math.round(Number(value || MIN_PRICE_LIMIT) / PRICE_STEP) * PRICE_STEP;

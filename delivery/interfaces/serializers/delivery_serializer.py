@@ -1,5 +1,8 @@
 from rest_framework import serializers
 
+from delivery.domain.rules import haversine_meters
+from market.domain.order_rules import DELIVERY_FEE_COP
+
 
 class DisponibilidadInputSerializer(serializers.Serializer):
     activo = serializers.BooleanField()
@@ -16,7 +19,9 @@ class PedidoCercanoOutputSerializer(serializers.Serializer):
     direccion_recogida = serializers.SerializerMethodField()
     direccion_entrega = serializers.CharField()
     distancia_km = serializers.SerializerMethodField()
+    distancia_entrega_km = serializers.SerializerMethodField()
     total = serializers.FloatField()
+    ganancia = serializers.SerializerMethodField()
 
     def get_titulo(self, obj):
         return obj.publicacion.titulo
@@ -28,6 +33,21 @@ class PedidoCercanoOutputSerializer(serializers.Serializer):
     def get_distancia_km(self, obj):
         return round(float(getattr(obj, "distancia_km", 0) or 0), 2)
 
+    def get_distancia_entrega_km(self, obj):
+        ubicacion = obj.publicacion.ubicacion
+        if not ubicacion or obj.direccion_entrega_latitud is None or obj.direccion_entrega_longitud is None:
+            return None
+        metros = haversine_meters(
+            lat1=float(ubicacion.latitud),
+            lng1=float(ubicacion.longitud),
+            lat2=float(obj.direccion_entrega_latitud),
+            lng2=float(obj.direccion_entrega_longitud),
+        )
+        return round(metros / 1000.0, 2)
+
+    def get_ganancia(self, obj):
+        return DELIVERY_FEE_COP + float(getattr(obj, "propina", 0) or 0)
+
 
 class AsignacionOutputSerializer(serializers.Serializer):
     pedido_id = serializers.IntegerField()
@@ -38,6 +58,10 @@ class AsignacionOutputSerializer(serializers.Serializer):
     direccion_entrega = serializers.CharField(source="pedido.direccion_entrega")
     direccion_entrega_latitud = serializers.FloatField(source="pedido.direccion_entrega_latitud")
     direccion_entrega_longitud = serializers.FloatField(source="pedido.direccion_entrega_longitud")
+    ganancia = serializers.SerializerMethodField()
+
+    def get_ganancia(self, obj):
+        return DELIVERY_FEE_COP + float(getattr(obj.pedido, "propina", 0) or 0)
 
     def get_direccion_recogida(self, obj):
         ubicacion = obj.pedido.publicacion.ubicacion

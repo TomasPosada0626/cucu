@@ -85,6 +85,10 @@ class DjangoPedidoRepository:
     def save_estado(self, pedido: Pedido) -> None:
         pedido.save(update_fields=["estado"])
 
+    def set_propina(self, pedido: Pedido, propina: float) -> None:
+        pedido.propina = max(0.0, float(propina or 0))
+        pedido.save(update_fields=["propina"])
+
     def create_order(
         self,
         *,

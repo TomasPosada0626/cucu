@@ -1,9 +1,12 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.throttling import ScopedRateThrottle
 from rest_framework import status
 import ipaddress
 import json
 import socket
+from django.core.exceptions import ValidationError as DjangoValidationError
+from django.core.validators import validate_email
 from urllib import error as url_error
 from urllib import parse as url_parse
 from urllib import request as url_request
@@ -13,6 +16,8 @@ from ...infrastructure.adapters import ThirdPartyExchangeRateAdapter, HttpAllySe
 class ExternalServicesTestAPIView(APIView):
     authentication_classes = []
     permission_classes = []
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "external"
 
     def get(self, request):
         exchange_adapter = ThirdPartyExchangeRateAdapter()
@@ -43,9 +48,16 @@ from notifications.tasks import trigger_report_generation
 class TriggerAsyncTaskAPIView(APIView):
     authentication_classes = []
     permission_classes = []
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "external"
 
     def post(self, request):
         email = request.data.get("email", "test@example.com")
+        try:
+            validate_email(email)
+        except DjangoValidationError:
+            return Response({"detail": "El parametro email no es valido"}, status=status.HTTP_400_BAD_REQUEST)
+
         task = trigger_report_generation.delay(requester_email=email)
         return Response({
             "status": "success",
@@ -57,6 +69,8 @@ class TriggerAsyncTaskAPIView(APIView):
 class ConsumeExternalJsonAPIView(APIView):
     authentication_classes = []
     permission_classes = []
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "external"
 
     @staticmethod
     def _validate_url(raw_url: str) -> str:

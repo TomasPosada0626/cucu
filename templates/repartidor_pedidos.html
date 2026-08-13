@@ -73,6 +73,15 @@
       return Number(value || 0).toLocaleString('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 });
     }
 
+    function escapeHtml(value) {
+      return String(value || '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
     function getCurrentPosition() {
       return new Promise((resolve) => {
         if (!navigator.geolocation) {
@@ -154,9 +163,9 @@
       list.innerHTML = items.map((p) => `
         <div class="notif" data-id="${p.id}">
           <div>
-            <div class="msg">${p.titulo}</div>
+            <div class="msg">${escapeHtml(p.titulo)}</div>
             <div class="meta">
-              ${p.direccion_recogida} &nbsp;·&nbsp; ${p.distancia_km} ${TXT_KM} ${TXT_TO_PICKUP_SUFFIX}
+              ${escapeHtml(p.direccion_recogida)} &nbsp;·&nbsp; ${p.distancia_km} ${TXT_KM} ${TXT_TO_PICKUP_SUFFIX}
               ${p.distancia_entrega_km != null ? `&nbsp;·&nbsp; ${p.distancia_entrega_km} ${TXT_KM} ${TXT_ROUTE_SUFFIX}` : ''}
             </div>
             <div class="meta" style="color: var(--accent, #ff6a17); font-weight: 800;">

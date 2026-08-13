@@ -1,6 +1,7 @@
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.views import APIView
 
 from common.exceptions import NotFoundError, PermissionDeniedError, ValidationError
@@ -224,6 +225,8 @@ class PedidoAceptarAPIView(APIView):
 class HistorialPedidosPublicAPIView(APIView):
     authentication_classes = []
     permission_classes = []
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "public_read"
 
     def get(self, request):
         raw_limit = request.query_params.get("limit", "50")

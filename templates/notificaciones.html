@@ -51,6 +51,15 @@
       });
     }
 
+    function escapeHtml(value) {
+      return String(value || '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
     async function marcarLeida(id, btn, row) {
       btn.disabled = true;
       const result = await auth.authenticatedFetch(`/api/notificaciones/${encodeURIComponent(id)}/leer/`, {
@@ -96,9 +105,9 @@
       list.innerHTML = notifs.map((n) => `
         <div class="notif ${n.leida ? 'leida' : ''}" data-id="${n.id}">
           <div>
-            <div class="msg">${n.mensaje}</div>
+            <div class="msg">${escapeHtml(n.mensaje)}</div>
             <div class="meta">
-              <span class="tipo">${n.tipo}</span>
+              <span class="tipo">${escapeHtml(n.tipo)}</span>
               &nbsp;·&nbsp;${formatDate(n.fecha_envio)}
             </div>
           </div>

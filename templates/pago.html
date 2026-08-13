@@ -74,6 +74,15 @@
 
     const DELIVERY_FEE = 5000;
 
+    function escapeHtml(value) {
+      return String(value || '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
     auth.ensureAuthenticatedSession();
 
     // Prefill pedido_id desde querystring o localStorage
@@ -125,7 +134,7 @@
       pedidoDelivery.textContent = formatMoney(DELIVERY_FEE);
 
       pedidoItems.innerHTML = items.map((it) => {
-        const title = it?.publicacion?.titulo || `${TXT_PUBLICATION} #${it?.publicacion?.id || ''}`;
+        const title = escapeHtml(it?.publicacion?.titulo || `${TXT_PUBLICATION} #${it?.publicacion?.id || ''}`);
         const qty = Number(it?.cantidad || 0);
         const pu = Number(it?.precio_unitario || 0);
         return `<li>${title} — ${qty} × ${formatMoney(pu)}</li>`;

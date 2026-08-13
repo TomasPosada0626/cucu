@@ -1,6 +1,7 @@
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.views import APIView
 
 from common.exceptions import ValidationError
@@ -16,6 +17,8 @@ from ..serializers.geo_serializer import (
 
 class GeocodeAPIView(APIView):
     permission_classes = [AllowAny]
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "geo"
 
     def get(self, request):
         serializer = GeocodeQuerySerializer(data=request.query_params)
@@ -38,6 +41,8 @@ class GeocodeAPIView(APIView):
 
 class GeocodeSuggestAPIView(APIView):
     permission_classes = [AllowAny]
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "geo"
 
     def get(self, request):
         serializer = GeocodeSuggestQuerySerializer(data=request.query_params)
@@ -56,6 +61,8 @@ class GeocodeSuggestAPIView(APIView):
 
 class ReverseGeocodeAPIView(APIView):
     permission_classes = [AllowAny]
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "geo"
 
     def get(self, request):
         serializer = ReverseGeocodeQuerySerializer(data=request.query_params)

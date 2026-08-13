@@ -18,3 +18,6 @@ graphify-out/
 # Stack Docker local (nginx sin HTTPS), solo para pruebas en esta maquina
 docker-compose.override.yml
 nginx.local.conf
+
+# Hoja de ruta de trabajo personal, no se versiona
+ROADMAP.local.md

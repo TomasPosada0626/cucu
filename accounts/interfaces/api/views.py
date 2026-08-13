@@ -2,6 +2,7 @@ from django.db import IntegrityError
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.views import APIView
 
 from common.exceptions import AuthenticationError, ConflictError, ValidationError
@@ -44,6 +45,8 @@ def _email_service() -> DjangoEmailService:
 class RegisterAPIView(APIView):
     authentication_classes: list = []
     permission_classes: list = []
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "auth"
 
     def post(self, request):
         serializer = RegisterInputSerializer(data=request.data)
@@ -62,6 +65,8 @@ class RegisterAPIView(APIView):
 class LoginAPIView(APIView):
     authentication_classes: list = []
     permission_classes: list = []
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "auth"
 
     def post(self, request):
         serializer = LoginInputSerializer(data=request.data)
@@ -85,6 +90,8 @@ class LoginAPIView(APIView):
 class TokenRefreshAPIView(APIView):
     authentication_classes: list = []
     permission_classes: list = []
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "auth"
 
     def post(self, request):
         serializer = TokenRefreshInputSerializer(data=request.data)
@@ -96,6 +103,8 @@ class TokenRefreshAPIView(APIView):
 class PasswordResetRequestAPIView(APIView):
     authentication_classes: list = []
     permission_classes: list = []
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "auth"
 
     def post(self, request):
         serializer = PasswordResetRequestInputSerializer(data=request.data)
@@ -120,6 +129,8 @@ class PasswordResetRequestAPIView(APIView):
 class PasswordResetConfirmAPIView(APIView):
     authentication_classes: list = []
     permission_classes: list = []
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "auth"
 
     def post(self, request):
         serializer = PasswordResetConfirmInputSerializer(data=request.data)

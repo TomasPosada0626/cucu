@@ -1154,7 +1154,7 @@
     totalValue.textContent = formatMoneyCOP(total);
 
     itemsMini.innerHTML = lineItems.map((it) => `
-      <li>${String(it.title)} — ${it.qty} × ${formatMoneyCOP(it.unit)}</li>
+      <li>${escapeHtml(it.title)} — ${it.qty} × ${formatMoneyCOP(it.unit)}</li>
     `).join('');
   }
 

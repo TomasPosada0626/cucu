@@ -112,7 +112,11 @@
       if (res.ok) {
         actions.hidden = false;
         const estadoText = (json.estado || TXT_ACCEPTED).toUpperCase();
-        pedidoEstado.innerHTML = `<span class="badge aceptado">${estadoText}</span>`;
+        pedidoEstado.innerHTML = '';
+        const estadoBadge = document.createElement('span');
+        estadoBadge.className = 'badge aceptado';
+        estadoBadge.textContent = estadoText;
+        pedidoEstado.appendChild(estadoBadge);
         pedidoTel.textContent = json.telefono || '-';
         pedidoTotal.textContent = formatMoney(json.total);
         summary.hidden = false;

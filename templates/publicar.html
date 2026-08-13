@@ -1015,6 +1015,15 @@
       profileLink.title = label;
     }
 
+    function escapeHtml(value) {
+      return String(value || '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
     function renderIngredients() {
       if (!ingredientState.length) {
         ingredientList.classList.add('is-empty');
@@ -1025,7 +1034,7 @@
       ingredientList.classList.remove('is-empty');
       ingredientList.innerHTML = ingredientState.map((ingredient, index) => `
         <span class="chip">
-          <span>${ingredient}</span>
+          <span>${escapeHtml(ingredient)}</span>
           <button type="button" data-remove-ingredient="${index}" aria-label="${TXT_REMOVE_INGREDIENT}">×</button>
         </span>
       `).join('');

@@ -66,6 +66,19 @@ CSRF_TRUSTED_ORIGINS = [
 # toda peticion llega por HTTP y falla la verificacion CSRF de forms HTTPS.
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = "same-origin"
+X_FRAME_OPTIONS = "DENY"
+
+# Desactivado (0) por defecto: HSTS le dice al navegador "solo HTTPS para este
+# dominio durante N segundos" y el navegador lo cachea, asi que si algun dia
+# el cert/dominio tiene un problema, los usuarios que ya lo cachearon quedan
+# bloqueados hasta que expire. Prender solo con HTTPS ya confirmado y estable
+# en produccion, vía la variable de entorno (ej. 15552000 = 180 dias).
+SECURE_HSTS_SECONDS = int(os.environ.get("SECURE_HSTS_SECONDS", "0"))
+SECURE_HSTS_INCLUDE_SUBDOMAINS = SECURE_HSTS_SECONDS > 0
+SECURE_HSTS_PRELOAD = False
+
 # Application definition
 # Es lo que define que mostrará la app
 INSTALLED_APPS = [
@@ -100,6 +113,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'common.middleware.SecurityHeadersMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -197,11 +211,37 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",
     ],
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        # Rate general para cualquier endpoint que no defina throttle_scope propio.
+        "anon": "60/min",
+        "user": "120/min",
+        # Login/registro/reset de password: el objetivo abusable mas obvio.
+        "auth": "10/min",
+        # Endpoints de common/ que consumen servicios externos o encolan tareas async
+        # (demos de patrones del curso, pero igual de abusables si quedan sin limite).
+        "external": "20/min",
+        # Autocompletar/geocodificar: cada request pega contra la API paga de Google Maps.
+        "geo": "30/min",
+        # Endpoint publico de historial (sin auth, CORS abierto a *).
+        "public_read": "30/min",
+    },
 }
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
+}
+
+# DB 1, separada de la DB 0 que usa Celery como broker/backend.
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": os.environ.get("DJANGO_CACHE_URL", "redis://redis:6379/1"),
+    }
 }
 
 # Default primary key field type

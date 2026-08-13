@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-09T00:00:00.000Z",
+  "title": "Design System: CUCU",
+  "extensions": {
+    "colorMeta": {
+      "ember": { "role": "primary", "displayName": "Ember Orange", "canonical": "#ff6a1a", "tonalRamp": ["#4a1d08", "#7a3010", "#a83f15", "#d5511b", "#ff6a1a", "#ff8a4d", "#ffb185", "#ffdcc4"] },
+      "ember-deep": { "role": "primary", "displayName": "Ember Deep", "canonical": "#f25c10", "tonalRamp": ["#431a08", "#712c10", "#9e3c16", "#c94c1c", "#f25c10", "#ff7f3f", "#ffa876", "#ffd3b7"] },
+      "sage": { "role": "secondary", "displayName": "Sage Green", "canonical": "#5aa851", "tonalRamp": ["#1f3a1c", "#335c2e", "#467d3f", "#4f9048", "#5aa851", "#7ebd78", "#a8d4a3", "#d4ecd1"] },
+      "toasted-amber": { "role": "tertiary", "displayName": "Toasted Amber", "canonical": "#ff8f3d", "tonalRamp": ["#6b3410", "#99511b", "#c76e26", "#f38431", "#ff8f3d", "#ffab6e", "#ffc79f", "#ffe4d0"] },
+      "terracotta": { "role": "tertiary", "displayName": "Terracotta", "canonical": "#de5f58", "tonalRamp": ["#5c1815", "#832321", "#a92e2b", "#c94640", "#de5f58", "#e6867f", "#eeada8", "#f6d4d1"] },
+      "charcoal-ink": { "role": "neutral", "displayName": "Charcoal Ink", "canonical": "#1f2430", "tonalRamp": ["#0b0d12", "#14171f", "#1a1e28", "#1f2430", "#3a4050", "#565d70", "#8890a0", "#c7ccd6"] },
+      "slate-muted": { "role": "neutral", "displayName": "Slate Muted", "canonical": "#6f7483", "tonalRamp": ["#2c2f38", "#3f4450", "#525968", "#5f6675", "#6f7483", "#8b909c", "#adb1ba", "#d4d6db"] },
+      "warm-paper": { "role": "neutral", "displayName": "Warm Paper", "canonical": "#fcf8f3", "tonalRamp": ["#8a7a63", "#a8987f", "#c6b8a1", "#e0d5c5", "#fcf8f3", "#fdfaf7", "#fefcfb", "#fffefd"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero/landing headlines only." },
+      "headline": { "displayName": "Headline", "purpose": "Section titles within a page." },
+      "title": { "displayName": "Title", "purpose": "Card titles, profile names, panel headers." },
+      "body": { "displayName": "Body", "purpose": "Prose and descriptions." },
+      "label": { "displayName": "Label", "purpose": "Eyebrow tags, button text, status-pill text." }
+    },
+    "shadows": [
+      { "name": "ambient", "value": "0 18px 54px rgba(31, 36, 48, 0.08)", "purpose": "Resting elevation for every card, panel, and surface." },
+      { "name": "ember-glow", "value": "0 16px 32px rgba(242, 92, 16, 0.22)", "purpose": "Primary buttons, brand mark, and other elements that should announce themselves as the important action." },
+      { "name": "focus-ring", "value": "0 0 0 4px rgba(255, 106, 26, 0.10)", "purpose": "Input focus state — a solid ring, not a blurred glow." },
+      { "name": "inset-hairline", "value": "inset 0 0 0 1px rgba(255, 106, 26, 0.12)", "purpose": "Border-via-shadow trick on circular avatar/profile images." },
+      { "name": "sheet", "value": "0 -20px 60px rgba(0, 0, 0, 0.25)", "purpose": "The one deliberately heavier shadow — reserved for the bottom-sheet address picker." }
+    ],
+    "motion": [],
+    "breakpoints": [
+      { "name": "sm", "value": "760px" },
+      { "name": "md", "value": "1020px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The system's one confident action — pill-shaped, ember gradient, glow shadow.",
+      "html": "<button class=\"ds-btn-primary\">Pedir ahora</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; height: 56px; padding: 0 28px; border: none; border-radius: 999px; background: linear-gradient(135deg, #ff6a1a, #f25c10); color: #ffffff; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 15px; letter-spacing: -0.01em; box-shadow: 0 16px 32px rgba(242, 92, 16, 0.22); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; } .ds-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 20px 38px rgba(242, 92, 16, 0.28); } .ds-btn-primary:focus-visible { box-shadow: 0 0 0 4px rgba(255, 106, 26, 0.18), 0 16px 32px rgba(242, 92, 16, 0.22); } .ds-btn-primary:active { transform: translateY(0); }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Ghost/secondary action — pill-shaped, hairline border, no shadow at rest.",
+      "html": "<button class=\"ds-btn-secondary\">Cancelar</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; height: 56px; padding: 0 28px; border-radius: 999px; border: 1px solid rgba(31, 36, 48, 0.08); background: rgba(255, 255, 255, 0.96); color: #1f2430; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 15px; cursor: pointer; transition: border-color 0.2s ease, background 0.2s ease; } .ds-btn-secondary:hover { border-color: rgba(255, 106, 26, 0.4); } .ds-btn-secondary:focus-visible { box-shadow: 0 0 0 4px rgba(255, 106, 26, 0.10); }"
+    },
+    {
+      "name": "Food Card",
+      "kind": "card",
+      "refersTo": "card-food",
+      "description": "Signature dish/listing card — photo, title, price, hover lift.",
+      "html": "<div class=\"ds-food-card\"><div class=\"ds-food-card__photo\" style=\"background-image:url('/static/images/pizza.png')\"></div><div class=\"ds-food-card__body\"><span class=\"ds-food-card__title\">Pizza casera</span><span class=\"ds-food-card__price\">$18.000</span></div></div>",
+      "css": ".ds-food-card { background: rgba(255, 255, 255, 0.96); border: 1px solid rgba(31, 36, 48, 0.08); border-radius: 24px; padding: 16px; box-shadow: 0 18px 54px rgba(31, 36, 48, 0.08); transition: transform 0.2s ease; } .ds-food-card:hover { transform: translateY(-2px); } .ds-food-card__photo { aspect-ratio: 1.22 / 1; border-radius: 16px; background-size: cover; background-position: center; transition: transform 0.3s ease; } .ds-food-card:hover .ds-food-card__photo { transform: scale(1.03); } .ds-food-card__body { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; } .ds-food-card__title { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 16px; color: #1f2430; } .ds-food-card__price { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 16px; color: #ff6a1a; }"
+    },
+    {
+      "name": "Input Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Text input — hairline border at rest, hard focus ring on focus.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Tu direccion\" />",
+      "css": ".ds-input { height: 56px; width: 100%; padding: 0 18px; border-radius: 18px; border: 1px solid rgba(31, 36, 48, 0.08); background: #fffdfb; color: #1f2430; font-family: 'Manrope', sans-serif; font-size: 15px; outline: none; transition: border-color 0.2s ease, box-shadow 0.2s ease; } .ds-input::placeholder { color: #6f7483; } .ds-input:focus { border-color: #ff6a1a; box-shadow: 0 0 0 4px rgba(255, 106, 26, 0.10); }"
+    },
+    {
+      "name": "Status Pill",
+      "kind": "chip",
+      "refersTo": "status-pill",
+      "description": "Unified status component covering order status, delivery status, and any future status surface via state-color mapping.",
+      "html": "<span class=\"ds-status-pill ds-status-pill--pending\">Pendiente</span>",
+      "css": ".ds-status-pill { display: inline-flex; align-items: center; padding: 6px 14px; border-radius: 999px; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; } .ds-status-pill--pending { background: rgba(255, 143, 61, 0.14); color: #a95f19; } .ds-status-pill--success { background: #eef8eb; color: #3a7d34; } .ds-status-pill--progress { background: #fff1e7; color: #c1490f; } .ds-status-pill--danger { background: rgba(222, 95, 88, 0.14); color: #a13030; }"
+    },
+    {
+      "name": "Icon FAB",
+      "kind": "custom",
+      "refersTo": "fab",
+      "description": "Floating circular action button (back / language switch) — lighter, more translucent than in-flow buttons.",
+      "html": "<button class=\"ds-fab\" aria-label=\"Volver\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M19 12H5M12 19l-7-7 7-7\"/></svg></button>",
+      "css": ".ds-fab { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 999px; border: none; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); color: #1f2430; box-shadow: 0 18px 54px rgba(31, 36, 48, 0.08); cursor: pointer; transition: color 0.2s ease; } .ds-fab:hover { color: #ff6a1a; }"
+    },
+    {
+      "name": "Courier Payout Card",
+      "kind": "custom",
+      "refersTo": "payout-card",
+      "description": "Signature earnings display on the courier profile — ember gradient wash, large Display-weight amount.",
+      "html": "<div class=\"ds-payout-card\"><span class=\"ds-payout-card__label\">Ganancias de hoy</span><span class=\"ds-payout-card__amount\">$42.500</span></div>",
+      "css": ".ds-payout-card { background: linear-gradient(135deg, rgba(255, 106, 26, 0.1), rgba(255, 106, 26, 0.03)); border-radius: 18px; padding: 20px 24px; display: flex; flex-direction: column; gap: 6px; } .ds-payout-card__label { font-family: 'Manrope', sans-serif; font-size: 13px; color: #6f7483; } .ds-payout-card__amount { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 26px; color: #1f2430; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Extra Plate",
+    "overview": "CUCU exists because someone nearby cooked one plate too many. Every visual decision should read as a neighbor handing you food directly — not a restaurant scrolling its permanent menu, not a delivery aggregator's endless catalog. The system is warm and appetite-forward by design: a cream-and-ember palette, big honest food photography, and soft, fully-rounded shapes that feel closer to bakery signage or a farmers-market stall than a SaaS dashboard. Nothing here should feel sterile, corporate, or algorithmic — the product's entire premise is human-scale surplus, and the interface should feel that way even on its most transactional screens (checkout, order tracking, courier payouts). The palette stays almost entirely warm neutrals (cream, paper-white, charcoal ink) punctuated by a single confident ember orange used for action and status, never as a large flat fill. Depth comes from soft, color-tinted shadows rather than hard edges or pure-black elevation — nothing in this system should look like it was clipped out with scissors.",
+    "keyCharacteristics": [
+      "Warm, appetite-forward, human-scale — never corporate or sterile",
+      "One confident accent (ember orange) used for action/status, not decoration",
+      "Fully rounded everywhere: pill for anything interactive, sweeping large radii for containers",
+      "Shadows are always color-tinted (ink or ember), never neutral black",
+      "Real food photography and one illustrated 'phone in hand' hero moment, not stock-icon abstraction"
+    ],
+    "rules": [
+      { "name": "The Warm Signal Rule", "body": "Ember orange is the color you act on, not the color you read. It appears on buttons, focus rings, active states, price, and the brand mark — never as body text, never as a large background fill. The one exception is a very low-alpha radial wash (~8%) behind hero content, which is atmosphere, not a color block.", "section": "colors" },
+      { "name": "The One Green Rule", "body": "Sage #5aa851 is the only success/positive color in the system. Several screens currently use unrelated greens (#1eae7a, #19a57b, #7ea86f) — those are drift from before this file existed, not sanctioned variants; converge them to Sage.", "section": "colors" },
+      { "name": "The Tight Headline Rule", "body": "Anything set in Outfit at Display or Headline size carries negative letter-spacing (−0.04em minimum). A headline with default tracking reads as off-system immediately.", "section": "typography" },
+      { "name": "The Warm Shadow Rule", "body": "A shadow always tells you what's beneath it: ink-tinted for resting surfaces, ember-tinted for actionable ones. A generic rgba(0,0,0,…) shadow is off-system outside the Address Picker's Sheet exception.", "section": "elevation" },
+      { "name": "The Soft-Everywhere Rule", "body": "Every interactive surface is rounded. A 0px/sharp-cornered button or card is off-system; use the smallest radius in the scale (14px) before ever using none.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do use pill radius (999px) for every button, chip, badge, FAB, and nav element — the one unified shape language.",
+      "Do reserve Ember Orange for action, status, and price — as a gradient, glow, or thin line, never a large flat fill.",
+      "Do tint every shadow — ink for resting/ambient, ember for primary actions — per the Warm Shadow Rule.",
+      "Do pair Outfit (tight tracking) with Manrope; no third typeface.",
+      "Do keep food photography as full-bleed rectangles inside a card's own radius, never circular crops.",
+      "Do extend the unified Status Pill component with a new state-color mapping when a new status is needed."
+    ],
+    "donts": [
+      "Don't introduce a new hex for ember, sage, ink, danger, or warning. The auth pages' #ff6a17/#24262f/#73727c family and the app-shell's other greens (#1eae7a, #19a57b, #7ea86f) are legacy drift, not alternate brand colors — converge to the values in this file.",
+      "Don't ship a 16px-radius button anywhere going forward; pill is the one canonical button shape now.",
+      "Don't add a bottom tab bar on mobile — navigation stacks into a column below 760px.",
+      "Don't hand-roll a new badge/status class — extend the unified Status Pill instead.",
+      "Don't use a neutral/pure-black shadow outside the Address Picker's Sheet exception, and don't use emoji for a primary functional icon."
+    ]
+  }
+}

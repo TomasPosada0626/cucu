@@ -210,8 +210,14 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
+    # Secure-by-default: las 36 vistas del proyecto ya declaran su propio
+    # permission_classes explicito (AllowAny/IsAuthenticated segun el caso),
+    # asi que este default nunca se usa hoy. Que sea IsAuthenticated en vez
+    # de AllowAny es una red de seguridad: si alguien agrega una vista nueva
+    # y se olvida de protegerla, falla cerrada en vez de quedar publica en
+    # silencio.
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.AllowAny",
+        "rest_framework.permissions.IsAuthenticated",
     ],
     "DEFAULT_THROTTLE_CLASSES": [
         "rest_framework.throttling.AnonRateThrottle",

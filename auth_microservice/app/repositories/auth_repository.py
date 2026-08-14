@@ -31,6 +31,13 @@ class SQLiteAuthRepository:
     def _ensure_schema_compatibility(self, connection: sqlite3.Connection) -> None:
         columns = self._get_columns(connection, "users")
 
+        # Las consultas de lectura usan COALESCE(username, nombre, '') para
+        # tolerar tablas viejas de Django (que usan 'nombre'); si la tabla es
+        # nueva y nunca tuvo esa columna, el SELECT falla con "no such column:
+        # nombre" salvo que la garanticemos aqui tambien.
+        if "nombre" not in columns:
+            connection.execute("ALTER TABLE users ADD COLUMN nombre TEXT")
+
         if "username" not in columns:
             connection.execute("ALTER TABLE users ADD COLUMN username TEXT")
             connection.execute(

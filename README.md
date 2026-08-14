@@ -76,3 +76,9 @@ Proyecto desarrollado en equipo:
 - [Laura Indaburu](https://github.com/Lauraindabur)
 - [Athina Cappelletti](https://github.com/Athina7-7)
 - [Tomas Posada](https://github.com/TomasPosada0626)
+
+## Licencia
+
+Copyright 2026 Tomas Posada Suarez.
+
+Este repositorio (el fork activo mantenido desde [@TomasPosada0626](https://github.com/TomasPosada0626)) está licenciado bajo Apache License 2.0 — ver [LICENSE](LICENSE) para el texto completo.

@@ -1,12 +1,16 @@
 from django.db import models
 
+from ..domain.image_validation import validate_publicacion_imagen
+
 
 class Publicacion(models.Model):
     titulo = models.CharField(max_length=255)
     descripcion = models.TextField()
     categoria = models.CharField(max_length=20, blank=True, default="")
     ingredientes = models.JSONField(default=list, blank=True)
-    imagen = models.FileField(upload_to="publicaciones/", null=True, blank=True)
+    imagen = models.FileField(
+        upload_to="publicaciones/", null=True, blank=True, validators=[validate_publicacion_imagen]
+    )
     stock = models.PositiveIntegerField(default=10)
     maximo_por_venta = models.PositiveIntegerField(default=5)
     precio = models.FloatField()

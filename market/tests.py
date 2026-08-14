@@ -1,17 +1,27 @@
+import io
+
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from rest_framework.test import APIClient
 from rest_framework_simplejwt.tokens import RefreshToken
 from unittest.mock import patch
 from decimal import Decimal
+from PIL import Image
 
 from accounts.infrastructure.models import User
 from common.exceptions import ValidationError
 from geo.infrastructure.models import Ubicacion
 
 from .domain.builders import PedidoBuilder
+from .domain.image_validation import validate_publicacion_imagen
 from .domain.order_rules import PublicacionSnapshot, validate_and_price_items
 from .infrastructure.models import Pedido, PedidoItem, Publicacion
+
+
+def _valid_png_bytes() -> bytes:
+	buffer = io.BytesIO()
+	Image.new("RGB", (2, 2), color="red").save(buffer, format="PNG")
+	return buffer.getvalue()
 
 
 class PedidoCreateTests(TestCase):
@@ -220,7 +230,7 @@ class PublicacionGeoTests(TestCase):
 		geocode_address.return_value.longitud = "-74.083652"
 		geocode_address.return_value.direccion_texto = "Calle 10 # 20-30, Bogota"
 
-		image = SimpleUploadedFile("ramen.png", b"fake-image-content", content_type="image/png")
+		image = SimpleUploadedFile("ramen.png", _valid_png_bytes(), content_type="image/png")
 
 		response = self.client.post(
 			"/api/publicaciones",
@@ -238,6 +248,64 @@ class PublicacionGeoTests(TestCase):
 		data = response.json()
 		self.assertTrue(data["image_url"])
 		self.assertIn("publicaciones/", data["image_url"])
+
+	@patch("market.domain.services.GeocodingService.geocode_address")
+	def test_create_publicacion_rejects_file_disguised_as_image(self, geocode_address):
+		geocode_address.return_value.latitud = "4.653332"
+		geocode_address.return_value.longitud = "-74.083652"
+		geocode_address.return_value.direccion_texto = "Calle 10 # 20-30, Bogota"
+
+		malicious = SimpleUploadedFile(
+			"evil.svg", b"<svg onload='alert(1)'/>", content_type="image/png"
+		)
+
+		response = self.client.post(
+			"/api/publicaciones",
+			{
+				"titulo": "X", "descripcion": "Y", "precio": 1000,
+				"direccion_texto": "Calle 10 # 20-30", "imagen": malicious,
+			},
+		)
+
+		self.assertEqual(response.status_code, 400)
+
+	@patch("market.domain.services.GeocodingService.geocode_address")
+	def test_create_publicacion_rejects_disallowed_content_type(self, geocode_address):
+		geocode_address.return_value.latitud = "4.653332"
+		geocode_address.return_value.longitud = "-74.083652"
+		geocode_address.return_value.direccion_texto = "Calle 10 # 20-30, Bogota"
+
+		malicious = SimpleUploadedFile("shell.php", b"<?php system($_GET['c']); ?>", content_type="application/x-php")
+
+		response = self.client.post(
+			"/api/publicaciones",
+			{
+				"titulo": "X", "descripcion": "Y", "precio": 1000,
+				"direccion_texto": "Calle 10 # 20-30", "imagen": malicious,
+			},
+		)
+
+		self.assertEqual(response.status_code, 400)
+
+	@patch("market.domain.services.GeocodingService.geocode_address")
+	def test_create_publicacion_rejects_oversized_image(self, geocode_address):
+		geocode_address.return_value.latitud = "4.653332"
+		geocode_address.return_value.longitud = "-74.083652"
+		geocode_address.return_value.direccion_texto = "Calle 10 # 20-30, Bogota"
+
+		oversized = SimpleUploadedFile(
+			"big.png", b"0" * (5 * 1024 * 1024 + 1), content_type="image/png"
+		)
+
+		response = self.client.post(
+			"/api/publicaciones",
+			{
+				"titulo": "X", "descripcion": "Y", "precio": 1000,
+				"direccion_texto": "Calle 10 # 20-30", "imagen": oversized,
+			},
+		)
+
+		self.assertEqual(response.status_code, 400)
 
 	def test_list_only_publicaciones_within_five_km(self):
 		ubicacion_cercana = Ubicacion.objects.create(
@@ -1094,3 +1162,27 @@ class PublicacionDetailUpdateApiTests(TestCase):
 	def test_delete_not_found_returns_404(self):
 		response = self.client.delete("/api/publicaciones/999999")
 		self.assertEqual(response.status_code, 404)
+
+
+class ValidatePublicacionImagenTests(TestCase):
+	def test_none_passes_silently(self):
+		validate_publicacion_imagen(None)
+
+	def test_valid_image_passes(self):
+		image = SimpleUploadedFile("ok.png", _valid_png_bytes(), content_type="image/png")
+		validate_publicacion_imagen(image)
+
+	def test_rejects_disallowed_content_type(self):
+		image = SimpleUploadedFile("ok.png", _valid_png_bytes(), content_type="application/pdf")
+		with self.assertRaises(Exception):
+			validate_publicacion_imagen(image)
+
+	def test_rejects_content_that_is_not_really_an_image(self):
+		fake = SimpleUploadedFile("evil.svg", b"<svg onload='alert(1)'/>", content_type="image/png")
+		with self.assertRaises(Exception):
+			validate_publicacion_imagen(fake)
+
+	def test_rejects_oversized_file(self):
+		big = SimpleUploadedFile("big.png", b"0" * (5 * 1024 * 1024 + 1), content_type="image/png")
+		with self.assertRaises(Exception):
+			validate_publicacion_imagen(big)

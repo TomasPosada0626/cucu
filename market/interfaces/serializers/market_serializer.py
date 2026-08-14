@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from geo.infrastructure.models import Ubicacion
 
+from ...domain.image_validation import validate_publicacion_imagen
 from ...infrastructure.models import Pedido, PedidoItem, Publicacion
 
 
@@ -14,7 +15,7 @@ class PublicacionCreateInputSerializer(serializers.Serializer):
         required=False,
         allow_empty=True,
     )
-    imagen = serializers.FileField(required=False, allow_null=True)
+    imagen = serializers.FileField(required=False, allow_null=True, validators=[validate_publicacion_imagen])
     stock = serializers.IntegerField(required=False, min_value=0)
     maximo_por_venta = serializers.IntegerField(required=False, min_value=1)
     precio = serializers.FloatField(min_value=0.01)

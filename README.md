@@ -69,6 +69,14 @@ docker compose logs -f celery-worker
 Para instrucciones sobre el despliegue en la nube, revisa [README_DEPLOY_AWS.md](./README_DEPLOY_AWS.md).
 Para la revisión de cumplimiento de requisitos, revisa [Entregable2](../../wiki/Entregable2).
 
+## Más información
+
+- [CHANGELOG.md](CHANGELOG.md) — historial de lo que ya se envió.
+- [CONTRIBUTING.md](CONTRIBUTING.md) — cómo levantar el entorno y qué revisar antes de un PR.
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) — normas de convivencia en el proyecto.
+- [SECURITY.md](SECURITY.md) — cómo reportar una vulnerabilidad.
+- [DESIGN.md](DESIGN.md) — sistema de diseño (colores, tipografía, componentes).
+
 ## Colaboradores
 
 Proyecto desarrollado en equipo:

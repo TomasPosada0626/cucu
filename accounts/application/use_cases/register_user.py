@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import IntegrityError
 
-from common.exceptions import ConflictError
+from common.exceptions import ConflictError, ValidationError
 
 from ...domain.repositories import UserRepository
 from ...domain.services import AccountPolicyService
@@ -25,7 +26,10 @@ class RegisterUserUseCase:
     def execute(self, *, nombre: str, email: str, password: str, es_repartidor: bool = False) -> UserDTO:
         normalized_name = self._policy_service.normalize_name(nombre)
         normalized_email = self._policy_service.normalize_email(email)
-        self._password_validator(password)
+        try:
+            self._password_validator(password)
+        except DjangoValidationError as exc:
+            raise ValidationError(" ".join(exc.messages)) from exc
 
         if self._user_repository.exists_by_email(normalized_email):
             raise ConflictError("El email ya está registrado")

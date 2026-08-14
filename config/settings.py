@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
 from datetime import timedelta
 
@@ -243,6 +244,14 @@ CACHES = {
         "LOCATION": os.environ.get("DJANGO_CACHE_URL", "redis://redis:6379/1"),
     }
 }
+
+# `manage.py test` usa un cache en memoria propio del proceso en vez del Redis
+# compartido: el throttling de DRF guarda sus contadores en el cache, y con
+# Redis persistente dos corridas de test seguidas (o muchos tests nuevos en la
+# misma corrida) pueden empezar a devolver 429 por contadores que sobreviven
+# entre ejecuciones. No afecta produccion, solo `test` en sys.argv.
+if "test" in sys.argv:
+    CACHES["default"] = {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

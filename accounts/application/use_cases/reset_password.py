@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
 
 from common.exceptions import ValidationError
 
@@ -22,6 +23,9 @@ class ResetPasswordUseCase:
         if user is None:
             raise ValidationError("El enlace de recuperación expiró o no es válido")
 
-        self._password_validator(password, user)
+        try:
+            self._password_validator(password, user)
+        except DjangoValidationError as exc:
+            raise ValidationError(" ".join(exc.messages)) from exc
         updated_user = self._user_repository.update_password(user=user, password=password)
         return UserDTO.from_model(updated_user)

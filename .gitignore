@@ -6,6 +6,12 @@ db.sqlite3
 .env
 .env.local
 
+# Artefactos de coverage.py / pytest-cov (monolito y microservicios)
+.coverage
+.coverage.*
+.pytest_cache/
+htmlcov/
+
 # Artefactos generados / contenido de usuarios, no se versionan
 /staticfiles/
 /media/

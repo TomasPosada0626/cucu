@@ -1,0 +1,25 @@
+[run]
+source = .
+omit =
+    */migrations/*
+    manage.py
+    config/wsgi.py
+    config/asgi.py
+    */tests.py
+    *_microservice/*
+    venv/*
+    .venv/*
+    */site-packages/*
+    # Boilerplate de `startapp` (from django.shortcuts import render) que
+    # nunca se conecta a ninguna url.py; las vistas reales viven en
+    # */interfaces/api/views.py. Confirmado sin referencias en todo el repo.
+    geo/views.py
+    transactions/views.py
+
+[report]
+precision = 1
+skip_covered = False
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise NotImplementedError

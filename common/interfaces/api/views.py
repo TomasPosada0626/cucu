@@ -2,9 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.throttling import ScopedRateThrottle
 from rest_framework import status
-import ipaddress
 import json
-import socket
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.validators import validate_email
 from urllib import error as url_error
@@ -12,6 +10,7 @@ from urllib import parse as url_parse
 from urllib import request as url_request
 
 from ...infrastructure.adapters import ThirdPartyExchangeRateAdapter, HttpAllyServiceAdapter
+from ...infrastructure.safe_http import UnsafeHostError, build_pinned_opener, resolve_and_validate_host
 
 class ExternalServicesTestAPIView(APIView):
     authentication_classes = []
@@ -73,7 +72,11 @@ class ConsumeExternalJsonAPIView(APIView):
     throttle_scope = "external"
 
     @staticmethod
-    def _validate_url(raw_url: str) -> str:
+    def _validate_url(raw_url: str) -> tuple[str, str]:
+        """Devuelve (url, ip_validada). La IP se resuelve una sola vez aqui y
+        el caller debe conectar contra ella directamente (ver safe_http) en
+        vez de dejar que la libreria HTTP repita la resolucion DNS - si no,
+        el chequeo de host privado se puede saltar con DNS rebinding."""
         candidate = str(raw_url or "").strip()
         if not candidate:
             raise ValueError("Debes enviar una URL")
@@ -89,27 +92,15 @@ class ConsumeExternalJsonAPIView(APIView):
             raise ValueError("La URL no es valida")
 
         try:
-            addr_infos = socket.getaddrinfo(host, None)
-        except socket.gaierror:
-            raise ValueError("No fue posible resolver el host de la URL")
+            resolved_ip = resolve_and_validate_host(host)
+        except UnsafeHostError as exc:
+            raise ValueError(str(exc)) from exc
 
-        for _family, _type, _proto, _canonname, sockaddr in addr_infos:
-            ip = ipaddress.ip_address(sockaddr[0])
-            if (
-                ip.is_private
-                or ip.is_loopback
-                or ip.is_link_local
-                or ip.is_reserved
-                or ip.is_multicast
-                or ip.is_unspecified
-            ):
-                raise ValueError("No se permite consumir hosts locales o privados")
-
-        return candidate
+        return candidate, resolved_ip
 
     def post(self, request):
         try:
-            target_url = self._validate_url(request.data.get("url"))
+            target_url, resolved_ip = self._validate_url(request.data.get("url"))
         except ValueError as exc:
             return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -122,8 +113,10 @@ class ConsumeExternalJsonAPIView(APIView):
             method="GET",
         )
 
+        opener = build_pinned_opener(resolved_ip)
+
         try:
-            with url_request.urlopen(req, timeout=10) as response:
+            with opener.open(req, timeout=10) as response:
                 body = response.read().decode("utf-8", errors="replace")
                 payload = json.loads(body)
                 return Response(

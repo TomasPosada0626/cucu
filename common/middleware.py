@@ -1,3 +1,6 @@
+from django.core.cache import cache
+from django.http import JsonResponse
+
 CSP_DIRECTIVES = (
     "default-src 'self'; "
     "script-src 'self' 'unsafe-inline' https://maps.googleapis.com; "
@@ -31,3 +34,31 @@ class SecurityHeadersMiddleware:
         response.setdefault("Referrer-Policy", "same-origin")
         response.setdefault("Permissions-Policy", "geolocation=(self), camera=(), microphone=()")
         return response
+
+
+ADMIN_LOGIN_PATH = "/admin/login/"
+ADMIN_LOGIN_RATE_LIMIT = 10
+ADMIN_LOGIN_RATE_WINDOW_SECONDS = 60
+
+
+class AdminLoginRateLimitMiddleware:
+    """El admin de Django usa su propia vista de login (no pasa por DRF), asi
+    que el throttling de REST_FRAMEWORK no lo cubre. Sin esto, /admin/login/
+    acepta intentos de password ilimitados por IP."""
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        if request.method == "POST" and request.path == ADMIN_LOGIN_PATH:
+            ip = request.META.get("REMOTE_ADDR", "unknown")
+            key = f"admin_login_throttle_{ip}"
+            attempts = cache.get(key, 0)
+            if attempts >= ADMIN_LOGIN_RATE_LIMIT:
+                return JsonResponse(
+                    {"detail": "Demasiados intentos de inicio de sesión. Intenta de nuevo más tarde."},
+                    status=429,
+                )
+            cache.set(key, attempts + 1, timeout=ADMIN_LOGIN_RATE_WINDOW_SECONDS)
+
+        return self.get_response(request)

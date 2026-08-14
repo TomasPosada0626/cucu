@@ -1,5 +1,6 @@
 import socket
 from unittest import mock
+from urllib import request as url_request
 
 from django.core.cache import cache
 from django.test import TestCase
@@ -141,13 +142,22 @@ class ConsumeExternalJsonValidateUrlTests(TestCase):
 
     def test_allows_public_ip(self):
         with mock.patch("socket.getaddrinfo", return_value=[(2, 1, 6, "", ("93.184.216.34", 80))]):
-            result = ConsumeExternalJsonAPIView._validate_url("http://public.example.com/data")
-        self.assertEqual(result, "http://public.example.com/data")
+            url, resolved_ip = ConsumeExternalJsonAPIView._validate_url("http://public.example.com/data")
+        self.assertEqual(url, "http://public.example.com/data")
+        self.assertEqual(resolved_ip, "93.184.216.34")
 
 
 class ConsumeExternalJsonAPIViewTests(TestCase):
     def setUp(self):
         cache.clear()
+
+    def _mock_opener(self, *, response=None, side_effect=None):
+        opener = mock.MagicMock()
+        if side_effect is not None:
+            opener.open.side_effect = side_effect
+        else:
+            opener.open.return_value = response
+        return opener
 
     def test_invalid_url_returns_400(self):
         response = self.client.post(
@@ -155,63 +165,223 @@ class ConsumeExternalJsonAPIViewTests(TestCase):
         )
         self.assertEqual(response.status_code, 400)
 
+    @mock.patch("common.interfaces.api.views.build_pinned_opener")
     @mock.patch("common.interfaces.api.views.ConsumeExternalJsonAPIView._validate_url")
-    def test_success(self, validate_url):
-        validate_url.return_value = "https://ally.example.com/data"
+    def test_success(self, validate_url, build_pinned_opener):
+        validate_url.return_value = ("https://ally.example.com/data", "93.184.216.34")
         response_obj = mock.MagicMock()
         response_obj.read.return_value = b'{"ok": true}'
         response_obj.status = 200
         response_obj.__enter__.return_value = response_obj
+        build_pinned_opener.return_value = self._mock_opener(response=response_obj)
 
-        with mock.patch("common.interfaces.api.views.url_request.urlopen", return_value=response_obj):
-            response = self.client.post(
-                "/api/aliados/consumir", {"url": "https://ally.example.com/data"}, content_type="application/json"
-            )
+        response = self.client.post(
+            "/api/aliados/consumir", {"url": "https://ally.example.com/data"}, content_type="application/json"
+        )
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.json()["ok"])
         self.assertEqual(response.json()["data"], {"ok": True})
+        build_pinned_opener.assert_called_once_with("93.184.216.34")
 
+    @mock.patch("common.interfaces.api.views.build_pinned_opener")
     @mock.patch("common.interfaces.api.views.ConsumeExternalJsonAPIView._validate_url")
-    def test_non_json_response_returns_400(self, validate_url):
-        validate_url.return_value = "https://ally.example.com/data"
+    def test_non_json_response_returns_400(self, validate_url, build_pinned_opener):
+        validate_url.return_value = ("https://ally.example.com/data", "93.184.216.34")
         response_obj = mock.MagicMock()
         response_obj.read.return_value = b"not json"
         response_obj.__enter__.return_value = response_obj
+        build_pinned_opener.return_value = self._mock_opener(response=response_obj)
 
-        with mock.patch("common.interfaces.api.views.url_request.urlopen", return_value=response_obj):
-            response = self.client.post(
-                "/api/aliados/consumir", {"url": "https://ally.example.com/data"}, content_type="application/json"
-            )
+        response = self.client.post(
+            "/api/aliados/consumir", {"url": "https://ally.example.com/data"}, content_type="application/json"
+        )
 
         self.assertEqual(response.status_code, 400)
 
+    @mock.patch("common.interfaces.api.views.build_pinned_opener")
     @mock.patch("common.interfaces.api.views.ConsumeExternalJsonAPIView._validate_url")
-    def test_http_error_returns_502(self, validate_url):
+    def test_http_error_returns_502(self, validate_url, build_pinned_opener):
         from urllib import error as url_error
 
-        validate_url.return_value = "https://ally.example.com/data"
+        validate_url.return_value = ("https://ally.example.com/data", "93.184.216.34")
         http_error = url_error.HTTPError("https://ally.example.com/data", 503, "unavailable", {}, None)
+        build_pinned_opener.return_value = self._mock_opener(side_effect=http_error)
 
-        with mock.patch("common.interfaces.api.views.url_request.urlopen", side_effect=http_error):
-            response = self.client.post(
-                "/api/aliados/consumir", {"url": "https://ally.example.com/data"}, content_type="application/json"
-            )
+        response = self.client.post(
+            "/api/aliados/consumir", {"url": "https://ally.example.com/data"}, content_type="application/json"
+        )
 
         self.assertEqual(response.status_code, 502)
         self.assertEqual(response.json()["ally_status"], 503)
 
+    @mock.patch("common.interfaces.api.views.build_pinned_opener")
     @mock.patch("common.interfaces.api.views.ConsumeExternalJsonAPIView._validate_url")
-    def test_connection_error_returns_504(self, validate_url):
+    def test_connection_error_returns_504(self, validate_url, build_pinned_opener):
         from urllib import error as url_error
 
-        validate_url.return_value = "https://ally.example.com/data"
+        validate_url.return_value = ("https://ally.example.com/data", "93.184.216.34")
+        build_pinned_opener.return_value = self._mock_opener(side_effect=url_error.URLError("unreachable"))
 
-        with mock.patch(
-            "common.interfaces.api.views.url_request.urlopen", side_effect=url_error.URLError("unreachable")
-        ):
-            response = self.client.post(
-                "/api/aliados/consumir", {"url": "https://ally.example.com/data"}, content_type="application/json"
-            )
+        response = self.client.post(
+            "/api/aliados/consumir", {"url": "https://ally.example.com/data"}, content_type="application/json"
+        )
 
         self.assertEqual(response.status_code, 504)
+
+
+class SafeHttpTests(TestCase):
+    def test_resolve_and_validate_host_returns_first_public_ip(self):
+        from common.infrastructure.safe_http import resolve_and_validate_host
+
+        with mock.patch("socket.getaddrinfo", return_value=[(2, 1, 6, "", ("93.184.216.34", 80))]):
+            ip = resolve_and_validate_host("example.com")
+        self.assertEqual(ip, "93.184.216.34")
+
+    def test_resolve_and_validate_host_rejects_private_ip(self):
+        from common.infrastructure.safe_http import UnsafeHostError, resolve_and_validate_host
+
+        with mock.patch("socket.getaddrinfo", return_value=[(2, 1, 6, "", ("10.0.0.5", 80))]):
+            with self.assertRaises(UnsafeHostError):
+                resolve_and_validate_host("internal.example.com")
+
+    def test_resolve_and_validate_host_rejects_when_dns_fails(self):
+        from common.infrastructure.safe_http import UnsafeHostError, resolve_and_validate_host
+
+        with mock.patch("socket.getaddrinfo", side_effect=socket.gaierror("no dns")):
+            with self.assertRaises(UnsafeHostError):
+                resolve_and_validate_host("no-existe.example.com")
+
+    def test_resolve_and_validate_host_rejects_empty_result(self):
+        from common.infrastructure.safe_http import UnsafeHostError, resolve_and_validate_host
+
+        with mock.patch("socket.getaddrinfo", return_value=[]):
+            with self.assertRaises(UnsafeHostError):
+                resolve_and_validate_host("example.com")
+
+    def test_resolve_and_validate_host_keeps_first_ip_when_multiple_families_resolve(self):
+        from common.infrastructure.safe_http import resolve_and_validate_host
+
+        addr_infos = [
+            (2, 1, 6, "", ("93.184.216.34", 80)),
+            (10, 1, 6, "", ("2606:2800:220:1:248:1893:25c8:1946", 80, 0, 0)),
+        ]
+        with mock.patch("socket.getaddrinfo", return_value=addr_infos):
+            ip = resolve_and_validate_host("example.com")
+        self.assertEqual(ip, "93.184.216.34")
+
+    def test_pinned_http_connection_connects_to_pinned_ip_not_hostname(self):
+        """El punto central del fix: la conexion real debe ir a la IP ya
+        validada, sin volver a resolver el hostname (que es exactamente lo
+        que permite el bypass de DNS rebinding)."""
+        from common.infrastructure.safe_http import _PinnedHTTPConnection
+
+        fake_sock = mock.MagicMock()
+        with mock.patch("socket.create_connection", return_value=fake_sock) as create_connection, \
+                mock.patch("socket.getaddrinfo", side_effect=AssertionError("no deberia resolver DNS de nuevo")):
+            conn = _PinnedHTTPConnection("ally.example.com", pinned_ip="93.184.216.34")
+            conn.connect()
+
+        create_connection.assert_called_once()
+        called_address = create_connection.call_args[0][0]
+        self.assertEqual(called_address[0], "93.184.216.34")
+        self.assertEqual(conn.sock, fake_sock)
+
+    def test_http_handler_dispatches_to_pinned_connection_factory(self):
+        from common.infrastructure.safe_http import _PinnedHTTPConnection, _PinnedHTTPHandler
+
+        handler = _PinnedHTTPHandler("93.184.216.34")
+        request_obj = url_request.Request("http://ally.example.com/data")
+        with mock.patch.object(handler, "do_open") as do_open:
+            handler.http_open(request_obj)
+
+        do_open.assert_called_once()
+        connection_factory = do_open.call_args[0][0]
+        conn = connection_factory("ally.example.com", timeout=5)
+        self.assertIsInstance(conn, _PinnedHTTPConnection)
+        self.assertEqual(conn._pinned_ip, "93.184.216.34")
+
+    def test_https_handler_dispatches_to_pinned_connection_factory(self):
+        from common.infrastructure.safe_http import _PinnedHTTPSConnection, _PinnedHTTPSHandler
+
+        handler = _PinnedHTTPSHandler("93.184.216.34")
+        request_obj = url_request.Request("https://ally.example.com/data")
+        with mock.patch.object(handler, "do_open") as do_open:
+            handler.https_open(request_obj)
+
+        do_open.assert_called_once()
+        connection_factory = do_open.call_args[0][0]
+        conn = connection_factory("ally.example.com", timeout=5)
+        self.assertIsInstance(conn, _PinnedHTTPSConnection)
+        self.assertEqual(conn._pinned_ip, "93.184.216.34")
+
+    def test_build_pinned_opener_registers_handlers_for_the_pinned_ip(self):
+        from common.infrastructure.safe_http import (
+            _PinnedHTTPHandler,
+            _PinnedHTTPSHandler,
+            build_pinned_opener,
+        )
+
+        opener = build_pinned_opener("93.184.216.34")
+        handler_types = {type(h) for h in opener.handlers}
+        self.assertIn(_PinnedHTTPHandler, handler_types)
+        self.assertIn(_PinnedHTTPSHandler, handler_types)
+
+    def test_pinned_https_connection_uses_hostname_for_sni(self):
+        from common.infrastructure.safe_http import _PinnedHTTPSConnection
+
+        fake_sock = mock.MagicMock()
+        wrapped_sock = mock.MagicMock()
+        fake_context = mock.MagicMock()
+        fake_context.wrap_socket.return_value = wrapped_sock
+
+        conn = _PinnedHTTPSConnection("ally.example.com", pinned_ip="93.184.216.34")
+        conn._context = fake_context
+
+        with mock.patch("socket.create_connection", return_value=fake_sock) as create_connection:
+            conn.connect()
+
+        called_address = create_connection.call_args[0][0]
+        self.assertEqual(called_address[0], "93.184.216.34")
+        fake_context.wrap_socket.assert_called_once_with(fake_sock, server_hostname="ally.example.com")
+        self.assertEqual(conn.sock, wrapped_sock)
+
+
+class AdminLoginRateLimitMiddlewareTests(TestCase):
+    def setUp(self):
+        cache.clear()
+
+    def tearDown(self):
+        cache.clear()
+
+    def _attempt(self, remote_addr="127.0.0.1"):
+        return self.client.post(
+            "/admin/login/",
+            {"username": "admin", "password": "wrong"},
+            REMOTE_ADDR=remote_addr,
+        )
+
+    def test_11th_admin_login_attempt_within_a_minute_is_throttled(self):
+        for _ in range(10):
+            response = self._attempt()
+            self.assertNotEqual(response.status_code, 429)
+
+        response = self._attempt()
+        self.assertEqual(response.status_code, 429)
+
+    def test_get_requests_are_not_rate_limited(self):
+        for _ in range(15):
+            response = self.client.get("/admin/login/", REMOTE_ADDR="127.0.0.1")
+            self.assertNotEqual(response.status_code, 429)
+
+    def test_other_admin_paths_are_not_rate_limited(self):
+        for _ in range(15):
+            response = self.client.post("/admin/", REMOTE_ADDR="127.0.0.1")
+            self.assertNotEqual(response.status_code, 429)
+
+    def test_rate_limit_is_scoped_per_ip(self):
+        for _ in range(10):
+            self._attempt(remote_addr="203.0.113.1")
+
+        response = self._attempt(remote_addr="203.0.113.2")
+        self.assertNotEqual(response.status_code, 429)

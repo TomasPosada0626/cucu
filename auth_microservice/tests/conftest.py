@@ -3,6 +3,15 @@ from __future__ import annotations
 import pytest
 
 
+@pytest.fixture(autouse=True)
+def _clear_rate_limit_hits():
+    from app.rate_limit import _hits
+
+    _hits.clear()
+    yield
+    _hits.clear()
+
+
 @pytest.fixture
 def app(tmp_path, monkeypatch):
     monkeypatch.setattr("app.factory.DATABASE_PATH", str(tmp_path / "auth.db"))

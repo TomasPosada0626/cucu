@@ -3,8 +3,13 @@ from __future__ import annotations
 from flask import Blueprint, current_app, jsonify, request
 
 from ..errors import ValidationError
+from ..rate_limit import rate_limited
 
 auth_bp = Blueprint("auth", __name__)
+
+# Mismo presupuesto que el scope 'auth' del monolito Django: es el objetivo
+# de fuerza bruta mas obvio (login/registro/refresh/reset de password).
+_AUTH_RATE_LIMIT = {"max_requests": 10, "window_seconds": 60}
 
 
 def _auth_service():
@@ -26,6 +31,7 @@ def _bearer_token() -> str:
 
 
 @auth_bp.post("/api/v3/auth/register")
+@rate_limited(**_AUTH_RATE_LIMIT)
 def register():
     data = _payload()
     result = _auth_service().register(
@@ -37,6 +43,7 @@ def register():
 
 
 @auth_bp.post("/api/v3/auth/login")
+@rate_limited(**_AUTH_RATE_LIMIT)
 def login():
     data = _payload()
     result = _auth_service().login(email=data.get("email"), password=data.get("password"))
@@ -44,6 +51,7 @@ def login():
 
 
 @auth_bp.post("/api/v3/auth/refresh")
+@rate_limited(**_AUTH_RATE_LIMIT)
 def refresh():
     data = _payload()
     result = _auth_service().refresh(refresh_token=data.get("refresh_token"))
@@ -58,6 +66,7 @@ def me():
 
 
 @auth_bp.post("/api/v3/auth/password-reset")
+@rate_limited(**_AUTH_RATE_LIMIT)
 def password_reset():
     data = _payload()
     result = _auth_service().reset_password(email=data.get("email"), new_password=data.get("new_password"))

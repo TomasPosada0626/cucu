@@ -11,11 +11,6 @@ omit =
     venv/*
     .venv/*
     */site-packages/*
-    # Boilerplate de `startapp` (from django.shortcuts import render) que
-    # nunca se conecta a ninguna url.py; las vistas reales viven en
-    # */interfaces/api/views.py. Confirmado sin referencias en todo el repo.
-    geo/views.py
-    transactions/views.py
 
 [report]
 precision = 1

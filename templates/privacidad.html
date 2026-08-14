@@ -1,0 +1,46 @@
+{% extends "legal_base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Privacidad" %} | CUCU{% endblock %}
+{% block nav_privacidad %}<a class="current">{% trans "Privacidad" %}</a>{% endblock %}
+
+{% block content %}
+<div class="legal-eyebrow">{% trans "Legal" %}</div>
+<h1>{% trans "Privacidad" %}</h1>
+<p class="legal-updated">{% trans "Ultima actualizacion: 14 de agosto de 2026." %}</p>
+
+<div class="legal-notice">
+  <strong>{% trans "Resumen honesto:" %}</strong>
+  {% trans "CUCU es un proyecto de demostracion sin base de usuarios real todavia. Esta pagina describe que datos pide la aplicacion y para que se usan hoy, no una politica de una empresa con operacion comercial." %}
+</div>
+
+<section>
+  <h2>{% trans "Que datos se guardan" %}</h2>
+  <ul>
+    <li>{% trans "Cuenta: nombre y correo electronico." %}</li>
+    <li>{% trans "Direcciones guardadas: texto de la direccion y coordenadas exactas (latitud/longitud), necesarias para calcular cercania y rutas." %}</li>
+    <li>{% trans "Ubicacion en vivo del repartidor mientras una entrega esta en curso." %}</li>
+    <li>{% trans "Historial de compras y ventas dentro de la plataforma." %}</li>
+    <li>{% trans "Imagenes que subes al publicar un plato." %}</li>
+  </ul>
+</section>
+
+<section>
+  <h2>{% trans "Para que se usan" %}</h2>
+  <p>{% trans "Unicamente para operar las funciones que los generan: mostrar publicaciones cercanas, calcular rutas de entrega, identificar tu cuenta y tu historial. No se venden ni se comparten con terceros con fines publicitarios." %}</p>
+</section>
+
+<section>
+  <h2>{% trans "Servicios de terceros" %}</h2>
+  <p>{% trans "Las direcciones que ingresas se envian a Google Maps Platform (geocodificacion, autocompletado y calculo de rutas) para que la ubicacion funcione — es el unico tercero que recibe datos de ubicacion, y solo para ese proposito." %}</p>
+</section>
+
+<section>
+  <h2>{% trans "Donde vive esta informacion" %}</h2>
+  <p>{% trans "En la base de datos del proyecto, sin replicas externas. Al ser un entorno de demostracion, los datos de prueba pueden reiniciarse periodicamente." %}</p>
+</section>
+
+<section>
+  <h2>{% trans "Tus opciones" %}</h2>
+  <p>{% blocktrans %}Si quieres que se elimine una cuenta de prueba o los datos asociados, escribe por la pagina de <a href="/ui/soporte/">Soporte</a>.{% endblocktrans %}</p>
+</section>
+{% endblock %}

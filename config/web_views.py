@@ -67,3 +67,15 @@ def ui_repartidor_entrega(request):
 
 def ui_repartidor_perfil(request):
     return render(request, "repartidor_perfil.html")
+
+
+def ui_terminos(request):
+    return render(request, "terminos.html")
+
+
+def ui_privacidad(request):
+    return render(request, "privacidad.html")
+
+
+def ui_soporte(request):
+    return render(request, "soporte.html")

@@ -38,6 +38,9 @@ from .web_views import (
     ui_repartidor,
     ui_repartidor_entrega,
     ui_repartidor_perfil,
+    ui_terminos,
+    ui_privacidad,
+    ui_soporte,
 )
 
 urlpatterns = [
@@ -61,6 +64,9 @@ urlpatterns = [
     path('ui/repartidor/', ui_repartidor, name='ui-repartidor'),
     path('ui/repartidor/entrega/', ui_repartidor_entrega, name='ui-repartidor-entrega'),
     path('ui/repartidor/perfil/', ui_repartidor_perfil, name='ui-repartidor-perfil'),
+    path('ui/terminos/', ui_terminos, name='ui-terminos'),
+    path('ui/privacidad/', ui_privacidad, name='ui-privacidad'),
+    path('ui/soporte/', ui_soporte, name='ui-soporte'),
 
     path('api/', include('notifications.interfaces.api.urls')),
     path('api/', include('geo.interfaces.api.urls')),

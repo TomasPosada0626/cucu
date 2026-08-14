@@ -383,7 +383,7 @@
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/></svg>
           </button>
         </div>
-        <div class="terms">{% trans "Al registrarte, aceptas nuestros" %} <a href="#">{% trans "Terminos y Condiciones" %}</a>.</div>
+        <div class="terms">{% trans "Al registrarte, aceptas nuestros" %} <a href="/ui/terminos/" target="_blank" rel="noopener">{% trans "Terminos y Condiciones" %}</a>.</div>
         <button class="cta" type="submit">{% trans "Crear cuenta" %}</button>
       </form>
 
@@ -393,11 +393,11 @@
 
     <footer class="footer">
       <div class="footer-links">
-        <a href="#">{% trans "Terminos" %}</a>
+        <a href="/ui/terminos/">{% trans "Terminos" %}</a>
         <span>|</span>
-        <a href="#">{% trans "Privacidad" %}</a>
+        <a href="/ui/privacidad/">{% trans "Privacidad" %}</a>
         <span>|</span>
-        <a href="#">{% trans "Soporte" %}</a>
+        <a href="/ui/soporte/">{% trans "Soporte" %}</a>
       </div>
       <div>{% trans "Todos los derechos reservados." %}</div>
     </footer>

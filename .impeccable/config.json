@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-font",
+        "value": "sfmono-regular",
+        "createdAt": "2026-08-14T16:38:26.307Z",
+        "reason": "DESIGN.md Typography section explicitly documents 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace' as the sanctioned Label/Mono font stack for debug/raw-output blocks; used here for inline <code> refs in legal-page prose, the documented use case."
+      }
+    ]
+  }
+}

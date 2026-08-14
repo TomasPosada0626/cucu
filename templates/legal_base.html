@@ -1,0 +1,153 @@
+{% load static i18n %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  {% include "partials/language_fab.html" %}
+  {% include "partials/back_fab.html" %}
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}CUCU{% endblock %}</title>
+  <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}" />
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32.png' %}" />
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16.png' %}" />
+  <link rel="apple-touch-icon" href="{% static 'images/apple-touch-icon.png' %}" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800&family=Manrope:wght@400;500;700;800&display=swap');
+
+    :root {
+      --bg: #fdf8f3;
+      --ink: #1f2430;
+      --muted: #6f7483;
+      --line: rgba(31, 36, 48, 0.08);
+      --accent: #ff6a1a;
+      --accent-2: #f25c10;
+      --accent-soft: rgba(255, 106, 26, 0.12);
+      --green: #5aa851;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top, rgba(255, 106, 23, 0.06), transparent 26%),
+        linear-gradient(180deg, #fffdfb 0%, var(--bg) 100%);
+      color: var(--ink);
+      font-family: 'Manrope', sans-serif;
+      line-height: 1.65;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .legal-page {
+      width: min(100%, 680px);
+      margin: 0 auto;
+      padding: 96px 24px 64px;
+    }
+
+    .legal-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 0.8125rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 0 0 12px;
+    }
+
+    .legal-page h1 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 2.125rem;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      margin: 0 0 8px;
+      text-wrap: balance;
+    }
+
+    .legal-updated {
+      color: var(--muted);
+      font-size: 1rem;
+      margin: 0 0 36px;
+    }
+
+    .legal-notice {
+      background: var(--accent-soft);
+      border: 1px solid rgba(255, 106, 26, 0.22);
+      border-radius: 18px;
+      padding: 16px 20px;
+      font-size: 1rem;
+      color: var(--ink);
+      margin: 0 0 36px;
+    }
+
+    .legal-notice strong { color: var(--accent-2); }
+
+    .legal-page section + section { margin-top: 32px; }
+
+    .legal-page h2 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.5rem;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      margin: 0 0 10px;
+    }
+
+    .legal-page p { margin: 0 0 12px; color: var(--ink); font-size: 1rem; }
+    .legal-page p:last-child { margin-bottom: 0; }
+
+    .legal-page ul {
+      margin: 0 0 12px;
+      padding-left: 20px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .legal-page li { font-size: 1rem; }
+    .legal-page li::marker { color: var(--accent); }
+
+    .legal-page code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      background: rgba(31, 36, 48, 0.06);
+      padding: 1px 6px;
+      border-radius: 8px;
+      font-size: 0.8125rem;
+    }
+
+    .legal-footer-nav {
+      margin-top: 56px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .legal-footer-nav a.current {
+      color: var(--ink);
+      text-decoration: none;
+      cursor: default;
+    }
+  </style>
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <main class="legal-page">
+    {% block content %}{% endblock %}
+
+    <nav class="legal-footer-nav" aria-label="{% trans 'Paginas legales' %}">
+      {% block nav_terminos %}<a href="/ui/terminos/">{% trans "Terminos" %}</a>{% endblock %}
+      {% block nav_privacidad %}<a href="/ui/privacidad/">{% trans "Privacidad" %}</a>{% endblock %}
+      {% block nav_soporte %}<a href="/ui/soporte/">{% trans "Soporte" %}</a>{% endblock %}
+    </nav>
+  </main>
+</body>
+</html>

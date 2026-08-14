@@ -1,0 +1,50 @@
+{% extends "legal_base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Terminos y Condiciones" %} | CUCU{% endblock %}
+{% block nav_terminos %}<a class="current">{% trans "Terminos" %}</a>{% endblock %}
+
+{% block content %}
+<div class="legal-eyebrow">{% trans "Legal" %}</div>
+<h1>{% trans "Terminos y Condiciones" %}</h1>
+<p class="legal-updated">{% trans "Ultima actualizacion: 14 de agosto de 2026." %}</p>
+
+<div class="legal-notice">
+  <strong>{% trans "Antes de leer esto:" %}</strong>
+  {% trans "CUCU es un proyecto academico y de portafolio, desarrollado originalmente en equipo y mantenido hoy por un desarrollador independiente. No es una empresa registrada ni un servicio comercial en operacion. Estos terminos describen honestamente como funciona la demo, no un contrato corporativo estandar." %}
+</div>
+
+<section>
+  <h2>{% trans "Que es CUCU" %}</h2>
+  <p>{% trans "CUCU es un marketplace de demostracion que conecta a personas con porciones adicionales de comida casera con compradores cercanos. El codigo y la infraestructura existen para mostrar arquitectura, seguridad y buenas practicas de ingenieria — no para operar un negocio real de reparto de comida." %}</p>
+</section>
+
+<section>
+  <h2>{% trans "Cuentas y uso aceptable" %}</h2>
+  <ul>
+    <li>{% trans "Al crear una cuenta, el nombre y correo que registras se usan solo para operar la demo (ver Privacidad)." %}</li>
+    <li>{% trans "No subas imagenes, descripciones o contenido que no tengas derecho a publicar." %}</li>
+    <li>{% trans "No uses la plataforma para actividades ilegales ni para intentar comprometer su seguridad." %}</li>
+    <li>{% trans "Una cuenta puede activar el modo repartidor en cualquier momento; no existen cuentas o roles separados." %}</li>
+  </ul>
+</section>
+
+<section>
+  <h2>{% trans "Pedidos y pagos" %}</h2>
+  <p>{% trans "El flujo de pago (efectivo, tarjeta o PSE) es una simulacion: no se procesan pagos reales ni se comparten datos de tarjetas con ningun procesador externo. Los pedidos, montos y estados existen para demostrar el flujo completo del producto, no como transacciones comerciales reales." %}</p>
+</section>
+
+<section>
+  <h2>{% trans "Sin garantia" %}</h2>
+  <p>{% trans "CUCU se ofrece \"tal cual\", sin garantias de disponibilidad, precision o continuidad del servicio. Al ser un proyecto activo de portafolio, funciones y datos pueden cambiar o reiniciarse sin previo aviso." %}</p>
+</section>
+
+<section>
+  <h2>{% trans "Cambios a estos terminos" %}</h2>
+  <p>{% trans "Estos terminos pueden actualizarse a medida que el proyecto evoluciona. La fecha de la ultima actualizacion siempre aparece arriba." %}</p>
+</section>
+
+<section>
+  <h2>{% trans "Contacto" %}</h2>
+  <p>{% blocktrans %}Preguntas sobre estos terminos: ver la pagina de <a href="/ui/soporte/">Soporte</a>.{% endblocktrans %}</p>
+</section>
+{% endblock %}

@@ -19,7 +19,7 @@ class ThirdPartyExchangeRateAdapter(ExchangeRatePort):
 class HttpAllyServiceAdapter(AllyServicePort):
     def __init__(self):
         self.base_url = os.environ.get("ALLY_SERVICE_URL", "").rstrip("/")
-        
+
     def validate_user_trust(self, user_email: str) -> dict[str, Any]:
         # Fallback/Mock documentado como lo pide el Entregable 2
         if not self.base_url:
@@ -30,7 +30,7 @@ class HttpAllyServiceAdapter(AllyServicePort):
                 "mocked": True,
                 "message": "Fallback applied. Configure ALLY_SERVICE_URL to connect to real service."
             }
-            
+
         try:
             with httpx.Client(timeout=5.0) as client:
                 response = client.post(f"{self.base_url}/api/validate", json={"email": user_email})

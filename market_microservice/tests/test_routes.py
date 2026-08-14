@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from unittest import mock
 
 
 def _create_publication(client, **overrides):

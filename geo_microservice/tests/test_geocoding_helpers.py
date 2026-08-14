@@ -191,7 +191,6 @@ def test_geocode_cache_roundtrip_and_expiry(monkeypatch):
 def test_geocode_cache_evicts_oldest_when_full(monkeypatch):
     from app.geocoding_service import GeocodedLocation
     from decimal import Decimal
-    import time
 
     monkeypatch.setattr(GeocodingService, "_GEOCODE_CACHE_MAX", 1)
     loc = GeocodedLocation(latitud=Decimal("1"), longitud=Decimal("1"), direccion_texto="A")

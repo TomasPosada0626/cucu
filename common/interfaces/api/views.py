@@ -9,6 +9,8 @@ from urllib import error as url_error
 from urllib import parse as url_parse
 from urllib import request as url_request
 
+from notifications.tasks import trigger_report_generation
+
 from ...infrastructure.adapters import ThirdPartyExchangeRateAdapter, HttpAllyServiceAdapter
 from ...infrastructure.safe_http import UnsafeHostError, build_pinned_opener, resolve_and_validate_host
 
@@ -42,7 +44,6 @@ class ExternalServicesTestAPIView(APIView):
         }, status=status.HTTP_200_OK)
 
 
-from notifications.tasks import trigger_report_generation
 
 class TriggerAsyncTaskAPIView(APIView):
     authentication_classes = []

@@ -1,0 +1,29 @@
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+extend-exclude = [
+    "*/migrations/*",
+    ".impeccable",
+]
+
+[tool.ruff.lint]
+# Solo reglas de correccion real (bugs, imports rotos, nombres indefinidos),
+# no de estilo/formato - el repo mezcla convenciones de indentacion entre
+# apps y no vale la pena un reformateo masivo solo para adoptar el linter.
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes (imports sin usar, nombres indefinidos, etc.)
+    "W",   # pycodestyle warnings
+    "B",   # flake8-bugbear (patrones que suelen ser bugs)
+]
+ignore = [
+    "E501",  # linea larga: ya cubierto por line-length como guia, no como error duro
+    "W191",  # tabs de indentacion: algunos archivos de test ya los usan
+    "E101",  # mezcla de tabs/espacios en indentacion, mismo motivo que W191
+]
+
+[tool.ruff.lint.per-file-ignores]
+# manage.py / run.py siguen el patron estandar de Django/Flask con imports
+# que deben ir despues de configurar el entorno.
+"manage.py" = ["E402"]
+"*/run.py" = ["E402"]

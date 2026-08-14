@@ -1,5 +1,6 @@
 import io
 
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from rest_framework.test import APIClient
@@ -1174,15 +1175,15 @@ class ValidatePublicacionImagenTests(TestCase):
 
 	def test_rejects_disallowed_content_type(self):
 		image = SimpleUploadedFile("ok.png", _valid_png_bytes(), content_type="application/pdf")
-		with self.assertRaises(Exception):
+		with self.assertRaises(DjangoValidationError):
 			validate_publicacion_imagen(image)
 
 	def test_rejects_content_that_is_not_really_an_image(self):
 		fake = SimpleUploadedFile("evil.svg", b"<svg onload='alert(1)'/>", content_type="image/png")
-		with self.assertRaises(Exception):
+		with self.assertRaises(DjangoValidationError):
 			validate_publicacion_imagen(fake)
 
 	def test_rejects_oversized_file(self):
 		big = SimpleUploadedFile("big.png", b"0" * (5 * 1024 * 1024 + 1), content_type="image/png")
-		with self.assertRaises(Exception):
+		with self.assertRaises(DjangoValidationError):
 			validate_publicacion_imagen(big)

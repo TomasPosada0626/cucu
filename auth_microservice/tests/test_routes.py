@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import sqlite3
 
-import jwt
 
 
 def _register(client, *, username="testuser", email="test@example.com", password="secret123"):

@@ -1,5 +1,6 @@
 [run]
 source = .
+branch = True
 omit =
     */migrations/*
     manage.py
@@ -23,3 +24,8 @@ exclude_lines =
     pragma: no cover
     def __repr__
     raise NotImplementedError
+    # Metodos de interfaces Protocol (cuerpo `...`): nunca se ejecutan
+    # directo, solo definen forma para type-checking. Coverage.py cuenta
+    # cada uno como una rama parcial ("N->exit") porque nunca "continua" a
+    # la siguiente linea, lo cual no es un hueco real de tests.
+    : \.\.\.$

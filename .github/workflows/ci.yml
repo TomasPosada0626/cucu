@@ -49,3 +49,24 @@ jobs:
           python-version: "3.12"
       - run: pip install -r ${{ matrix.service }}/requirements.txt
       - run: cd ${{ matrix.service }} && pytest
+
+  dependency-audit:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        requirements:
+          - requirements.txt
+          - auth_microservice/requirements.txt
+          - geo_microservice/requirements.txt
+          - market_microservice/requirements.txt
+          - notifications_microservice/requirements.txt
+          - payment_microservice/requirements.txt
+          - support_microservice/requirements.txt
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pip-audit
+      - run: pip-audit -r ${{ matrix.requirements }}

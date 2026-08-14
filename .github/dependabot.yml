@@ -1,0 +1,73 @@
+version: 2
+updates:
+  # Django monolith
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      python-dependencies:
+        patterns:
+          - "*"
+
+  # Flask microservices
+  - package-ecosystem: "pip"
+    directory: "/auth_microservice"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "pip"
+    directory: "/geo_microservice"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "pip"
+    directory: "/market_microservice"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "pip"
+    directory: "/notifications_microservice"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "pip"
+    directory: "/payment_microservice"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "pip"
+    directory: "/support_microservice"
+    schedule:
+      interval: "weekly"
+
+  # Docker base images (one entry per Dockerfile's directory)
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/auth_microservice"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/geo_microservice"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/market_microservice"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/notifications_microservice"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/payment_microservice"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/support_microservice"
+    schedule:
+      interval: "weekly"
+
+  # The CI workflow itself (actions/checkout, actions/setup-python, etc.)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"

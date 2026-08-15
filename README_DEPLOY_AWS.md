@@ -82,7 +82,9 @@ Nginx como API Gateway se encargará de enrutar las solicitudes HTTP al monolito
 
 ## 6. Actualizar el Despliegue
 
-Para traer cambios nuevos del repo a una instancia ya desplegada:
+**Recomendado:** `./scripts/deploy.sh` hace exactamente los pasos de abajo, pero además espera a que `/api/health/` responda de verdad antes de darse por exitoso, y si nunca responde, hace rollback automático al commit anterior sin que nadie tenga que darse cuenta a mano. Ver `scripts/deploy.sh` y `scripts/rollback.sh` para el detalle — verificados en vivo, no solo escritos.
+
+Paso a paso manual, para entender qué hace o si preferís correrlo vos mismo:
 
 ```bash
 git pull

@@ -1,5 +1,9 @@
+import uuid
+
 from django.core.cache import cache
 from django.http import JsonResponse
+
+from common.infrastructure.logging import set_request_id
 
 CSP_DIRECTIVES = (
     "default-src 'self'; "
@@ -12,6 +16,25 @@ CSP_DIRECTIVES = (
     "object-src 'none'; "
     "base-uri 'self'"
 )
+
+
+class RequestIDMiddleware:
+    """Genera un ID corto por request para correlacionar logs de una misma
+    peticion (ver common/infrastructure/logging.py) y lo devuelve en
+    X-Request-ID para poder cruzarlo con reportes de usuarios/soporte."""
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        incoming = (request.META.get("HTTP_X_REQUEST_ID") or "").strip()[:64]
+        request_id = incoming or uuid.uuid4().hex[:12]
+        request.request_id = request_id
+        set_request_id(request_id)
+
+        response = self.get_response(request)
+        response.setdefault("X-Request-ID", request_id)
+        return response
 
 
 class SecurityHeadersMiddleware:

@@ -107,6 +107,7 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL = "accounts.User"
 
 MIDDLEWARE = [
+    'common.middleware.RequestIDMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
@@ -275,6 +276,39 @@ if "test" in sys.argv:
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Logging estructurado (JSON, un objeto por linea) con request_id de
+# correlacion — ver common/infrastructure/logging.py y
+# common.middleware.RequestIDMiddleware. Reemplaza el log de texto libre por
+# defecto de Django, que en produccion (un solo proceso en EC2, sin nada como
+# ELK) hacia el debugging equivalente a grep sobre stdout sin poder cruzar
+# lineas de una misma peticion.
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {
+        "request_id": {"()": "common.infrastructure.logging.RequestIDLogFilter"},
+    },
+    "formatters": {
+        "json": {"()": "common.infrastructure.logging.JsonFormatter"},
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "json",
+            "filters": ["request_id"],
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": os.environ.get("LOG_LEVEL", "INFO"),
+    },
+    "loggers": {
+        # Django ya logea los 500 con traceback via su manejador de errores;
+        # sin esto salen duplicados (uno de Django, uno del root logger).
+        "django.request": {"handlers": ["console"], "level": "ERROR", "propagate": False},
+    },
+}
 
 GOOGLE_MAPS_API_KEY = os.environ.get("GOOGLE_MAPS_API_KEY", "").strip()
 

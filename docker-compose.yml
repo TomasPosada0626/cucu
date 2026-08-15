@@ -43,6 +43,7 @@ services:
       - NOTIFICATIONS_SERVICE_URL=http://notifications-service:8082
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/1
+      - PYTHONUNBUFFERED=1
     depends_on:
       - redis
     volumes:
@@ -52,7 +53,10 @@ services:
     expose:
       - "8000"
     healthcheck:
-      test: ["CMD", "python", "-c", "import socket; s=socket.socket(); s.settimeout(2); s.connect(('127.0.0.1',8000)); s.close()"]
+      # A diferencia del socket-connect anterior (solo confirma que el puerto
+      # responde), /api/health/ valida que Django puede hablar con la DB y
+      # con Redis - un proceso colgado con la DB caida ahora se marca unhealthy.
+      test: ["CMD", "python", "-c", "import urllib.request as r; r.urlopen('http://127.0.0.1:8000/api/health/', timeout=3)"]
       interval: 20s
       timeout: 5s
       retries: 5
@@ -214,6 +218,7 @@ services:
       - NOTIFICATIONS_SERVICE_URL=http://notifications-service:8082
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/1
+      - PYTHONUNBUFFERED=1
     depends_on:
       - redis
       - django

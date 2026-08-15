@@ -8,9 +8,18 @@ El proyecto está construido con un modelo híbrido: **Django (monolito para vis
 
 Más contexto de negocio y las entregas académicas del proyecto están en la [Wiki](../../wiki).
 
+## Funcionalidades principales
+
+- **Cuentas:** registro, login (JWT + token), recuperación de contraseña, direcciones guardadas.
+- **Marketplace:** publicar "cocas" con imagen/stock, buscar publicaciones cercanas por geolocalización, carrito y pedidos.
+- **Delivery:** repartidores marcan disponibilidad, ven pedidos cercanos, aceptan y actualizan el estado de una entrega en tiempo real (ubicación, salida, finalizado).
+- **Pagos:** registro de pagos por pedido, historial y saldo del vendedor.
+- **Notificaciones:** notificaciones in-app por eventos del pedido (aceptado, en camino, entregado).
+- **Soporte:** calificaciones entre usuarios y certificados de confianza.
+
 ## Estado del proyecto
 
-Este repo es un fork activo mantenido por [@TomasPosada0626](https://github.com/TomasPosada0626) a partir del trabajo original en equipo. Hay una hoja de ruta de mejoras en curso — ver los [Issues](../../issues) para el detalle y prioridad de cada frente (seguridad, arquitectura limpia, tests, microservicios).
+Este repo es un fork activo mantenido por [@TomasPosada0626](https://github.com/TomasPosada0626) a partir del trabajo original en equipo. La hoja de ruta de mejoras en curso vive en la wiki, en [Mejoras y Roadmap](../../wiki/Mejoras-y-Roadmap) (seguridad, arquitectura limpia, tests, microservicios) — los [Issues](../../issues) del repo son los entregables cerrados del curso original, no el tracking activo.
 
 ## Requisitos Previos
 
@@ -34,7 +43,8 @@ Este repo es un fork activo mantenido por [@TomasPosada0626](https://github.com/
 
 3. **Verificar los Servicios**
    - **Frontend/Monolito Django:** Navega a `http://localhost/` (Nginx redirigirá automáticamente a Django).
-   - **Healthcheck Nginx:** `http://localhost/health`
+   - **Healthcheck Nginx:** `http://localhost/health` (confirma que Nginx responde).
+   - **Healthcheck Django (real):** `http://localhost/api/health/` — valida que Django puede hablar con la base de datos y con Redis, no solo que el proceso está arriba.
    - **Endpoint Microservicio Flask (pagos):** `http://localhost/api/v2/payments`
    - **Disparar Tarea Asíncrona:** `POST http://localhost/api/trigger-task`
 
@@ -48,6 +58,33 @@ Este repo es un fork activo mantenido por [@TomasPosada0626](https://github.com/
 - **Flask (Microservicios):** Servicios desacoplados como `geo-service`, `payment-service`, `auth-service`, `market-service`, etc.
 - **RabbitMQ:** Broker de mensajes para microservicios.
 - **Redis & Celery:** Cola de tareas asíncronas para Django.
+
+Cada app del monolito Django (`accounts`, `market`, `delivery`, `geo`, `notifications`, `payments`) sigue Clean Architecture con dependencias apuntando hacia adentro:
+
+```
+<app>/
+├── domain/            # entidades y reglas de negocio, sin dependencias de Django/DRF
+├── application/        # use cases: orquestan domain + repositorios
+│   └── use_cases/
+├── infrastructure/     # implementaciones concretas (modelos ORM, repos, adapters externos)
+└── interfaces/          # capa HTTP: vistas DRF, serializers, urls
+    ├── api/
+    └── serializers/
+```
+
+`transactions` es la excepción justificada: es un ledger interno sin API HTTP propia (se invoca directo desde otras apps), así que no tiene `application/` ni `interfaces/`. `common/` agrupa infraestructura cross-cutting (logging, HTTP seguro, middleware) que no pertenece a ningún módulo de negocio.
+
+Ver [Arquitectura](../../wiki/Arquitectura) en la wiki para el detalle completo, incluida la migración a microservicios (Strangler Pattern).
+
+## Pruebas
+
+```bash
+python manage.py test          # 300+ tests del monolito
+ruff check .                   # lint
+python manage.py spectacular --validate   # valida el schema OpenAPI
+```
+
+Cada microservicio Flask tiene su propia suite (`pytest`) dentro de su carpeta — ver `.github/workflows/ci.yml` para el detalle de la matriz de CI.
 
 ## Documentación de la API
 

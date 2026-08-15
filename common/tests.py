@@ -58,6 +58,27 @@ class HttpAllyServiceAdapterTests(TestCase):
         self.assertFalse(data["mocked"])
 
 
+class HealthAPIViewTests(TestCase):
+    def test_healthy_reports_ok_with_no_auth_required(self):
+        response = self.client.get("/api/health")
+
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["status"], "ok")
+        self.assertEqual(data["checks"], {"database": "ok", "cache": "ok"})
+
+    @mock.patch("common.interfaces.api.views.connection")
+    def test_database_failure_returns_503(self, connection):
+        connection.cursor.side_effect = Exception("db down")
+
+        response = self.client.get("/api/health")
+
+        self.assertEqual(response.status_code, 503)
+        data = response.json()
+        self.assertEqual(data["status"], "error")
+        self.assertEqual(data["checks"]["database"], "error")
+
+
 class ExternalServicesTestAPIViewTests(TestCase):
     def setUp(self):
         cache.clear()

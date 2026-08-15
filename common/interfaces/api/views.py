@@ -1,11 +1,14 @@
 from drf_spectacular.utils import extend_schema, inline_serializer
+from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.throttling import ScopedRateThrottle
 from rest_framework import serializers, status
 import json
+from django.core.cache import cache
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.validators import validate_email
+from django.db import connection
 from urllib import error as url_error
 from urllib import parse as url_parse
 from urllib import request as url_request
@@ -14,6 +17,44 @@ from notifications.tasks import trigger_report_generation
 
 from ...infrastructure.adapters import ThirdPartyExchangeRateAdapter, HttpAllyServiceAdapter
 from ...infrastructure.safe_http import UnsafeHostError, build_pinned_opener, resolve_and_validate_host
+
+
+class HealthAPIView(APIView):
+    """Readiness real: a diferencia del TCP-connect del healthcheck de Docker
+    (que solo confirma que el puerto responde), esto valida que Django puede
+    hablar con la DB y con Redis. Excluido del schema de OpenAPI: es un
+    endpoint de infraestructura, no parte del contrato de la API publica."""
+
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
+    @extend_schema(exclude=True)
+    def get(self, request):
+        checks = {}
+        healthy = True
+
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT 1")
+            checks["database"] = "ok"
+        except Exception:
+            checks["database"] = "error"
+            healthy = False
+
+        try:
+            cache.set("health_check_probe", "ok", timeout=5)
+            cache.get("health_check_probe")
+            checks["cache"] = "ok"
+        except Exception:
+            checks["cache"] = "error"
+            healthy = False
+
+        status_code = status.HTTP_200_OK if healthy else status.HTTP_503_SERVICE_UNAVAILABLE
+        return Response(
+            {"status": "ok" if healthy else "error", "checks": checks},
+            status=status_code,
+        )
+
 
 class ExternalServicesTestAPIView(APIView):
     authentication_classes = []

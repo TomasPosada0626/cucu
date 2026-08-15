@@ -78,3 +78,23 @@ despliegue en AWS. Detalle completo en la Wiki (`Entregable1`, `Entregable2`).
   algo que ya estaba convergido.
 - **Security:** Pillow 10.4.0 (~17 CVEs conocidos) subido a 12.3.0; pytest 8.4.2
   (1 CVE) subido a 9.x en los 6 microservicios.
+
+## 2026-08-15 — Docs de API, observabilidad, README
+
+- **Added:** spec OpenAPI real del monolito vía `drf-spectacular` (Swagger UI
+  en `/api/docs/`, Redoc en `/api/redoc/`, schema crudo en `/api/schema/`),
+  con `@extend_schema` en las 36 vistas DRF; CI valida el schema generado.
+  `/api/health/` — a diferencia del TCP-connect anterior, confirma que Django
+  puede hablar con la base de datos y con Redis; el healthcheck de
+  `docker-compose.yml` para el servicio `django` ahora lo usa. Logging
+  estructurado (JSON, un objeto por línea) con `request_id` de correlación
+  por petición (`common/infrastructure/logging.py`,
+  `common.middleware.RequestIDMiddleware`), reemplazando el log de texto
+  libre por defecto de Django.
+- **Fixed:** dos excepciones de servicios externos que se tragaban el error en
+  silencio (`common/infrastructure/adapters.py`) ahora quedan logueadas.
+  README: el link de roadmap apuntaba a los Issues del repo (los 12 del curso
+  original, todos cerrados) en vez de a la Wiki, que es donde realmente vive
+  el tracking activo; se agregó una sección de funcionalidades, el árbol de
+  Clean Architecture verificado por app, y cómo correr la suite de tests
+  localmente.

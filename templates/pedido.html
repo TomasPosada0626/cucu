@@ -1624,8 +1624,8 @@
               <div class="price-slider-wrap" aria-label="{% trans 'Rango de precio' %}">
                 <div class="price-slider-track"></div>
                 <div class="price-slider-active" id="priceSliderActive"></div>
-                <input id="priceMinRange" type="range" min="9000" max="50000" step="1000" value="9000" />
-                <input id="priceMaxRange" type="range" min="9000" max="50000" step="1000" value="50000" />
+                <input id="priceMinRange" type="range" min="9000" max="50000" step="1000" value="9000" aria-label="{% trans 'Precio minimo' %}" />
+                <input id="priceMaxRange" type="range" min="9000" max="50000" step="1000" value="50000" aria-label="{% trans 'Precio maximo' %}" />
               </div>
             </div>
             <span class="catalog-title"><strong id="priceLabel">$9.000 - $50.000</strong><span>{% trans "Rango actual" %}</span></span>
@@ -1646,7 +1646,7 @@
 
         <div class="sidebar-card">
           <h2 class="sidebar-title">{% trans "Tiempo de entrega" %}</h2>
-          <select class="distance-select" id="deliveryTimeSelect">
+          <select class="distance-select" id="deliveryTimeSelect" aria-label="{% trans 'Tiempo de entrega' %}">
             <option value="all">{% trans "Todos" %}</option>
             <option value="under-30">&lt; 30 min</option>
             <option value="30-45">30 - 45 min</option>

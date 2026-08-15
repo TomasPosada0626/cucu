@@ -363,22 +363,22 @@
       <form id="form">
         <div class="field">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" stroke-width="1.8"/><path d="M5 19a7 7 0 0 1 14 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          <input name="nombre" required autocomplete="name" placeholder="{% trans 'Nombre completo' %}" />
+          <input name="nombre" required autocomplete="name" placeholder="{% trans 'Nombre completo' %}" aria-label="{% trans 'Nombre completo' %}" />
         </div>
         <div class="field">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16v10H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m5 8 7 5 7-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <input name="email" type="email" required autocomplete="email" placeholder="{% trans 'Correo electronico' %}" />
+          <input name="email" type="email" required autocomplete="email" placeholder="{% trans 'Correo electronico' %}" aria-label="{% trans 'Correo electronico' %}" />
         </div>
         <div class="field">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 11h10v9H7z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11V8a3 3 0 1 1 6 0v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          <input name="password" type="password" required autocomplete="new-password" placeholder="{% trans 'Contrasena' %}" />
+          <input name="password" type="password" required autocomplete="new-password" placeholder="{% trans 'Contrasena' %}" aria-label="{% trans 'Contrasena' %}" />
           <button class="toggle-password" type="button" data-target="password" aria-label="{% trans 'Mostrar u ocultar contrasena' %}">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/></svg>
           </button>
         </div>
         <div class="field">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 11h10v9H7z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11V8a3 3 0 1 1 6 0v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          <input name="confirmPassword" type="password" required autocomplete="new-password" placeholder="{% trans 'Confirma tu contrasena' %}" />
+          <input name="confirmPassword" type="password" required autocomplete="new-password" placeholder="{% trans 'Confirma tu contrasena' %}" aria-label="{% trans 'Confirma tu contrasena' %}" />
           <button class="toggle-password" type="button" data-target="confirmPassword" aria-label="{% trans 'Mostrar u ocultar confirmacion de contrasena' %}">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/></svg>
           </button>

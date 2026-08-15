@@ -695,29 +695,29 @@
           <div class="split-row">
             <div>
               <div class="field-label"><span>{% trans "Nombre del platillo" %}</span><small>*</small></div>
-              <div class="field"><input name="titulo" required maxlength="255" placeholder="{% trans 'Bowl saludable' %}" /></div>
+              <div class="field"><input name="titulo" required maxlength="255" placeholder="{% trans 'Bowl saludable' %}" aria-label="{% trans 'Nombre del platillo' %}" /></div>
             </div>
             <div>
               <div class="field-label"><span>{% trans "Precio" %}</span><small>*</small></div>
-                <div class="field"><input name="precio" required type="number" min="0.01" step="any" inputmode="decimal" placeholder="19500" /></div>
+                <div class="field"><input name="precio" required type="number" min="0.01" step="any" inputmode="decimal" placeholder="19500" aria-label="{% trans 'Precio' %}" /></div>
             </div>
           </div>
 
           <div class="split-row">
             <div>
               <div class="field-label"><span>{% trans "Stock disponible" %}</span><small>*</small></div>
-              <div class="field"><input name="stock" required type="number" min="0" step="1" inputmode="numeric" placeholder="10" /></div>
+              <div class="field"><input name="stock" required type="number" min="0" step="1" inputmode="numeric" placeholder="10" aria-label="{% trans 'Stock disponible' %}" /></div>
             </div>
             <div>
               <div class="field-label"><span>{% trans "Maximo permitido por venta" %}</span><small>*</small></div>
-              <div class="field"><input name="maximo_por_venta" required type="number" min="1" step="1" inputmode="numeric" value="5" /></div>
+              <div class="field"><input name="maximo_por_venta" required type="number" min="1" step="1" inputmode="numeric" value="5" aria-label="{% trans 'Maximo permitido por venta' %}" /></div>
             </div>
           </div>
 
           <div>
             <div class="field-label"><span>{% trans "Tipo de comida" %}</span></div>
             <div class="field">
-              <select id="tipoComidaSelect">
+              <select id="tipoComidaSelect" aria-label="{% trans 'Tipo de comida' %}">
                 <option value="saludable">{% trans "Saludable" %}</option>
                 <option value="mexicana">{% trans "Mexicana" %}</option>
                 <option value="italiana">{% trans "Italiana" %}</option>
@@ -737,7 +737,7 @@
             <div>
               <div class="field-label"><span>{% trans "Direccion" %}</span><small>*</small></div>
               <div class="field autocomplete">
-                <input name="direccion_texto" id="direccionInput" required maxlength="255" placeholder="Cra 43A #6 Sur-15, El Poblado, Medellín" autocomplete="off" />
+                <input name="direccion_texto" id="direccionInput" required maxlength="255" placeholder="Cra 43A #6 Sur-15, El Poblado, Medellín" autocomplete="off" aria-label="{% trans 'Direccion' %}" />
                 <div class="suggestions" id="addressSuggestions" aria-label="{% trans 'Sugerencias de direccion' %}"></div>
               </div>
             </div>
@@ -745,7 +745,7 @@
 
           <div>
             <div class="field-label"><span>{% trans "Preparacion" %}</span><small>*</small></div>
-            <div class="field"><textarea name="descripcion" required placeholder="{% trans 'Describe porciones, ingredientes, presentacion y detalles importantes del pedido.' %}"></textarea></div>
+            <div class="field"><textarea name="descripcion" required placeholder="{% trans 'Describe porciones, ingredientes, presentacion y detalles importantes del pedido.' %}" aria-label="{% trans 'Preparacion' %}"></textarea></div>
           </div>
 
           <div>

@@ -232,10 +232,10 @@
     </button>
 
     <div class="addr-picker-form" id="addrPickerForm" hidden>
-      <input id="addrPickerSearchInput" placeholder="{% trans 'Busca tu direccion' %}" autocomplete="off" />
+      <input id="addrPickerSearchInput" placeholder="{% trans 'Busca tu direccion' %}" autocomplete="off" aria-label="{% trans 'Busca tu direccion' %}" />
       <div class="addr-picker-suggestions" id="addrPickerSuggestions"></div>
-      <input id="addrPickerNombreInput" placeholder="{% trans 'Nombre de esta direccion (ej: Casa, Trabajo)' %}" />
-      <textarea id="addrPickerDetallesInput" rows="2" placeholder="{% trans 'Apto, bloque, porteria, referencias (opcional)' %}"></textarea>
+      <input id="addrPickerNombreInput" placeholder="{% trans 'Nombre de esta direccion (ej: Casa, Trabajo)' %}" aria-label="{% trans 'Nombre de esta direccion' %}" />
+      <textarea id="addrPickerDetallesInput" rows="2" placeholder="{% trans 'Apto, bloque, porteria, referencias (opcional)' %}" aria-label="{% trans 'Referencias adicionales' %}"></textarea>
       <div class="addr-picker-hint" id="addrPickerSelectedHint"></div>
       <button class="save-btn" id="addrPickerSaveBtn" type="button">{% trans "Guardar direccion" %}</button>
     </div>

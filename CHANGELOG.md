@@ -98,3 +98,10 @@ despliegue en AWS. Detalle completo en la Wiki (`Entregable1`, `Entregable2`).
   el tracking activo; se agregó una sección de funcionalidades, el árbol de
   Clean Architecture verificado por app, y cómo correr la suite de tests
   localmente.
+- **Added:** `mypy` sobre `domain/`/`application/` de cada app, el único
+  subconjunto del repo que ya es Python puro sin Django/DRF y por eso no
+  necesita `django-stubs` para type-checkear. Wireado a CI y al hook de
+  pre-commit existente junto a ruff. Pase limpio desde el primer commit.
+- **Removed:** dos carpetas `notifications/api/`/`payments/api/` que solo
+  tenían un `.pyc` huérfano — el código ya se había borrado (ver la entrada
+  del 13 de agosto), pero el `__pycache__` nunca se limpió del disco local.

@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -12,6 +13,7 @@ from ..serializers.payment_serializer import PagoCreateInputSerializer, PagoOutp
 class PagoCreateAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(request=PagoCreateInputSerializer, responses={201: PagoOutputSerializer})
     def post(self, request):
         serializer = PagoCreateInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

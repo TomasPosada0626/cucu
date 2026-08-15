@@ -49,6 +49,16 @@ Este repo es un fork activo mantenido por [@TomasPosada0626](https://github.com/
 - **RabbitMQ:** Broker de mensajes para microservicios.
 - **Redis & Celery:** Cola de tareas asíncronas para Django.
 
+## Documentación de la API
+
+El monolito Django expone un spec OpenAPI real generado con `drf-spectacular`:
+
+- **Swagger UI (interactivo):** `http://localhost/api/docs/`
+- **Redoc:** `http://localhost/api/redoc/`
+- **Schema crudo (YAML):** `http://localhost/api/schema/`
+
+Los microservicios Flask (`/api/v2/`, `/api/v3/`) todavía no tienen spec OpenAPI propio.
+
 ## Pruebas de APIs con cURL
 
 **1. Probar un Endpoint JSON propio del sistema**

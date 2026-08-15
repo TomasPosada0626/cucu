@@ -92,6 +92,7 @@ INSTALLED_APPS = [
 
     "rest_framework",
     "rest_framework.authtoken",
+    "drf_spectacular",
     "accounts",
     "geo",
     "market",
@@ -237,6 +238,16 @@ REST_FRAMEWORK = {
         # Endpoint publico de historial (sin auth, CORS abierto a *).
         "public_read": "30/min",
     },
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "CUCU API",
+    "DESCRIPTION": "API del monolito Django de CUCU. Ver tambien /api/v2/ y /api/v3/ "
+                    "(microservicios Flask, sin OpenAPI propio todavia) en Arquitectura, "
+                    "en la Wiki del repo.",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
 }
 
 SIMPLE_JWT = {

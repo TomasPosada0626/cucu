@@ -1,5 +1,6 @@
 from django.db import IntegrityError
-from rest_framework import status
+from drf_spectacular.utils import extend_schema, inline_serializer
+from rest_framework import serializers, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.throttling import ScopedRateThrottle
@@ -48,6 +49,7 @@ class RegisterAPIView(APIView):
     throttle_classes = [ScopedRateThrottle]
     throttle_scope = "auth"
 
+    @extend_schema(request=RegisterInputSerializer, responses={201: UserOutputSerializer})
     def post(self, request):
         serializer = RegisterInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -68,6 +70,19 @@ class LoginAPIView(APIView):
     throttle_classes = [ScopedRateThrottle]
     throttle_scope = "auth"
 
+    @extend_schema(
+        request=LoginInputSerializer,
+        responses={
+            200: inline_serializer(
+                "LoginOutput",
+                {
+                    "access": serializers.CharField(),
+                    "refresh": serializers.CharField(),
+                    "user": UserOutputSerializer(),
+                },
+            )
+        },
+    )
     def post(self, request):
         serializer = LoginInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -93,6 +108,10 @@ class TokenRefreshAPIView(APIView):
     throttle_classes = [ScopedRateThrottle]
     throttle_scope = "auth"
 
+    @extend_schema(
+        request=TokenRefreshInputSerializer,
+        responses={200: inline_serializer("TokenRefreshOutput", {"access": serializers.CharField()})},
+    )
     def post(self, request):
         serializer = TokenRefreshInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -106,6 +125,10 @@ class PasswordResetRequestAPIView(APIView):
     throttle_classes = [ScopedRateThrottle]
     throttle_scope = "auth"
 
+    @extend_schema(
+        request=PasswordResetRequestInputSerializer,
+        responses={200: inline_serializer("PasswordResetRequestOutput", {"detail": serializers.CharField()})},
+    )
     def post(self, request):
         serializer = PasswordResetRequestInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -132,6 +155,15 @@ class PasswordResetConfirmAPIView(APIView):
     throttle_classes = [ScopedRateThrottle]
     throttle_scope = "auth"
 
+    @extend_schema(
+        request=PasswordResetConfirmInputSerializer,
+        responses={
+            200: inline_serializer(
+                "PasswordResetConfirmOutput",
+                {"detail": serializers.CharField(), "user": UserOutputSerializer()},
+            )
+        },
+    )
     def post(self, request):
         serializer = PasswordResetConfirmInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -156,6 +188,7 @@ class PasswordResetConfirmAPIView(APIView):
 class MeAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(responses={200: UserOutputSerializer})
     def get(self, request):
         user_dto = GetUserProfileUseCase().execute(user=request.user)
         return Response(UserOutputSerializer(user_dto).data, status=status.HTTP_200_OK)
@@ -164,10 +197,12 @@ class MeAPIView(APIView):
 class DireccionGuardadaListCreateAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(responses={200: DireccionGuardadaSerializer(many=True)})
     def get(self, request):
         direcciones = DireccionGuardada.objects.filter(usuario=request.user)
         return Response(DireccionGuardadaSerializer(direcciones, many=True).data, status=status.HTTP_200_OK)
 
+    @extend_schema(request=DireccionGuardadaSerializer, responses={201: DireccionGuardadaSerializer})
     def post(self, request):
         serializer = DireccionGuardadaSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -182,6 +217,7 @@ class DireccionGuardadaListCreateAPIView(APIView):
 class DireccionGuardadaDetailAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(request=DireccionGuardadaSerializer, responses={200: DireccionGuardadaSerializer})
     def patch(self, request, direccion_id: int):
         direccion = DireccionGuardada.objects.filter(usuario=request.user, id=direccion_id).first()
         if direccion is None:
@@ -198,6 +234,7 @@ class DireccionGuardadaDetailAPIView(APIView):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @extend_schema(request=None, responses={204: None})
     def delete(self, request, direccion_id: int):
         deleted, _ = DireccionGuardada.objects.filter(usuario=request.user, id=direccion_id).delete()
         if not deleted:

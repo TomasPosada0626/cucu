@@ -23,17 +23,17 @@ class PedidoCercanoOutputSerializer(serializers.Serializer):
     total = serializers.FloatField()
     ganancia = serializers.SerializerMethodField()
 
-    def get_titulo(self, obj):
+    def get_titulo(self, obj) -> str:
         return obj.publicacion.titulo
 
-    def get_direccion_recogida(self, obj):
+    def get_direccion_recogida(self, obj) -> str:
         ubicacion = obj.publicacion.ubicacion
         return ubicacion.direccion_texto if ubicacion else ""
 
-    def get_distancia_km(self, obj):
+    def get_distancia_km(self, obj) -> float:
         return round(float(getattr(obj, "distancia_km", 0) or 0), 2)
 
-    def get_distancia_entrega_km(self, obj):
+    def get_distancia_entrega_km(self, obj) -> float | None:
         ubicacion = obj.publicacion.ubicacion
         if not ubicacion or obj.direccion_entrega_latitud is None or obj.direccion_entrega_longitud is None:
             return None
@@ -45,7 +45,7 @@ class PedidoCercanoOutputSerializer(serializers.Serializer):
         )
         return round(metros / 1000.0, 2)
 
-    def get_ganancia(self, obj):
+    def get_ganancia(self, obj) -> float:
         return DELIVERY_FEE_COP + float(getattr(obj, "propina", 0) or 0)
 
 
@@ -60,18 +60,18 @@ class AsignacionOutputSerializer(serializers.Serializer):
     direccion_entrega_longitud = serializers.FloatField(source="pedido.direccion_entrega_longitud")
     ganancia = serializers.SerializerMethodField()
 
-    def get_ganancia(self, obj):
+    def get_ganancia(self, obj) -> float:
         return DELIVERY_FEE_COP + float(getattr(obj.pedido, "propina", 0) or 0)
 
-    def get_direccion_recogida(self, obj):
+    def get_direccion_recogida(self, obj) -> str:
         ubicacion = obj.pedido.publicacion.ubicacion
         return ubicacion.direccion_texto if ubicacion else ""
 
-    def get_direccion_recogida_latitud(self, obj):
+    def get_direccion_recogida_latitud(self, obj) -> float | None:
         ubicacion = obj.pedido.publicacion.ubicacion
         return float(ubicacion.latitud) if ubicacion else None
 
-    def get_direccion_recogida_longitud(self, obj):
+    def get_direccion_recogida_longitud(self, obj) -> float | None:
         ubicacion = obj.pedido.publicacion.ubicacion
         return float(ubicacion.longitud) if ubicacion else None
 
@@ -85,7 +85,7 @@ class HistorialEntregaItemSerializer(serializers.Serializer):
     asignado_en = serializers.DateTimeField()
     finalizado_en = serializers.DateTimeField(allow_null=True)
 
-    def get_titulo(self, obj):
+    def get_titulo(self, obj) -> str:
         return obj.pedido.publicacion.titulo
 
 

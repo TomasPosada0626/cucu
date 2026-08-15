@@ -1,4 +1,5 @@
-from rest_framework import status
+from drf_spectacular.utils import extend_schema, inline_serializer
+from rest_framework import serializers, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.throttling import ScopedRateThrottle
@@ -37,6 +38,7 @@ from ..serializers.market_serializer import (
 class PublicacionListCreateAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(responses={200: PublicacionOutputSerializer(many=True)})
     def get(self, request):
         publicaciones = ListPublicacionesUseCase().execute()
         return Response(
@@ -44,6 +46,7 @@ class PublicacionListCreateAPIView(APIView):
             status=status.HTTP_200_OK,
         )
 
+    @extend_schema(request=PublicacionCreateInputSerializer, responses={201: PublicacionOutputSerializer})
     def post(self, request):
         if getattr(request.user, "es_repartidor", False):
             return Response(
@@ -67,6 +70,10 @@ class PublicacionListCreateAPIView(APIView):
 class PublicacionNearbyAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        parameters=[PublicacionNearbyQuerySerializer],
+        responses={200: PublicacionOutputSerializer(many=True)},
+    )
     def get(self, request):
         serializer = PublicacionNearbyQuerySerializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
@@ -84,6 +91,7 @@ class PublicacionNearbyAPIView(APIView):
 class PedidoCreateAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(request=PedidoCreateInputSerializer, responses={201: PedidoOutputSerializer})
     def post(self, request):
         if getattr(request.user, "es_repartidor", False):
             return Response(
@@ -107,6 +115,7 @@ class PedidoCreateAPIView(APIView):
 class PedidoDetailAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(responses={200: PedidoOutputSerializer})
     def get(self, request, pedido_id: int):
         try:
             pedido = GetOrderForUserUseCase().execute(user=request.user, pedido_id=pedido_id)
@@ -119,6 +128,7 @@ class PedidoDetailAPIView(APIView):
 class PedidoMarkDeliveredAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(request=None, responses={200: PedidoOutputSerializer})
     def patch(self, request, pedido_id: int):
         try:
             pedido = MarkOrderDeliveredUseCase().execute(user=request.user, pedido_id=pedido_id)
@@ -133,6 +143,7 @@ class PedidoMarkDeliveredAPIView(APIView):
 class PedidoSetPropinaAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(request=PropinaInputSerializer, responses={200: PedidoOutputSerializer})
     def patch(self, request, pedido_id: int):
         serializer = PropinaInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -150,6 +161,7 @@ class PedidoSetPropinaAPIView(APIView):
 class MisPedidosAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(responses={200: PedidoOutputSerializer(many=True)})
     def get(self, request):
         pedidos = ListOrdersForUserUseCase().execute(user=request.user)
         return Response(PedidoOutputSerializer(pedidos, many=True).data, status=status.HTTP_200_OK)
@@ -158,6 +170,18 @@ class MisPedidosAPIView(APIView):
 class MisPublicacionesAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        responses={
+            200: inline_serializer(
+                "MisPublicacionesOutput",
+                {
+                    "saldo_disponible": serializers.FloatField(),
+                    "total_unidades_vendidas": serializers.IntegerField(),
+                    "publicaciones": PublicacionOutputSerializer(many=True),
+                },
+            )
+        }
+    )
     def get(self, request):
         publicaciones = ListPublicacionesForUserUseCase().execute(user=request.user)
         publicaciones_data = PublicacionOutputSerializer(publicaciones, many=True).data
@@ -176,6 +200,7 @@ class MisPublicacionesAPIView(APIView):
 class PublicacionDetailUpdateAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(request=PublicacionUpdateInputSerializer, responses={200: PublicacionOutputSerializer})
     def patch(self, request, publicacion_id: int):
         serializer = PublicacionUpdateInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -195,6 +220,7 @@ class PublicacionDetailUpdateAPIView(APIView):
 
         return Response(PublicacionOutputSerializer(publicacion).data, status=status.HTTP_200_OK)
 
+    @extend_schema(request=None, responses={204: None})
     def delete(self, request, publicacion_id: int):
         try:
             DeletePublicacionUseCase().execute(user=request.user, publicacion_id=publicacion_id)
@@ -209,6 +235,7 @@ class PublicacionDetailUpdateAPIView(APIView):
 class PedidoAceptarAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(request=None, responses={200: PedidoOutputSerializer})
     def patch(self, request, pedido_id: int):
         try:
             pedido = AcceptOrderUseCase().execute(user=request.user, pedido_id=pedido_id)
@@ -228,6 +255,18 @@ class HistorialPedidosPublicAPIView(APIView):
     throttle_classes = [ScopedRateThrottle]
     throttle_scope = "public_read"
 
+    @extend_schema(
+        responses={
+            200: inline_serializer(
+                "HistorialPedidosPublicOutput",
+                {
+                    "count": serializers.IntegerField(),
+                    "limit": serializers.IntegerField(),
+                    "results": PedidoPublicHistorySerializer(many=True),
+                },
+            )
+        }
+    )
     def get(self, request):
         raw_limit = request.query_params.get("limit", "50")
         try:

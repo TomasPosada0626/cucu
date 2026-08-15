@@ -131,25 +131,25 @@ class PublicacionOutputSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = fields
 
-    def get_distancia_km(self, obj):
+    def get_distancia_km(self, obj) -> float | None:
         value = getattr(obj, "distancia_km", None)
         if value is None:
             return None
         return round(float(value), 2)
 
-    def get_total_vendido(self, obj):
+    def get_total_vendido(self, obj) -> int:
         value = getattr(obj, "total_vendido", None)
         if value is None:
             return 0
         return int(value)
 
-    def get_saldo_generado(self, obj):
+    def get_saldo_generado(self, obj) -> float:
         value = getattr(obj, "saldo_generado", None)
         if value is None:
             return 0.0
         return round(float(value), 2)
 
-    def get_image_url(self, obj):
+    def get_image_url(self, obj) -> str | None:
         image = getattr(obj, "imagen", None)
         if not image:
             return None
@@ -233,5 +233,5 @@ class PedidoPublicHistorySerializer(serializers.ModelSerializer):
         ]
         read_only_fields = fields
 
-    def get_items_count(self, obj):
+    def get_items_count(self, obj) -> int:
         return int(getattr(obj, "items_count", None) or obj.items.count())

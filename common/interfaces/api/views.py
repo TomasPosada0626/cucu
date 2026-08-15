@@ -1,7 +1,8 @@
+from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.throttling import ScopedRateThrottle
-from rest_framework import status
+from rest_framework import serializers, status
 import json
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.validators import validate_email
@@ -20,6 +21,18 @@ class ExternalServicesTestAPIView(APIView):
     throttle_classes = [ScopedRateThrottle]
     throttle_scope = "external"
 
+    @extend_schema(
+        responses={
+            200: inline_serializer(
+                "ExternalServicesTestOutput",
+                {
+                    "status": serializers.CharField(),
+                    "message": serializers.CharField(),
+                    "adapters": serializers.JSONField(),
+                },
+            )
+        }
+    )
     def get(self, request):
         exchange_adapter = ThirdPartyExchangeRateAdapter()
         ally_adapter = HttpAllyServiceAdapter()
@@ -51,6 +64,19 @@ class TriggerAsyncTaskAPIView(APIView):
     throttle_classes = [ScopedRateThrottle]
     throttle_scope = "external"
 
+    @extend_schema(
+        request=inline_serializer("TriggerAsyncTaskInput", {"email": serializers.EmailField(required=False)}),
+        responses={
+            202: inline_serializer(
+                "TriggerAsyncTaskOutput",
+                {
+                    "status": serializers.CharField(),
+                    "message": serializers.CharField(),
+                    "task_id": serializers.CharField(),
+                },
+            )
+        },
+    )
     def post(self, request):
         email = request.data.get("email", "test@example.com")
         try:
@@ -71,6 +97,17 @@ class ConsumeExternalJsonAPIView(APIView):
     permission_classes = []
     throttle_classes = [ScopedRateThrottle]
     throttle_scope = "external"
+
+    _request_serializer = inline_serializer("ConsumeExternalJsonInput", {"url": serializers.CharField()})
+    _response_serializer = inline_serializer(
+        "ConsumeExternalJsonOutput",
+        {
+            "ok": serializers.BooleanField(),
+            "url": serializers.CharField(),
+            "status_code": serializers.IntegerField(),
+            "data": serializers.JSONField(),
+        },
+    )
 
     @staticmethod
     def _validate_url(raw_url: str) -> tuple[str, str]:
@@ -99,6 +136,7 @@ class ConsumeExternalJsonAPIView(APIView):
 
         return candidate, resolved_ip
 
+    @extend_schema(request=_request_serializer, responses={200: _response_serializer})
     def post(self, request):
         try:
             target_url, resolved_ip = self._validate_url(request.data.get("url"))

@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -12,6 +13,7 @@ from ..serializers.notification_serializer import NotificacionSerializer
 class MarcarNotificacionLeidaView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(request=None, responses={200: NotificacionSerializer})
     def post(self, request, id):
         try:
             notificacion = MarkNotificationAsReadUseCase().execute(notification_id=id)
@@ -29,6 +31,7 @@ class MarcarNotificacionLeidaView(APIView):
 class MisNotificacionesView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(responses={200: NotificacionSerializer(many=True)})
     def get(self, request):
         notificaciones = GetUserNotificationsUseCase().execute(usuario=request.user)
         serializer = NotificacionSerializer(notificaciones, many=True)

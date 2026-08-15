@@ -1,4 +1,5 @@
-from rest_framework import status
+from drf_spectacular.utils import extend_schema, inline_serializer
+from rest_framework import serializers, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -32,6 +33,10 @@ from .permissions import IsRepartidor
 class DisponibilidadAPIView(APIView):
     permission_classes = [IsAuthenticated, IsRepartidor]
 
+    @extend_schema(
+        request=DisponibilidadInputSerializer,
+        responses={200: inline_serializer("DisponibilidadOutput", {"activo": serializers.BooleanField()})},
+    )
     def post(self, request):
         serializer = DisponibilidadInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -45,6 +50,13 @@ class DisponibilidadAPIView(APIView):
 class PedidosCercanosAPIView(APIView):
     permission_classes = [IsAuthenticated, IsRepartidor]
 
+    @extend_schema(
+        responses={
+            200: inline_serializer(
+                "PedidosCercanosOutput", {"items": PedidoCercanoOutputSerializer(many=True)}
+            )
+        }
+    )
     def get(self, request):
         try:
             pedidos = ListarPedidosCercanosUseCase().execute(usuario=request.user)
@@ -60,6 +72,7 @@ class PedidosCercanosAPIView(APIView):
 class AceptarPedidoAPIView(APIView):
     permission_classes = [IsAuthenticated, IsRepartidor]
 
+    @extend_schema(request=None, responses={201: AsignacionOutputSerializer})
     def post(self, request, pedido_id: int):
         try:
             asignacion = AceptarPedidoUseCase().execute(usuario=request.user, pedido_id=pedido_id)
@@ -76,6 +89,15 @@ class AceptarPedidoAPIView(APIView):
 class UbicacionAPIView(APIView):
     permission_classes = [IsAuthenticated, IsRepartidor]
 
+    @extend_schema(
+        request=UbicacionInputSerializer,
+        responses={
+            200: inline_serializer(
+                "UbicacionEntregaOutput",
+                {"asignacion": AsignacionOutputSerializer(required=False, allow_null=True)},
+            )
+        },
+    )
     def post(self, request):
         serializer = UbicacionInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -93,6 +115,14 @@ class UbicacionAPIView(APIView):
 class AsignacionActivaAPIView(APIView):
     permission_classes = [IsAuthenticated, IsRepartidor]
 
+    @extend_schema(
+        responses={
+            200: inline_serializer(
+                "AsignacionActivaOutput",
+                {"asignacion": AsignacionOutputSerializer(required=False, allow_null=True)},
+            )
+        }
+    )
     def get(self, request):
         asignacion = AsignacionActivaUseCase().execute(usuario=request.user)
         data = AsignacionOutputSerializer(asignacion).data if asignacion else None
@@ -102,6 +132,7 @@ class AsignacionActivaAPIView(APIView):
 class MarcarSalioAPIView(APIView):
     permission_classes = [IsAuthenticated, IsRepartidor]
 
+    @extend_schema(request=None, responses={200: AsignacionOutputSerializer})
     def post(self, request, pedido_id: int):
         try:
             asignacion = MarcarSalioUseCase().execute(usuario=request.user, pedido_id=pedido_id)
@@ -118,6 +149,7 @@ class MarcarSalioAPIView(APIView):
 class MarcarFinalizadoAPIView(APIView):
     permission_classes = [IsAuthenticated, IsRepartidor]
 
+    @extend_schema(request=None, responses={200: AsignacionOutputSerializer})
     def post(self, request, pedido_id: int):
         try:
             asignacion = MarcarFinalizadoUseCase().execute(usuario=request.user, pedido_id=pedido_id)
@@ -134,6 +166,7 @@ class MarcarFinalizadoAPIView(APIView):
 class HistorialEntregasAPIView(APIView):
     permission_classes = [IsAuthenticated, IsRepartidor]
 
+    @extend_schema(responses={200: HistorialEntregasOutputSerializer})
     def get(self, request):
         data = HistorialEntregasUseCase().execute(usuario=request.user)
         return Response(HistorialEntregasOutputSerializer(data).data, status=status.HTTP_200_OK)
@@ -142,6 +175,7 @@ class HistorialEntregasAPIView(APIView):
 class ResumenRepartidorAPIView(APIView):
     permission_classes = [IsAuthenticated, IsRepartidor]
 
+    @extend_schema(responses={200: ResumenRepartidorOutputSerializer})
     def get(self, request):
         data = ResumenRepartidorUseCase().execute(usuario=request.user)
         return Response(ResumenRepartidorOutputSerializer(data).data, status=status.HTTP_200_OK)
@@ -150,6 +184,7 @@ class ResumenRepartidorAPIView(APIView):
 class EstadoEntregaAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(responses={200: EstadoEntregaOutputSerializer})
     def get(self, request, pedido_id: int):
         try:
             data = EstadoParaCompradorUseCase().execute(usuario=request.user, pedido_id=pedido_id)

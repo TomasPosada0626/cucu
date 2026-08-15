@@ -1,4 +1,5 @@
-from rest_framework import status
+from drf_spectacular.utils import extend_schema, inline_serializer
+from rest_framework import serializers, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.throttling import ScopedRateThrottle
@@ -20,6 +21,19 @@ class GeocodeAPIView(APIView):
     throttle_classes = [ScopedRateThrottle]
     throttle_scope = "geo"
 
+    @extend_schema(
+        parameters=[GeocodeQuerySerializer],
+        responses={
+            200: inline_serializer(
+                "GeocodeOutput",
+                {
+                    "direccion_texto": serializers.CharField(),
+                    "latitud": serializers.FloatField(),
+                    "longitud": serializers.FloatField(),
+                },
+            )
+        },
+    )
     def get(self, request):
         serializer = GeocodeQuerySerializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
@@ -44,6 +58,15 @@ class GeocodeSuggestAPIView(APIView):
     throttle_classes = [ScopedRateThrottle]
     throttle_scope = "geo"
 
+    @extend_schema(
+        parameters=[GeocodeSuggestQuerySerializer],
+        responses={
+            200: inline_serializer(
+                "GeocodeSuggestOutput",
+                {"items": serializers.ListField(child=serializers.JSONField())},
+            )
+        },
+    )
     def get(self, request):
         serializer = GeocodeSuggestQuerySerializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
@@ -64,6 +87,19 @@ class ReverseGeocodeAPIView(APIView):
     throttle_classes = [ScopedRateThrottle]
     throttle_scope = "geo"
 
+    @extend_schema(
+        parameters=[ReverseGeocodeQuerySerializer],
+        responses={
+            200: inline_serializer(
+                "ReverseGeocodeOutput",
+                {
+                    "direccion_texto": serializers.CharField(),
+                    "latitud": serializers.FloatField(),
+                    "longitud": serializers.FloatField(),
+                },
+            )
+        },
+    )
     def get(self, request):
         serializer = ReverseGeocodeQuerySerializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
@@ -89,6 +125,24 @@ class ReverseGeocodeAPIView(APIView):
 class RouteAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        parameters=[RouteQuerySerializer],
+        responses={
+            200: inline_serializer(
+                "RouteOutput",
+                {
+                    "duration": serializers.FloatField(),
+                    "distance": serializers.FloatField(),
+                    "geometry": serializers.JSONField(),
+                    "legs": inline_serializer(
+                        "RouteLeg",
+                        {"duration": serializers.FloatField(), "distance": serializers.FloatField()},
+                        many=True,
+                    ),
+                },
+            )
+        },
+    )
     def get(self, request):
         serializer = RouteQuerySerializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)

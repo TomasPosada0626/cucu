@@ -47,8 +47,16 @@ services:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/1
       - PYTHONUNBUFFERED=1
+      - POSTGRES_DB=${POSTGRES_DB:-cucu}
+      - POSTGRES_USER=${POSTGRES_USER:-cucu}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
     depends_on:
-      - redis
+      redis:
+        condition: service_started
+      postgres:
+        condition: service_healthy
     volumes:
       - .:/app
       - staticfiles_volume:/app/staticfiles
@@ -222,9 +230,18 @@ services:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/1
       - PYTHONUNBUFFERED=1
+      - POSTGRES_DB=${POSTGRES_DB:-cucu}
+      - POSTGRES_USER=${POSTGRES_USER:-cucu}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
     depends_on:
-      - redis
-      - django
+      redis:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      django:
+        condition: service_started
     volumes:
       - .:/app
     restart: unless-stopped
@@ -283,7 +300,27 @@ services:
       start_period: 10s
     restart: unless-stopped
 
+  postgres:
+    image: postgres:16-alpine
+    container_name: cucu-postgres
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-cucu}
+      - POSTGRES_USER=${POSTGRES_USER:-cucu}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    expose:
+      - "5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-cucu} -d ${POSTGRES_DB:-cucu}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
 volumes:
+  postgres_data:
   payment_data:
   notifications_data:
   auth_data:

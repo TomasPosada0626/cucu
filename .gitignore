@@ -30,3 +30,6 @@ nginx.local.conf
 
 # Hoja de ruta de trabajo personal, no se versiona
 ROADMAP.local.md
+# Artefactos temporales de la migracion a Postgres, no se versionan
+pre_postgres_data.json
+db.sqlite3.pre-postgres-backup

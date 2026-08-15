@@ -151,11 +151,21 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+#
+# Postgres, not SQLite: SQLite locks the whole database file on write, which
+# doesn't hold up once more than one gunicorn worker is writing at the same
+# time (see Mejoras y Roadmap, Fase 7 - escalabilidad). Runs as its own
+# container in docker-compose.yml, same free/self-hosted pattern as Redis and
+# RabbitMQ - no managed-database cost.
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('POSTGRES_DB', 'cucu'),
+        'USER': os.environ.get('POSTGRES_USER', 'cucu'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': os.environ.get('POSTGRES_HOST', 'postgres'),
+        'PORT': os.environ.get('POSTGRES_PORT', '5432'),
     }
 }
 

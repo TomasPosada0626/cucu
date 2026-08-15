@@ -15,7 +15,7 @@ class Publicacion(models.Model):
     maximo_por_venta = models.PositiveIntegerField(default=5)
     precio = models.FloatField()
     fecha_publicacion = models.DateTimeField(auto_now_add=True)
-    estado = models.CharField(max_length=20, default="ACTIVA")
+    estado = models.CharField(max_length=20, default="ACTIVA", db_index=True)
 
     usuario = models.ForeignKey(
         "accounts.User",
@@ -42,7 +42,7 @@ class Pedido(models.Model):
     direccion_entrega_latitud = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     direccion_entrega_longitud = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
-    estado = models.CharField(max_length=20, default="PENDIENTE")
+    estado = models.CharField(max_length=20, default="PENDIENTE", db_index=True)
     total = models.FloatField()
     propina = models.FloatField(default=0.0)
 

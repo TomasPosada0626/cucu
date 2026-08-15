@@ -127,6 +127,7 @@ The palette is a warm, near-monochrome cream-and-charcoal base with a single con
 - **Warm Paper** (`#fcf8f3`) / **Warm Paper 2** (`#fffdfa`): the cream background gradient stops every screen sits on. Never pure white.
 - **Warm White** (`rgba(255, 255, 255, 0.96)`): card and surface backgrounds — a near-white translucent layer over the paper gradient, not a flat opaque white.
 - **Ink Hairline** (`rgba(31, 36, 48, 0.08)`): every border in the system. There is no solid/opaque border color anywhere.
+- **Quiet Icon** (`#9a98a0`): input-prefix icons only (the small envelope/lock glyph inside a field, left of the placeholder) — lighter than Slate Muted on purpose, so it doesn't compete with the field's own text. Not a general icon color; every other icon in the system follows the "icon strokes = Charcoal Ink" rule below.
 
 ### Named Rules
 **The Warm Signal Rule.** Ember orange is the color you *act on*, not the color you read. It appears on buttons, focus rings, active states, price, and the brand mark — never as body text, never as a large background fill. The one exception is a very low-alpha radial wash (~8%) behind hero content, which is atmosphere, not a color block.

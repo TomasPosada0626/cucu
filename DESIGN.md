@@ -224,7 +224,7 @@ A single canonical component now covers every status badge in the app — order 
 - **Focus:** border tints to Ember + Focus Ring shadow (a hard ring, not a blur) — deliberately more precise-feeling than the Ember Glow used on buttons.
 
 ### Navigation
-- **Top nav:** sticky, `backdrop-filter: blur(16px)` over a translucent cream background. Brand mark is a 28px gradient square (Ember → Ember Deep) with a CSS-generated "C" — there is no logo image file; the mark is pure CSS/typography.
+- **Top nav:** sticky, `backdrop-filter: blur(16px)` over a translucent cream background. Brand mark is a 28px gradient square (Ember → Ember Deep), 7px radius, 15px "C", with a CSS-generated "C" — there is no logo image file; the mark is pure CSS/typography. This exact size/radius/glyph-size trio is the one brand mark, used identically everywhere it appears (nav, auth pages' centered logo lockup, footer) — the auth pages once drifted to a 30px/8px/16px copy-pasted variant; if you find another one-off size, that's the same class of drift, not a sanctioned "large variant."
 - **Nav tools:** pill-shaped buttons. Active link state is a 3px Ember underline via `::after`, not a background fill.
 - **Mobile:** below 760px, navigation stacks into a column. **There is no bottom tab bar** — do not add one; it would break the established mobile pattern.
 

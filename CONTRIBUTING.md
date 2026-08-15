@@ -15,6 +15,7 @@ Ver la sección "Ejecución Local con Docker Compose" del [README](README.md). E
 ## Antes de abrir el PR
 
 - **Lint:** el repo usa [ruff](pyproject.toml) (solo reglas de corrección real, no de estilo/formato — no hagas un reformateo masivo). Corré `ruff check .` o instalá el hook con `pre-commit install` para que corra solo en cada commit.
+- **Type checking:** `mypy`, con alcance angosto a propósito — solo `domain/` y `application/` de cada app (Python puro, sin Django/DRF). Corré `mypy` en la raíz del repo; el mismo `pre-commit install` de arriba también instala este hook.
 - **Tests:** `python manage.py test` para el monolito Django; `pytest` dentro de cada carpeta `*_microservice/` para los microservicios. El CI corre ambos automáticamente en cada PR — revisalo antes de pedir review.
 - **Diseño:** si tocás templates/CSS, seguí [DESIGN.md](DESIGN.md) — es la fuente de verdad del sistema de diseño (colores, tipografía, radios, componentes). No introduzcas un hex o un radio nuevo sin buena razón.
 - Un PR chico y enfocado es más fácil de revisar que uno grande con varios cambios sin relación.

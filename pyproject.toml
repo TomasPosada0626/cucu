@@ -27,3 +27,26 @@ ignore = [
 # que deben ir despues de configurar el entorno.
 "manage.py" = ["E402"]
 "*/run.py" = ["E402"]
+
+[tool.mypy]
+# Alcance deliberadamente angosto: solo domain/ y application/, las capas que
+# ya son Python puro sin Django/DRF (ver Clean Architecture en la Wiki). El
+# resto del repo (interfaces/, infrastructure/, los microservicios Flask) no
+# usa type hints de forma consistente y no vale la pena el reformateo masivo
+# solo para poder tipar-checkear esas capas tambien.
+python_version = "3.12"
+files = [
+    "accounts/domain", "accounts/application",
+    "market/domain", "market/application",
+    "delivery/domain", "delivery/application",
+    "geo/domain", "geo/application",
+    "notifications/domain", "notifications/application",
+    "payments/domain", "payments/application",
+    "transactions/domain",
+    "common/domain",
+]
+exclude = "migrations"
+ignore_missing_imports = true
+check_untyped_defs = true
+warn_unused_ignores = true
+warn_redundant_casts = true

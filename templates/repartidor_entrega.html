@@ -16,10 +16,10 @@
       <div id="map" style="width:100%;height:420px;border-radius:18px;border:1px solid var(--line);"></div>
 
       <div class="toolbar" style="margin-top:16px;">
-        <span class="counter" id="estadoLabel">{% trans "Cargando..." %}</span>
+        <span class="counter" id="estadoLabel" aria-live="polite">{% trans "Cargando..." %}</span>
       </div>
 
-      <div id="noActivo" class="note" style="display:none;">{% trans "No tienes ninguna entrega activa." %}</div>
+      <div id="noActivo" class="note" aria-live="polite" style="display:none;">{% trans "No tienes ninguna entrega activa." %}</div>
 
       <div id="panel" style="display:none; margin-top:12px; display:grid; gap:10px;">
         <div class="note" id="direccionRecogidaNote"></div>

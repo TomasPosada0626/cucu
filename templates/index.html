@@ -15,7 +15,7 @@
 
     :root {
       --ink: #1f2430;
-      --muted: #6f7483;
+      --muted: #676c7a;
       --line: rgba(31, 36, 48, 0.08);
       --surface: rgba(255, 255, 255, 0.96);
       --surface-soft: #fffaf5;
@@ -53,6 +53,17 @@
     img {
       max-width: 100%;
       display: block;
+    }
+
+    ::selection {
+      background: var(--accent-soft);
+      color: var(--accent-deep);
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 8px;
     }
 
     .shell {
@@ -111,7 +122,7 @@
       display: flex;
       align-items: center;
       gap: 28px;
-      color: #474d5c;
+      color: var(--muted);
       font-size: 14px;
       font-weight: 700;
     }
@@ -253,7 +264,7 @@
     .hero-lead {
       max-width: 34ch;
       margin: 18px 0 0;
-      color: #505664;
+      color: var(--muted);
       font-size: 16px;
       line-height: 1.75;
     }
@@ -270,7 +281,7 @@
       flex-wrap: wrap;
       gap: 18px;
       margin-top: 16px;
-      color: #5d6372;
+      color: var(--muted);
       font-size: 12px;
       font-weight: 700;
     }
@@ -410,7 +421,7 @@
       align-items: center;
       gap: 8px;
       margin-top: 10px;
-      color: #4f5563;
+      color: var(--muted);
       font-size: 12px;
       font-weight: 800;
     }
@@ -542,7 +553,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      color: #4b5261;
+      color: var(--muted);
       font-size: 13px;
       font-weight: 700;
     }
@@ -695,7 +706,7 @@
     .footer-title {
       font-size: 13px;
       font-weight: 800;
-      color: #2a303c;
+      color: var(--ink);
       margin-bottom: 10px;
     }
 

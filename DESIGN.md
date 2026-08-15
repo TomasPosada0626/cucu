@@ -12,7 +12,7 @@ colors:
   terracotta: "#de5f58"
   terracotta-soft: "rgba(222, 95, 88, 0.14)"
   charcoal-ink: "#1f2430"
-  slate-muted: "#6f7483"
+  slate-muted: "#676c7a"
   ink-hairline: "rgba(31, 36, 48, 0.08)"
   warm-paper: "#fcf8f3"
   warm-paper-2: "#fffdfa"
@@ -93,7 +93,7 @@ CUCU exists because someone nearby cooked one plate too many. Every visual decis
 
 The palette stays almost entirely warm neutrals (cream, paper-white, charcoal ink) punctuated by a single confident ember orange used for action and status, never as a large flat fill. Depth comes from soft, color-tinted shadows rather than hard edges or pure-black elevation — nothing in this system should look like it was clipped out with scissors.
 
-**Convergence status:** the auth/landing surfaces and the app shell (`base_app.html`, extended by `carrito`, `checkout`, `perfil`, `seguimiento`, `pedido`-flow screens, etc.) have been converged onto the one ink hex, one ember hex, and pill buttons documented below — verified by grep across `templates/` (no `#ff6a17`/`#24262f`/`#73727c`/legacy-green hexes remain, and every `.btn` definition uses `border-radius: 999px`). This file remains the source of truth for that unified system; treat any future code that disagrees with it as new drift to converge, not as an alternate style.
+**Convergence status:** the auth/landing surfaces and the app shell (`base_app.html`, extended by `carrito`, `checkout`, `perfil`, `seguimiento`, `pedido`-flow screens, etc.) have been converged onto the one ink hex, one ember hex, one Sage green, and pill buttons documented below — verified by grep across `templates/` for every form the palette can appear in (hex *and* the equivalent decimal `rgba()` triplets; an earlier pass only grepped hex literals and missed `rgba(30, 174, 122, …)`/`rgba(25, 165, 123, …)` — the legacy greens expressed as decimals — in 8 files). This file remains the source of truth for that unified system; treat any future code that disagrees with it as new drift to converge, not as an alternate style.
 
 **Key Characteristics:**
 - Warm, appetite-forward, human-scale — never corporate or sterile
@@ -112,8 +112,9 @@ The palette is a warm, near-monochrome cream-and-charcoal base with a single con
 - **Ember Soft** (`#fff1e7`): tint background for badges, icon-rings, and subtle section washes behind Ember content.
 
 ### Secondary
-- **Sage Green** (`#5aa851`): the system's "positive/success" color — accepted orders, completed deliveries, confirmation states. Muted and earthy on purpose, so it reads as "homemade/organic" rather than a generic UI-kit green.
+- **Sage Green** (`#5aa851`): the system's "positive/success" color — accepted orders, completed deliveries, confirmation states. Muted and earthy on purpose, so it reads as "homemade/organic" rather than a generic UI-kit green. Reserve raw `#5aa851` for borders, icons, and dots — at text size on a light background it's only ~2.9:1, below WCAG AA.
 - **Sage Soft** (`#eef8eb`): background tint for success badges and confirmation panels.
+- **Sage Deep** (`#386832`): success/positive *text* on a light background (badges, confirmation copy) — ~6.6:1 on white. Same hue family as Sage Green, just dark enough to read as body text.
 
 ### Tertiary (status semantics)
 - **Toasted Amber** (`#ff8f3d`) / soft `rgba(255, 143, 61, 0.14)`: pending/waiting states — an order not yet accepted, a step not yet complete.
@@ -121,7 +122,7 @@ The palette is a warm, near-monochrome cream-and-charcoal base with a single con
 
 ### Neutral
 - **Charcoal Ink** (`#1f2430`): primary text, icon strokes, and (at low alpha) every hairline border in the system.
-- **Slate Muted** (`#6f7483`): secondary/supporting text — descriptions, timestamps, helper copy.
+- **Slate Muted** (`#676c7a`): secondary/supporting text — descriptions, timestamps, helper copy. Darkened from the original `#6f7483` (4.4:1 on Warm Paper, just under WCAG AA's 4.5:1 for normal text) to `#676c7a` (~5:1) — same warm-slate hue, imperceptibly darker, now compliant everywhere it's used at body/small size.
 - **Warm Paper** (`#fcf8f3`) / **Warm Paper 2** (`#fffdfa`): the cream background gradient stops every screen sits on. Never pure white.
 - **Warm White** (`rgba(255, 255, 255, 0.96)`): card and surface backgrounds — a near-white translucent layer over the paper gradient, not a flat opaque white.
 - **Ink Hairline** (`rgba(31, 36, 48, 0.08)`): every border in the system. There is no solid/opaque border color anywhere.
@@ -129,7 +130,7 @@ The palette is a warm, near-monochrome cream-and-charcoal base with a single con
 ### Named Rules
 **The Warm Signal Rule.** Ember orange is the color you *act on*, not the color you read. It appears on buttons, focus rings, active states, price, and the brand mark — never as body text, never as a large background fill. The one exception is a very low-alpha radial wash (~8%) behind hero content, which is atmosphere, not a color block.
 
-**The One Green Rule.** Sage `#5aa851` is the only success/positive color in the system. Several screens currently use unrelated greens (`#1eae7a`, `#19a57b`, `#7ea86f`) — those are drift from before this file existed, not sanctioned variants; converge them to Sage.
+**The One Green Rule.** Sage `#5aa851` (and its dark text variant Sage Deep `#386832`) is the only success/positive color family in the system. `#1eae7a`/`#19a57b`/`#7ea86f` (hex or decimal `rgba()`) are drift from before this file existed, not sanctioned variants — converge any you find to Sage.
 
 ## Typography
 
@@ -233,7 +234,7 @@ A circular Ember-Soft badge with a centered inline SVG icon — used for the lan
 - **Do** extend the unified Status Pill component with a new state-color mapping when a new status is needed.
 
 ### Don't:
-- **Don't** introduce a new hex for ember, sage, ink, danger, or warning. The auth pages' `#ff6a17`/`#24262f`/`#73727c` family and the app-shell's other greens (`#1eae7a`, `#19a57b`, `#7ea86f`) are legacy drift, not alternate brand colors — converge to the values in this file.
+- **Don't** introduce a new hex for ember, sage, ink, danger, or warning. The auth pages' `#ff6a17`/`#24262f`/`#73727c` family and the app-shell's other greens (`#1eae7a`, `#19a57b`, `#7ea86f`) are legacy drift, not alternate brand colors — converge to the values in this file. Check decimal `rgba()` too, not just hex literals — that's exactly how the green drift survived one prior "convergence" pass undetected.
 - **Don't** ship a 16px-radius button anywhere going forward; pill is the one canonical button shape now.
 - **Don't** add a bottom tab bar on mobile — navigation stacks into a column below 760px.
 - **Don't** hand-roll a new badge/status class — extend the unified Status Pill instead.

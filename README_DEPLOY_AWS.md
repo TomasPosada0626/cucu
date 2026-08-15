@@ -104,3 +104,53 @@ Después de actualizar, confirmá que todo levantó bien:
 docker compose ps
 curl -f http://localhost/api/health/   # valida DB + Redis del monolito, no solo que el proceso responda
 ```
+
+## 7. Migrar el monolito de SQLite a Postgres (una sola vez)
+
+Si tu instancia ya está corriendo desde antes de que el monolito pasara a Postgres, `db.sqlite3` tiene datos reales que hay que llevar — esto no es un `git pull` normal. Verificado paso a paso en local antes de escribir esto.
+
+**Antes de tocar nada**, respaldá lo que hay:
+```bash
+cp db.sqlite3 db.sqlite3.pre-postgres-backup
+```
+
+**1. Con el código todavía en la versión vieja (antes del pull), exportá los datos.** Tiene que ser con la app *apuntando a SQLite todavía* — si ya hiciste `git pull`, hacé `git stash` de `config/settings.py` primero para volver a apuntarla ahí temporalmente:
+```bash
+docker compose exec -T -e PYTHONUTF8=1 django python manage.py dumpdata \
+  --natural-foreign --natural-primary \
+  --exclude admin.logentry --exclude contenttypes --exclude auth.permission --exclude sessions.session \
+  --indent 2 -o /app/pre_postgres_data.json
+```
+`PYTHONUTF8=1` no es opcional: sin forzar UTF-8, el volcado puede corromper tildes y eñes silenciosamente (pasó en Windows probando esto — el archivo parecía válido hasta que `loaddata` tiraba `UnicodeDecodeError`).
+
+**2. Traé el código nuevo y agregá las variables de Postgres a `.env`:**
+```bash
+git stash pop 2>/dev/null || true   # si hiciste stash en el paso 1
+git pull
+```
+Agregá a `.env` (ver `.env.example`):
+```env
+POSTGRES_DB=cucu
+POSTGRES_USER=cucu
+POSTGRES_PASSWORD=algo-que-no-sea-el-placeholder
+```
+
+**3. Levantá Postgres y reconstruí las imágenes** (nueva dependencia en `requirements.txt`, ver sección 6):
+```bash
+docker compose up -d --build
+```
+
+**4. Corré las migraciones contra la base nueva, vacía, y cargá los datos:**
+```bash
+docker compose exec -T django python manage.py migrate
+docker compose exec -T django python manage.py loaddata pre_postgres_data.json
+```
+
+**5. Verificá antes de dar por cerrada la migración:**
+```bash
+docker compose restart nginx   # el django que reconstruiste tiene una IP interna nueva
+curl -f http://localhost/api/health/
+docker compose exec -T django python manage.py shell -c \
+  "from accounts.infrastructure.models import User; print(User.objects.count())"
+```
+Compará ese número de usuarios con lo que esperabas antes de la migración. Si coincide y el healthcheck da 200, guardá `db.sqlite3.pre-postgres-backup` en un lugar seguro fuera del servidor (no lo necesitás para que la app funcione, pero es tu única copia de los datos viejos si algo salió mal) y seguí con el flujo normal de backups (`scripts/backup.sh`, sección de Backups en el README principal).

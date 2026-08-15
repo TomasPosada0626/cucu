@@ -16,6 +16,9 @@ htmlcov/
 /staticfiles/
 /media/
 
+# Backups locales generados por scripts/backup.sh - nunca se versionan
+/backups/
+
 # Herramientas locales de Claude, no se versionan
 CLAUDE.md
 graphify-out/

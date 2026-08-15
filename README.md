@@ -96,6 +96,17 @@ El monolito Django expone un spec OpenAPI real generado con `drf-spectacular`:
 
 Los microservicios Flask (`/api/v2/`, `/api/v3/`) todavía no tienen spec OpenAPI propio.
 
+## Backups
+
+Las 6 bases SQLite (monolito + 5 microservicios con persistencia propia) y `media/` se pueden respaldar en caliente, sin parar el stack:
+
+```bash
+./scripts/backup.sh                              # backups/<timestamp>/*.db + media.tar.gz
+./scripts/restore.sh <servicio> <backup_dir>      # restaura uno, con confirmación explícita
+```
+
+`backup.sh` usa el `.backup` nativo de SQLite (seguro contra una base abierta/en uso — a diferencia de `cp`), guarda un directorio timestamped por corrida, y retiene los últimos 14 días. Ver el header de cada script para el detalle y la línea de crontab sugerida para automatizarlo en producción.
+
 ## Pruebas de APIs con cURL
 
 **1. Probar un Endpoint JSON propio del sistema**

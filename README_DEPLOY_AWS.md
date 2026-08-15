@@ -79,3 +79,28 @@ Abre tu navegador y ve a la IP pública o dominio apuntado a tu instancia:
 http://IP_PUBLICA_EC2/
 ```
 Nginx como API Gateway se encargará de enrutar las solicitudes HTTP al monolito de Django y a los microservicios Flask según las reglas definidas en `nginx.conf`.
+
+## 6. Actualizar el Despliegue
+
+Para traer cambios nuevos del repo a una instancia ya desplegada:
+
+```bash
+git pull
+docker compose up -d --build
+```
+
+**`--build` no es opcional.** Sin esa flag, `docker compose up -d` recrea los contenedores reusando la imagen vieja — si el `git pull` trajo un cambio en `requirements.txt` (una dependencia nueva), el contenedor arranca con el código nuevo pero las librerías viejas y crashea en loop con `ModuleNotFoundError`. Esto no es teórico: pasó exactamente así probando `drf-spectacular` en local. Verificado en vivo: `docker compose up -d` (sin `--build`) tumbó `django` y `celery-worker` con ese error; `docker compose up -d --build` los arregló.
+
+**Si algún servicio backend se recreó** (verificalo con `docker compose ps` — el campo `CREATED` te dice cuáles), reiniciá nginx después:
+
+```bash
+docker compose restart nginx
+```
+
+Nginx resuelve la IP interna de cada servicio (`django`, `payment-service`, etc.) una sola vez al arrancar. Si ese servicio se recrea, su IP interna cambia y nginx sigue apuntando a la IP vieja hasta que se reinicia — el síntoma es un 502 Bad Gateway aunque `docker compose ps` diga que el servicio está `healthy`. También verificado en vivo con el mismo escenario de arriba.
+
+Después de actualizar, confirmá que todo levantó bien:
+```bash
+docker compose ps
+curl -f http://localhost/api/health/   # valida DB + Redis del monolito, no solo que el proceso responda
+```

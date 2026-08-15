@@ -41,7 +41,12 @@ docker compose up -d --build
 log "Applying database migrations..."
 docker compose exec -T django python manage.py migrate --noinput
 
-docker compose restart nginx
+# nginx.conf is bind-mounted as a single file. `git pull` replaces it via
+# rename (a new inode), and on Linux Docker a plain `restart` keeps the
+# already-running container attached to the old, now-unlinked inode - the
+# config change silently never takes effect. --force-recreate tears down
+# and remounts the container so it always picks up the current file.
+docker compose up -d --force-recreate nginx
 
 log "Waiting for /api/health/ to report healthy..."
 for i in $(seq 1 "$MAX_HEALTH_CHECKS"); do

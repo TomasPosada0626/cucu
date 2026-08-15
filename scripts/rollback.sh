@@ -62,7 +62,14 @@ git fetch origin
 git reset --hard "$TARGET_SHA"
 
 docker compose up -d --build
-docker compose restart nginx
+
+log "Applying database migrations..."
+docker compose exec -T django python manage.py migrate --noinput
+
+# See deploy.sh for why this must be --force-recreate, not restart: nginx.conf
+# is a single-file bind mount, and `git reset --hard` replaces it via rename
+# (a new inode) that a plain restart won't pick up on Linux Docker.
+docker compose up -d --force-recreate nginx
 
 log "Waiting for /api/health/ to report healthy..."
 for i in $(seq 1 "$MAX_HEALTH_CHECKS"); do

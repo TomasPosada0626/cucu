@@ -71,6 +71,13 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_REFERRER_POLICY = "same-origin"
 X_FRAME_OPTIONS = "DENY"
 
+# Tied to DEBUG rather than hardcoded True: DEBUG=False means we're behind
+# the real HTTPS nginx deploy, so cookies should refuse to be sent over a
+# plain-HTTP connection. Locally (DEBUG=True) there's no HTTPS, so a hard
+# True here would silently break session/CSRF cookies in local dev.
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+
 # Desactivado (0) por defecto: HSTS le dice al navegador "solo HTTPS para este
 # dominio durante N segundos" y el navegador lo cachea, asi que si algun dia
 # el cert/dominio tiene un problema, los usuarios que ya lo cachearon quedan

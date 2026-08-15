@@ -36,7 +36,10 @@ services:
     container_name: cucu-django
     command: gunicorn --bind 0.0.0.0:8000 --workers 4 config.wsgi:application
     environment:
-      - DEBUG=True
+      # Lee de .env - nunca hardcodear True acá. El django-server que enfrenta
+      # a internet corriendo en debug expone tracebacks completos, queries SQL
+      # y rutas del sistema a cualquier visitante en un 500 sin manejar.
+      - DEBUG=${DEBUG:-False}
       - SECRET_KEY=${SECRET_KEY}
       - DJANGO_SETTINGS_MODULE=config.settings
       - GEO_SERVICE_URL=http://geo-service:8081

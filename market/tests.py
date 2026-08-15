@@ -115,6 +115,8 @@ class PedidoCreateTests(TestCase):
 				"publicacion_ids": [self.publicacion.id, self.publicacion.id],
 				"telefono": "123456",
 				"direccion_entrega": "Calle 10 # 20-30, Bogota",
+				"direccion_entrega_latitud": "4.653332",
+				"direccion_entrega_longitud": "-74.083652",
 			},
 			format="json",
 		)
@@ -135,6 +137,8 @@ class PedidoCreateTests(TestCase):
 				"publicacion_ids": [self.publicacion.id, self.publicacion.id, self.publicacion.id],
 				"telefono": "123456",
 				"direccion_entrega": "Calle 10 # 20-30, Bogota",
+				"direccion_entrega_latitud": "4.653332",
+				"direccion_entrega_longitud": "-74.083652",
 			},
 			format="json",
 		)
@@ -1002,7 +1006,13 @@ class PedidoCreateEdgeCasesApiTests(TestCase):
 	def test_create_pedido_publicacion_not_found_returns_404(self):
 		response = self.client.post(
 			"/api/pedidos",
-			{"publicacion_id": 999999, "telefono": "123", "direccion_entrega": "Calle 1"},
+			{
+				"publicacion_id": 999999,
+				"telefono": "123",
+				"direccion_entrega": "Calle 1",
+				"direccion_entrega_latitud": "4.65",
+				"direccion_entrega_longitud": "-74.08",
+			},
 			format="json",
 		)
 		self.assertEqual(response.status_code, 404)
@@ -1013,10 +1023,17 @@ class PedidoCreateEdgeCasesApiTests(TestCase):
 
 		response = self.client.post(
 			"/api/pedidos",
-			{"publicacion_id": self.publicacion.id, "telefono": "123", "direccion_entrega": "Calle 1"},
+			{
+				"publicacion_id": self.publicacion.id,
+				"telefono": "123",
+				"direccion_entrega": "Calle 1",
+				"direccion_entrega_latitud": "4.65",
+				"direccion_entrega_longitud": "-74.08",
+			},
 			format="json",
 		)
 		self.assertEqual(response.status_code, 400)
+		self.assertIn("no está disponible", response.json()["detail"])
 
 	@patch("market.domain.services.GeocodingService.geocode_address")
 	def test_create_pedido_geocodes_when_coords_missing(self, geocode_address):

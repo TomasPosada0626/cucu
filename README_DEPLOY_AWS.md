@@ -82,13 +82,14 @@ Nginx como API Gateway se encargará de enrutar las solicitudes HTTP al monolito
 
 ## 6. Actualizar el Despliegue
 
-**Recomendado:** `./scripts/deploy.sh` hace exactamente los pasos de abajo, pero además espera a que `/api/health/` responda de verdad antes de darse por exitoso, y si nunca responde, hace rollback automático al commit anterior sin que nadie tenga que darse cuenta a mano. Ver `scripts/deploy.sh` y `scripts/rollback.sh` para el detalle — verificados en vivo, no solo escritos.
+**Recomendado:** `./scripts/deploy.sh` hace exactamente los pasos de abajo, corre `manage.py migrate` automáticamente (para que una migración nueva - como un índice - no se quede sin aplicar en silencio), y además espera a que `/api/health/` responda de verdad antes de darse por exitoso; si nunca responde, hace rollback automático al commit anterior sin que nadie tenga que darse cuenta a mano. Ver `scripts/deploy.sh` y `scripts/rollback.sh` para el detalle — verificados en vivo, no solo escritos.
 
 Paso a paso manual, para entender qué hace o si preferís correrlo vos mismo:
 
 ```bash
 git pull
 docker compose up -d --build
+docker compose exec -T django python manage.py migrate --noinput
 ```
 
 **`--build` no es opcional.** Sin esa flag, `docker compose up -d` recrea los contenedores reusando la imagen vieja — si el `git pull` trajo un cambio en `requirements.txt` (una dependencia nueva), el contenedor arranca con el código nuevo pero las librerías viejas y crashea en loop con `ModuleNotFoundError`. Esto no es teórico: pasó exactamente así probando `drf-spectacular` en local. Verificado en vivo: `docker compose up -d` (sin `--build`) tumbó `django` y `celery-worker` con ese error; `docker compose up -d --build` los arregló.

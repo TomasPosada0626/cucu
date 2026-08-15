@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Pulls the latest main, rebuilds, redeploys, and verifies the deploy with a
-# real health check - not just "the containers started". If the health check
-# never passes, rolls back to the commit that was running before this deploy
-# automatically, no manual intervention needed.
+# Pulls the latest main, rebuilds, migrates the database, redeploys, and
+# verifies the deploy with a real health check - not just "the containers
+# started". If the health check never passes, rolls back to the commit that
+# was running before this deploy automatically, no manual intervention
+# needed.
 #
 # Usage (run from the repo root on the EC2 host):
 #   ./scripts/deploy.sh
@@ -36,6 +37,10 @@ log "Deploying $NEW_SHA (was $PREV_SHA)"
 # --build is not optional - see README_DEPLOY_AWS.md section 6 for why a
 # plain `up -d` after a requirements.txt change crash-loops the containers.
 docker compose up -d --build
+
+log "Applying database migrations..."
+docker compose exec -T django python manage.py migrate --noinput
+
 docker compose restart nginx
 
 log "Waiting for /api/health/ to report healthy..."

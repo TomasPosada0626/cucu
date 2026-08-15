@@ -78,6 +78,11 @@
         "rule": "design-system-color",
         "value": "#9a98a0",
         "createdAt": "2026-08-15T14:55:06.019Z"
+      },
+      {
+        "rule": "design-system-radius",
+        "value": "8px",
+        "createdAt": "2026-08-15T15:11:44.283Z"
       }
     ]
   }

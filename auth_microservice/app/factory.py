@@ -4,6 +4,7 @@ from flask import Flask
 
 from .api.errors import register_error_handlers
 from .api.routes import auth_bp
+from .logging_utils import configure_structured_logging
 from .repositories.auth_repository import SQLiteAuthRepository
 from .services import AuthService
 from .settings import DATABASE_PATH
@@ -12,6 +13,7 @@ from .settings import DATABASE_PATH
 def create_app() -> Flask:
     app = Flask(__name__)
     app.config["JSON_SORT_KEYS"] = False
+    configure_structured_logging(app)
 
     repository = SQLiteAuthRepository(DATABASE_PATH)
     repository.initialize()

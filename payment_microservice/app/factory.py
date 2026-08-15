@@ -6,6 +6,7 @@ from pathlib import Path
 from flask import Flask
 
 from .api.errors import register_error_handlers
+from .logging_utils import configure_structured_logging
 from .api.routes import payments_bp
 from .events import RabbitMQPaymentEventPublisher
 from .repositories.payment_repository import SQLitePaymentRepository
@@ -15,6 +16,7 @@ from .services.payment_service import PaymentService
 def create_app() -> Flask:
     app = Flask(__name__)
     app.config["JSON_SORT_KEYS"] = False
+    configure_structured_logging(app)
 
     database_path = os.getenv(
         "PAYMENTS_DATABASE_PATH",

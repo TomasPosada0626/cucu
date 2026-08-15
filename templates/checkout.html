@@ -375,6 +375,20 @@
         grid-template-columns: 1fr;
       }
     }
+
+    @media (max-width: 600px) {
+      .cash-row {
+        grid-template-columns: 1fr;
+      }
+
+      .checkout-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .checkout-actions .btn-secondary {
+        order: 2;
+      }
+    }
   </style>
 {% endblock %}
 

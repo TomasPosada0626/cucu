@@ -159,6 +159,17 @@
       background: rgba(255, 106, 26, 0.12);
       color: var(--accent-deep);
     }
+
+    @media (max-width: 1080px) {
+      .profile-shell {
+        grid-template-columns: 1fr;
+        padding: 0 16px 20px;
+      }
+
+      .profile-card {
+        position: static;
+      }
+    }
   </style>
 {% endblock %}
 

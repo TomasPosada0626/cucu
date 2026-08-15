@@ -42,6 +42,7 @@ services:
       - DEBUG=${DEBUG:-False}
       - SECRET_KEY=${SECRET_KEY}
       - DJANGO_SETTINGS_MODULE=config.settings
+      - GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY}
       - GEO_SERVICE_URL=http://geo-service:8081
       - NOTIFICATIONS_SERVICE_URL=http://notifications-service:8082
       - CELERY_BROKER_URL=redis://redis:6379/0

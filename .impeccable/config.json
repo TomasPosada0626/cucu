@@ -13,6 +13,66 @@
         "rule": "design-system-color",
         "value": "#386832",
         "createdAt": "2026-08-15T14:23:17.285Z"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "#8a3b37",
+        "createdAt": "2026-08-15T14:33:22.371Z"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "26px",
+        "createdAt": "2026-08-15T14:34:43.697Z"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "11px",
+        "createdAt": "2026-08-15T14:35:22.416Z"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "12px",
+        "createdAt": "2026-08-15T14:35:22.502Z"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "14px",
+        "createdAt": "2026-08-15T14:35:22.633Z"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "15px",
+        "createdAt": "2026-08-15T14:35:22.714Z"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "17px",
+        "createdAt": "2026-08-15T14:35:22.819Z"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "18px",
+        "createdAt": "2026-08-15T14:35:22.901Z"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "20px",
+        "createdAt": "2026-08-15T14:35:23.003Z"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "22px",
+        "createdAt": "2026-08-15T14:35:23.089Z"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "#1f9d73",
+        "createdAt": "2026-08-15T14:40:24.467Z"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "#ff8a1f",
+        "createdAt": "2026-08-15T14:40:24.600Z"
       }
     ]
   }

@@ -54,7 +54,7 @@ rounded:
   lg: "24px"
   md: "18px"
   sm: "14px"
-  xs: "8px"
+  xs: "7px"
 components:
   button-primary:
     backgroundColor: "{colors.ember}"
@@ -118,7 +118,8 @@ The palette is a warm, near-monochrome cream-and-charcoal base with a single con
 
 ### Tertiary (status semantics)
 - **Toasted Amber** (`#ff8f3d`) / soft `rgba(255, 143, 61, 0.14)`: pending/waiting states — an order not yet accepted, a step not yet complete.
-- **Terracotta** (`#de5f58`) / soft `rgba(222, 95, 88, 0.14)`: danger/cancelled/unavailable states. Deliberately warm, not a cold alarm red — it stays inside the food-warm palette even when signaling a problem.
+- **Terracotta** (`#de5f58`) / soft `rgba(222, 95, 88, 0.14)`: danger/cancelled/unavailable states. Deliberately warm, not a cold alarm red — it stays inside the food-warm palette even when signaling a problem. Reserve raw `#de5f58` for borders, icons, and dots — at text size on a light background it's only ~3.6:1, below WCAG AA.
+- **Terracotta Deep** (`#8a3b37`): danger/error *text* on a light background (form errors, cancelled-state copy) — ~7.6:1 on white. Same hue family as Terracotta, dark enough to read as body text. Same role as Sage Deep below, for the danger side of the palette.
 
 ### Neutral
 - **Charcoal Ink** (`#1f2430`): primary text, icon strokes, and (at low alpha) every hairline border in the system.
@@ -131,6 +132,8 @@ The palette is a warm, near-monochrome cream-and-charcoal base with a single con
 **The Warm Signal Rule.** Ember orange is the color you *act on*, not the color you read. It appears on buttons, focus rings, active states, price, and the brand mark — never as body text, never as a large background fill. The one exception is a very low-alpha radial wash (~8%) behind hero content, which is atmosphere, not a color block.
 
 **The One Green Rule.** Sage `#5aa851` (and its dark text variant Sage Deep `#386832`) is the only success/positive color family in the system. `#1eae7a`/`#19a57b`/`#7ea86f` (hex or decimal `rgba()`) are drift from before this file existed, not sanctioned variants — converge any you find to Sage.
+
+**The One Red Rule.** Terracotta `#de5f58` (and its dark text variant Terracotta Deep `#8a3b37`) is the only danger/error color family in the system. `#a63c3c` / `rgba(218, 86, 86, …)` is the same category of pre-DESIGN.md drift as the greens above — converge any you find to Terracotta.
 
 ## Typography
 
@@ -146,6 +149,23 @@ The palette is a warm, near-monochrome cream-and-charcoal base with a single con
 - **Title** (700, 1.5rem/24px, line-height 1.1): card titles, profile names, panel headers.
 - **Body** (400–500, 1rem/16px, line-height 1.6): all prose and descriptions; keep to a comfortable measure, don't let body text run full-bleed on wide containers.
 - **Label** (800, 0.8125rem/13px, letter-spacing 0.08em, uppercase): eyebrow tags, button text, badge/status-pill text.
+
+### UI Chrome Sizes
+
+The five steps above are content hierarchy (what the reader reads); interface chrome — nav, badges, prices, card meta — needs finer steps between them. These were already in consistent use across the codebase (each appearing 6+ times for the same role) before being documented here; formalizing them is not a design change, it's finishing the scale that was already implicit in the code.
+
+| Size | Weight | Use |
+|---|---|---|
+| 22px | 800 | Brand wordmark, standalone emphasis just under Title |
+| 20px | 800–900 | Price/amount emphasis, compact modal headers |
+| 18px | 700–900 | Component-level card titles (smaller than page Title) |
+| 17px | 400 | Lead/subtext directly under a heading, `--muted` |
+| 15px | 800 | Compact inline label (e.g. the brand-mark's "C") |
+| 14px | 700 | Nav links, small interface text |
+| 12px | 700–800 | Badges, chips, small status/meta text |
+| 11px | 400 | Dense captions — timestamps, secondary meta |
+
+A one-off size outside both this table and the Hierarchy above is real drift — snap it to the nearest documented step rather than adding a ninth size for one element. An exception already named by a signature component elsewhere in this file (e.g. the Courier Payout Card's 26px) stays as documented there.
 
 ### Named Rules
 **The Tight Headline Rule.** Anything set in Outfit at Display or Headline size carries negative letter-spacing (−0.04em minimum). A headline with default tracking reads as off-system immediately.
@@ -172,7 +192,7 @@ Layered, not flat: surfaces rest with a soft, low-alpha shadow, and interactive/
 
 ## Shapes
 
-Fully rounded, with radius doing the work of signaling a component's role. **Pill (999px)** is the default for anything a user acts on or scans quickly: buttons (primary and secondary, both), chips, nav pills, status pills, FABs, avatars, and slider/toggle controls. **32px** marks the largest containers (hero panels, page-level surfaces); **24px** marks standard cards and food tiles; **18px** marks inputs and secondary/nested cards; **14px** marks the smallest nested rows (mini-stat blocks, chip-as-row layouts). The only sharp-ish corner in the system is the **8px** brand-mark square — small enough that it reads as a wordmark, not a container, so it doesn't break the soft-everywhere rule.
+Fully rounded, with radius doing the work of signaling a component's role. **Pill (999px)** is the default for anything a user acts on or scans quickly: buttons (primary and secondary, both), chips, nav pills, status pills, FABs, avatars, and slider/toggle controls. **32px** marks the largest containers (hero panels, page-level surfaces); **24px** marks standard cards and food tiles; **18px** marks inputs and secondary/nested cards; **14px** marks the smallest nested rows (mini-stat blocks, chip-as-row layouts). The only sharp-ish corner in the system is the **7px** brand-mark square — small enough that it reads as a wordmark, not a container, so it doesn't break the soft-everywhere rule.
 
 Borders are always a 1px Ink Hairline at low alpha — never a solid, opaque border color. The one intentional break from "everything rounded" is the bottom-sheet pattern (address picker), which is rounded only on its top corners (`24px 24px 0 0`) to read correctly as a sheet rising from the bottom edge.
 
@@ -222,6 +242,9 @@ The landing page's "how it works" moment: a literal illustrated phone frame cont
 
 ### Icon-Ring
 A circular Ember-Soft badge with a centered inline SVG icon — used for the landing page's step-by-step explainer. Icons throughout the system are inline SVG (`stroke="currentColor"`, `stroke-width: 1.8–2`, 18–34px) — no icon font or library reference. Emoji is used, deliberately, only in informal/low-stakes decorative spots (contact rows, share sheets) — never for a primary functional icon.
+
+### Live-Tracking Map Pins (signature)
+`seguimiento.html`'s map uses three colors reserved *only* for pin markers, never for UI chrome elsewhere — buyer delivery point in orange (`#ff8a1f`), seller/pickup point via the brand mark, courier position in a dark marker (`#1f9d73`). These sit outside the main palette on purpose: pins need to read instantly against a live map tile, at a glance, at small size — the same constraint that makes cartographic marker colors different from interface colors everywhere. Don't converge them into Ember/Sage; don't reuse them outside this map.
 
 ## Do's and Don'ts
 

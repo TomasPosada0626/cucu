@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Backs up every CUCU SQLite database plus user-uploaded media while the
-# stack stays live, using SQLite's own online .backup API (via each
-# service's own Python) instead of `cp` - `cp` on an open database can copy
-# a mid-write, corrupt snapshot; .backup is safe to run against a database
-# that's actively being written to.
+# Backs up the monolith's Postgres database, every microservice's SQLite
+# database, and user-uploaded media, all while the stack stays live.
+# Postgres uses pg_dump (a consistent snapshot without an offline step);
+# the SQLite services use SQLite's own online .backup API instead of `cp`
+# - `cp` on an open database can copy a mid-write, corrupt snapshot.
 #
 # geo-service has no database of its own (see Arquitectura wiki page) so
 # it's not included.
@@ -43,9 +43,21 @@ src.close()
   log "  $out_name ($(du -h "$BACKUP_DIR/$out_name" | cut -f1))"
 }
 
+backup_postgres() {
+  local out_name="postgres_cucu.sql.gz"
+  # --clean --if-exists: the dump includes DROP-IF-EXISTS before each CREATE,
+  # so restore.sh can pipe it straight into psql without a manual drop step.
+  docker compose exec -T postgres sh -c \
+    'pg_dump --clean --if-exists -U "$POSTGRES_USER" -d "$POSTGRES_DB" | gzip' > "$BACKUP_DIR/$out_name"
+  log "  $out_name ($(du -h "$BACKUP_DIR/$out_name" | cut -f1))"
+}
+
 log "Starting backup to $BACKUP_DIR"
 
-backup_sqlite django              /app/db.sqlite3         db.sqlite3
+# Monolith: Postgres now, not SQLite - pg_dump takes a consistent snapshot
+# without needing an offline copy step (same "safe against a live DB" property
+# .backup() gave us before).
+backup_postgres
 backup_sqlite payment-service     /app/data/payments.db      payments.db
 backup_sqlite notifications-service /app/data/notifications.db notifications.db
 backup_sqlite auth-service        /app/data/auth.db          auth.db

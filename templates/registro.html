@@ -27,6 +27,25 @@
     }
 
     * { box-sizing: border-box; }
+
+  .skip-link {
+    position: absolute;
+    left: 12px;
+    top: -60px;
+    z-index: 2000;
+    background: #1f2430;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 999px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: top 150ms ease;
+  }
+
+  .skip-link:focus {
+    top: 12px;
+  }
+
     body {
       margin: 0;
       min-height: 100vh;
@@ -337,7 +356,8 @@
   </style>
 </head>
 <body>
-  <main class="auth-page">
+  <a href="#main-content" class="skip-link">{% trans "Saltar al contenido" %}</a>
+  <main id="main-content" class="auth-page">
     <div class="brand"><span class="brand-mark"></span><span>CUCU</span></div>
 
     <section class="hero">

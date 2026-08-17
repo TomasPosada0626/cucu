@@ -39,6 +39,25 @@
 
     * { box-sizing: border-box; }
 
+  .skip-link {
+    position: absolute;
+    left: 12px;
+    top: -60px;
+    z-index: 2000;
+    background: #1f2430;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 999px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: top 150ms ease;
+  }
+
+  .skip-link:focus {
+    top: 12px;
+  }
+
+
     .sr-only {
       position: absolute;
       width: 1px;
@@ -733,6 +752,7 @@
   {% block head_extra %}{% endblock %}
 </head>
 <body>
+  <a href="#main-content" class="skip-link">{% trans "Saltar al contenido" %}</a>
   <header class="topbar">
     <div class="shell nav">
       <a class="brand" href="/">
@@ -768,7 +788,7 @@
     </div>
   </header>
 
-  <main class="page shell">
+  <main id="main-content" class="page shell">
     <div class="page-grid">
       <aside class="hero-panel">
         <div class="eyebrow">{% block eyebrow %}CUCU{% endblock %}</div>

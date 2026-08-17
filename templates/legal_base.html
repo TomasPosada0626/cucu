@@ -29,6 +29,25 @@
 
     * { box-sizing: border-box; }
 
+  .skip-link {
+    position: absolute;
+    left: 12px;
+    top: -60px;
+    z-index: 2000;
+    background: #1f2430;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 999px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: top 150ms ease;
+  }
+
+  .skip-link:focus {
+    top: 12px;
+  }
+
+
     body {
       margin: 0;
       min-height: 100vh;
@@ -142,7 +161,8 @@
   {% block extra_head %}{% endblock %}
 </head>
 <body>
-  <main class="legal-page">
+  <a href="#main-content" class="skip-link">{% trans "Saltar al contenido" %}</a>
+  <main id="main-content" class="legal-page">
     {% block content %}{% endblock %}
 
     <nav class="legal-footer-nav" aria-label="{% trans 'Paginas legales' %}">

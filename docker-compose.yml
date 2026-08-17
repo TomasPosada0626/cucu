@@ -34,7 +34,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: cucu-django
-    command: gunicorn --bind 0.0.0.0:8000 --workers 4 config.wsgi:application
+    command: gunicorn --bind 0.0.0.0:8000 --workers 4 --worker-class gthread --threads 4 --timeout 30 config.wsgi:application
     environment:
       # Lee de .env - nunca hardcodear True acá. El django-server que enfrenta
       # a internet corriendo en debug expone tracebacks completos, queries SQL
@@ -43,6 +43,7 @@ services:
       - SECRET_KEY=${SECRET_KEY}
       - DJANGO_SETTINGS_MODULE=config.settings
       - GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY}
+      - SENTRY_DSN=${SENTRY_DSN:-}
       - GEO_SERVICE_URL=http://geo-service:8081
       - NOTIFICATIONS_SERVICE_URL=http://notifications-service:8082
       - CELERY_BROKER_URL=redis://redis:6379/0
@@ -83,6 +84,7 @@ services:
     environment:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
+      - SENTRY_DSN=${SENTRY_DSN:-}
     expose:
       - "8081"
     healthcheck:
@@ -101,6 +103,7 @@ services:
     environment:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
+      - SENTRY_DSN=${SENTRY_DSN:-}
       - PAYMENTS_DATABASE_PATH=/app/data/payments.db
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_PORT=5672
@@ -129,6 +132,7 @@ services:
     environment:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
+      - SENTRY_DSN=${SENTRY_DSN:-}
       - NOTIFICATIONS_DATABASE_PATH=/app/data/notifications.db
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_PORT=5672
@@ -157,6 +161,7 @@ services:
     environment:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
+      - SENTRY_DSN=${SENTRY_DSN:-}
       - AUTH_DATABASE_PATH=/app/data/auth.db
       - AUTH_JWT_SECRET=${AUTH_JWT_SECRET}
       - AUTH_ACCESS_TOKEN_TTL_MINUTES=${AUTH_ACCESS_TOKEN_TTL_MINUTES:-15}
@@ -181,6 +186,7 @@ services:
     environment:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
+      - SENTRY_DSN=${SENTRY_DSN:-}
       - MARKET_DATABASE_PATH=/app/data/market.db
     volumes:
       - market_data:/app/data
@@ -202,6 +208,7 @@ services:
     environment:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
+      - SENTRY_DSN=${SENTRY_DSN:-}
       - SUPPORT_DATABASE_PATH=/app/data/support.db
     volumes:
       - support_data:/app/data
@@ -231,6 +238,7 @@ services:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/1
       - PYTHONUNBUFFERED=1
+      - SENTRY_DSN=${SENTRY_DSN:-}
       - POSTGRES_DB=${POSTGRES_DB:-cucu}
       - POSTGRES_USER=${POSTGRES_USER:-cucu}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -256,6 +264,7 @@ services:
     environment:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
+      - SENTRY_DSN=${SENTRY_DSN:-}
       - NOTIFICATIONS_DATABASE_PATH=/app/data/notifications.db
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_PORT=5672

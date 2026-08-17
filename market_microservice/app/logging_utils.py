@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import uuid
 from contextvars import ContextVar
 
@@ -37,7 +38,26 @@ class JsonFormatter(logging.Formatter):
         return json.dumps(payload, ensure_ascii=False)
 
 
+def _init_sentry(app: Flask) -> None:
+    dsn = os.environ.get("SENTRY_DSN", "").strip()
+    if not dsn:
+        return
+
+    import sentry_sdk
+    from sentry_sdk.integrations.flask import FlaskIntegration
+
+    sentry_sdk.init(
+        dsn=dsn,
+        integrations=[FlaskIntegration()],
+        environment=os.environ.get("SENTRY_ENVIRONMENT", "production"),
+        traces_sample_rate=0.1,
+        send_default_pii=False,
+    )
+
+
 def configure_structured_logging(app: Flask) -> None:
+    _init_sentry(app)
+
     handler = logging.StreamHandler()
     handler.setFormatter(JsonFormatter())
     handler.addFilter(RequestIDLogFilter())

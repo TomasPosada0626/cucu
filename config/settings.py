@@ -52,6 +52,19 @@ if not SECRET_KEY:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
+SENTRY_DSN = os.environ.get("SENTRY_DSN", "").strip()
+if SENTRY_DSN:
+    import sentry_sdk
+    from sentry_sdk.integrations.django import DjangoIntegration
+
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration()],
+        environment="production" if not DEBUG else "development",
+        traces_sample_rate=0.1,
+        send_default_pii=False,
+    )
+
 ALLOWED_HOSTS = os.getenv(
     "ALLOWED_HOSTS",
     "localhost,127.0.0.1,[::1],testserver"
@@ -166,6 +179,10 @@ DATABASES = {
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
         'HOST': os.environ.get('POSTGRES_HOST', 'postgres'),
         'PORT': os.environ.get('POSTGRES_PORT', '5432'),
+        # Sin esto, Django abre y cierra una conexión TCP nueva a Postgres en
+        # cada request - bajo carga concurrente eso domina la latencia. 60s
+        # deja que cada hilo de gunicorn reutilice su conexión.
+        'CONN_MAX_AGE': 60,
     }
 }
 

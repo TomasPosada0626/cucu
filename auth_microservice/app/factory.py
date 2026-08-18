@@ -5,9 +5,9 @@ from flask import Flask
 from .api.errors import register_error_handlers
 from .api.routes import auth_bp
 from .logging_utils import configure_structured_logging
-from .repositories.auth_repository import SQLiteAuthRepository
+from .repositories.auth_repository import PostgresAuthRepository
 from .services import AuthService
-from .settings import DATABASE_PATH
+from .settings import POSTGRES_DSN, POSTGRES_SCHEMA
 
 
 def create_app() -> Flask:
@@ -15,7 +15,7 @@ def create_app() -> Flask:
     app.config["JSON_SORT_KEYS"] = False
     configure_structured_logging(app)
 
-    repository = SQLiteAuthRepository(DATABASE_PATH)
+    repository = PostgresAuthRepository(POSTGRES_DSN, schema=POSTGRES_SCHEMA)
     repository.initialize()
 
     app.config["auth_service"] = AuthService(repository=repository)

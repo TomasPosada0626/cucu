@@ -8,7 +8,9 @@ set -euo pipefail
 # - `cp` on an open database can copy a mid-write, corrupt snapshot.
 #
 # geo-service has no database of its own (see Arquitectura wiki page) so
-# it's not included.
+# it's not included. auth-service moved from SQLite to a schema in the
+# shared Postgres database (see Migracion-a-Microservicios wiki page) -
+# it's covered by the pg_dump step below, not a separate backup_sqlite call.
 #
 # Usage (run from the repo root, with `docker compose up -d` already running):
 #   ./scripts/backup.sh
@@ -60,7 +62,6 @@ log "Starting backup to $BACKUP_DIR"
 backup_postgres
 backup_sqlite payment-service     /app/data/payments.db      payments.db
 backup_sqlite notifications-service /app/data/notifications.db notifications.db
-backup_sqlite auth-service        /app/data/auth.db          auth.db
 backup_sqlite market-service      /app/data/market.db        market.db
 backup_sqlite support-service     /app/data/support.db       support.db
 

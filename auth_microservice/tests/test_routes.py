@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import sqlite3
+import psycopg
 
 
 
@@ -100,9 +100,9 @@ def test_refresh_missing_token_returns_401(client):
 
 
 def _delete_user(app, user_id):
-    db_path = app.config["auth_service"].repository.database_path
-    with sqlite3.connect(db_path) as connection:
-        connection.execute("DELETE FROM users WHERE id = ?", (user_id,))
+    repository = app.config["auth_service"].repository
+    with psycopg.connect(repository.dsn) as connection:
+        connection.execute(f'DELETE FROM "{repository.schema}".users WHERE id = %s', (user_id,))
         connection.commit()
 
 

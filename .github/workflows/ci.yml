@@ -71,6 +71,31 @@ jobs:
           - notifications_microservice
           - payment_microservice
           - support_microservice
+    # Only auth_microservice needs Postgres so far (migrated off SQLite as
+    # the pilot for the other 5) - an idle service container costs nothing
+    # for the rest of the matrix, and this is the shape the other 5 will
+    # reuse once they migrate too.
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: cucu
+          POSTGRES_USER: cucu
+          POSTGRES_PASSWORD: ci-test-password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U cucu -d cucu"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: cucu
+      POSTGRES_USER: cucu
+      POSTGRES_PASSWORD: ci-test-password
+      AUTH_JWT_SECRET: ci-test-jwt-secret
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

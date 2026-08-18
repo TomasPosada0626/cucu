@@ -6,12 +6,12 @@ import jwt
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .errors import ConflictError, NotFoundError, UnauthorizedError, ValidationError
-from .repositories.auth_repository import SQLiteAuthRepository
+from .repositories.auth_repository import PostgresAuthRepository
 from .settings import ACCESS_TOKEN_EXPIRES_MINUTES, JWT_ALGORITHM, JWT_SECRET, REFRESH_TOKEN_EXPIRES_DAYS
 
 
 class AuthService:
-    def __init__(self, *, repository: SQLiteAuthRepository) -> None:
+    def __init__(self, *, repository: PostgresAuthRepository) -> None:
         self.repository = repository
 
     def register(self, *, username: str, email: str, password: str):

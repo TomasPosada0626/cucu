@@ -163,12 +163,17 @@ services:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
       - SENTRY_DSN=${SENTRY_DSN:-}
-      - AUTH_DATABASE_PATH=/app/data/auth.db
+      - POSTGRES_USER=${POSTGRES_USER:-cucu}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=${POSTGRES_DB:-cucu}
       - AUTH_JWT_SECRET=${AUTH_JWT_SECRET}
       - AUTH_ACCESS_TOKEN_TTL_MINUTES=${AUTH_ACCESS_TOKEN_TTL_MINUTES:-15}
       - AUTH_REFRESH_TOKEN_TTL_DAYS=${AUTH_REFRESH_TOKEN_TTL_DAYS:-30}
-    volumes:
-      - auth_data:/app/data
+    depends_on:
+      postgres:
+        condition: service_healthy
     expose:
       - "8083"
     healthcheck:
@@ -334,7 +339,6 @@ volumes:
   postgres_data:
   payment_data:
   notifications_data:
-  auth_data:
   market_data:
   support_data:
   staticfiles_volume:

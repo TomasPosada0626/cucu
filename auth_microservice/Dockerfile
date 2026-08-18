@@ -2,7 +2,6 @@ FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-ENV AUTH_DATABASE_PATH=/app/data/auth.db
 ENV AUTH_ACCESS_TOKEN_TTL_MINUTES=15
 ENV AUTH_REFRESH_TOKEN_TTL_DAYS=30
 
@@ -14,8 +13,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app ./app
 COPY run.py .
 
-RUN mkdir -p /app/data \
-	&& useradd -m -u 1000 appuser \
+RUN useradd -m -u 1000 appuser \
 	&& chown -R appuser:appuser /app
 USER appuser
 

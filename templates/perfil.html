@@ -142,6 +142,42 @@
       letter-spacing: -0.04em;
     }
 
+    .danger-zone {
+      display: grid;
+      gap: 8px;
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px solid var(--danger-soft);
+      background: var(--danger-soft);
+    }
+
+    .danger-zone-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--danger);
+    }
+
+    .danger-zone-copy {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.5;
+    }
+
+    .btn-danger {
+      border-color: var(--danger);
+      color: var(--danger);
+      background: transparent;
+    }
+
+    .btn-danger:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+
     .workspace {
       display: grid;
       gap: 16px;
@@ -652,6 +688,13 @@
       </div>
 
       <button class="btn btn-secondary" id="logoutBtn" type="button">{% trans "Cerrar sesion" %}</button>
+      <button class="btn btn-secondary" id="exportDataBtn" type="button">{% trans "Descargar mis datos" %}</button>
+
+      <div class="danger-zone">
+        <div class="danger-zone-title">{% trans "Zona de peligro" %}</div>
+        <p class="danger-zone-copy">{% trans "Elimina tu cuenta y todos tus datos (pedidos, publicaciones, direcciones guardadas) de forma permanente." %}</p>
+        <button class="btn btn-danger" id="deleteAccountBtn" type="button">{% trans "Eliminar cuenta" %}</button>
+      </div>
     </aside>
 
     <section class="workspace">
@@ -762,6 +805,12 @@
     const TXT_SAVE_CHANGES = '{% trans "Guardar cambios" %}';
     const TXT_DEMO_TRANSFER = '{% trans "Transferencia iniciada en modo demo. En una integracion real aqui conectariamos la pasarela o payout." %}';
     const TXT_PROFILE_LOAD_ERROR = '{% trans "No se pudo cargar el perfil." %}';
+    const TXT_DELETE_ACCOUNT_CONFIRM = '{% trans "Esto elimina tu cuenta y TODOS tus datos (pedidos, publicaciones, direcciones) de forma permanente. No se puede deshacer. Quieres continuar?" %}';
+    const TXT_DELETE_ACCOUNT_PASSWORD_PROMPT = '{% trans "Ingresa tu contrasena para confirmar la eliminacion:" %}';
+    const TXT_DELETE_ACCOUNT_ERROR = '{% trans "No se pudo eliminar la cuenta." %}';
+    const TXT_DELETE_ACCOUNT_OK = '{% trans "Cuenta eliminada. Hasta pronto." %}';
+    const TXT_EXPORT_ERROR = '{% trans "No se pudo generar la descarga de tus datos." %}';
+    const TXT_EXPORT_OK = '{% trans "Descarga lista." %}';
     const out = document.getElementById('out');
     const toast = document.getElementById('profileToast');
     const ordersHistory = document.getElementById('ordersHistory');
@@ -1299,6 +1348,52 @@
 
     document.getElementById('logoutBtn').addEventListener('click', () => {
       auth.clearSession();
+      window.location.href = '/';
+    });
+
+    document.getElementById('exportDataBtn').addEventListener('click', async () => {
+      const result = await auth.authenticatedFetch('/api/me/exportar');
+      if (!result) return;
+
+      const { response, payload } = result;
+      if (!response.ok) {
+        showToast(TXT_EXPORT_ERROR, 'err');
+        return;
+      }
+
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'cucu-mis-datos.json';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      showToast(TXT_EXPORT_OK, 'ok');
+    });
+
+    document.getElementById('deleteAccountBtn').addEventListener('click', async () => {
+      if (!window.confirm(TXT_DELETE_ACCOUNT_CONFIRM)) return;
+
+      const password = window.prompt(TXT_DELETE_ACCOUNT_PASSWORD_PROMPT);
+      if (!password) return;
+
+      const result = await auth.authenticatedFetch('/api/me', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
+      if (!result) return;
+
+      const { response, payload } = result;
+      if (!response.ok) {
+        showToast(payload?.detail || TXT_DELETE_ACCOUNT_ERROR, 'err');
+        return;
+      }
+
+      auth.clearSession();
+      window.alert(TXT_DELETE_ACCOUNT_OK);
       window.location.href = '/';
     });
 

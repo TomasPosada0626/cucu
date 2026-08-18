@@ -111,6 +111,280 @@ class MeTests(TestCase):
 		self.assertIn("access", response.json())
 
 
+class DeleteAccountAPITests(TestCase):
+	def setUp(self):
+		cache.clear()
+		self.client = APIClient()
+		self.user = User(username="borrar@example.com", email="borrar@example.com", nombre="Borrar Cuenta")
+		self.user.set_password("secret12345")
+		self.user.save()
+
+		access = str(RefreshToken.for_user(self.user).access_token)
+		self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {access}")
+
+	def test_delete_requires_authentication(self):
+		anon = APIClient()
+		response = anon.delete(
+			"/api/me",
+			data=json.dumps({"password": "secret12345"}),
+			content_type="application/json",
+		)
+
+		self.assertEqual(response.status_code, 401)
+
+	def test_delete_requires_correct_password(self):
+		response = self.client.delete(
+			"/api/me",
+			data=json.dumps({"password": "wrong-password"}),
+			content_type="application/json",
+		)
+
+		self.assertEqual(response.status_code, 400)
+		self.assertTrue(User.objects.filter(id=self.user.id).exists())
+
+	def test_delete_removes_account_and_cascaded_data(self):
+		from market.infrastructure.models import Publicacion
+
+		DireccionGuardada.objects.create(
+			usuario=self.user,
+			nombre="Casa",
+			direccion_texto="Calle 1",
+			latitud=6.2,
+			longitud=-75.5,
+		)
+		Publicacion.objects.create(
+			titulo="Bandeja paisa",
+			descripcion="Con todo",
+			stock=10,
+			maximo_por_venta=5,
+			precio=25000,
+			usuario=self.user,
+		)
+
+		response = self.client.delete(
+			"/api/me",
+			data=json.dumps({"password": "secret12345"}),
+			content_type="application/json",
+		)
+
+		self.assertEqual(response.status_code, 204)
+		self.assertFalse(User.objects.filter(id=self.user.id).exists())
+		self.assertFalse(DireccionGuardada.objects.filter(usuario_id=self.user.id).exists())
+		self.assertFalse(Publicacion.objects.filter(usuario_id=self.user.id).exists())
+
+	def test_delete_blocked_by_active_order_as_buyer(self):
+		from market.infrastructure.models import Pedido, Publicacion
+
+		seller = User(username="vendedor@example.com", email="vendedor@example.com", nombre="Vendedor")
+		seller.set_password("secret12345")
+		seller.save()
+
+		publicacion = Publicacion.objects.create(
+			titulo="Bandeja paisa",
+			descripcion="Con todo",
+			stock=10,
+			maximo_por_venta=5,
+			precio=25000,
+			usuario=seller,
+		)
+		Pedido.objects.create(
+			telefono="3000000000",
+			total=25000,
+			publicacion=publicacion,
+			usuario=self.user,
+			estado="PENDIENTE",
+		)
+
+		response = self.client.delete(
+			"/api/me",
+			data=json.dumps({"password": "secret12345"}),
+			content_type="application/json",
+		)
+
+		self.assertEqual(response.status_code, 409)
+		self.assertTrue(User.objects.filter(id=self.user.id).exists())
+
+	def test_delete_blocked_by_active_order_on_own_publication(self):
+		from market.infrastructure.models import Pedido, Publicacion
+
+		buyer = User(username="comprador@example.com", email="comprador@example.com", nombre="Comprador")
+		buyer.set_password("secret12345")
+		buyer.save()
+
+		publicacion = Publicacion.objects.create(
+			titulo="Bandeja paisa",
+			descripcion="Con todo",
+			stock=10,
+			maximo_por_venta=5,
+			precio=25000,
+			usuario=self.user,
+		)
+		Pedido.objects.create(
+			telefono="3000000000",
+			total=25000,
+			publicacion=publicacion,
+			usuario=buyer,
+			estado="PENDIENTE",
+		)
+
+		response = self.client.delete(
+			"/api/me",
+			data=json.dumps({"password": "secret12345"}),
+			content_type="application/json",
+		)
+
+		self.assertEqual(response.status_code, 409)
+		self.assertTrue(User.objects.filter(id=self.user.id).exists())
+
+	def test_delete_blocked_by_active_delivery_assignment(self):
+		from delivery.infrastructure.models import Asignacion
+		from market.infrastructure.models import Pedido, Publicacion
+
+		seller = User(username="vendedor2@example.com", email="vendedor2@example.com", nombre="Vendedor")
+		seller.set_password("secret12345")
+		seller.save()
+		buyer = User(username="comprador2@example.com", email="comprador2@example.com", nombre="Comprador")
+		buyer.set_password("secret12345")
+		buyer.save()
+
+		publicacion = Publicacion.objects.create(
+			titulo="Bandeja paisa",
+			descripcion="Con todo",
+			stock=10,
+			maximo_por_venta=5,
+			precio=25000,
+			usuario=seller,
+		)
+		pedido = Pedido.objects.create(
+			telefono="3000000000",
+			total=25000,
+			publicacion=publicacion,
+			usuario=buyer,
+			estado="ACEPTADO",
+		)
+		Asignacion.objects.create(pedido=pedido, repartidor=self.user, estado="ASIGNADO")
+
+		response = self.client.delete(
+			"/api/me",
+			data=json.dumps({"password": "secret12345"}),
+			content_type="application/json",
+		)
+
+		self.assertEqual(response.status_code, 409)
+		self.assertTrue(User.objects.filter(id=self.user.id).exists())
+
+	def test_delete_allowed_once_orders_are_delivered(self):
+		from market.infrastructure.models import Pedido, Publicacion
+
+		seller = User(username="vendedor3@example.com", email="vendedor3@example.com", nombre="Vendedor")
+		seller.set_password("secret12345")
+		seller.save()
+
+		publicacion = Publicacion.objects.create(
+			titulo="Bandeja paisa",
+			descripcion="Con todo",
+			stock=10,
+			maximo_por_venta=5,
+			precio=25000,
+			usuario=seller,
+		)
+		Pedido.objects.create(
+			telefono="3000000000",
+			total=25000,
+			publicacion=publicacion,
+			usuario=self.user,
+			estado="ENTREGADO",
+		)
+
+		response = self.client.delete(
+			"/api/me",
+			data=json.dumps({"password": "secret12345"}),
+			content_type="application/json",
+		)
+
+		self.assertEqual(response.status_code, 204)
+		self.assertFalse(User.objects.filter(id=self.user.id).exists())
+
+
+class DataExportAPITests(TestCase):
+	def setUp(self):
+		cache.clear()
+		self.client = APIClient()
+		self.user = User(username="exportar@example.com", email="exportar@example.com", nombre="Exportar Datos")
+		self.user.set_password("secret12345")
+		self.user.save()
+
+		access = str(RefreshToken.for_user(self.user).access_token)
+		self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {access}")
+
+	def test_export_requires_authentication(self):
+		anon = APIClient()
+		response = anon.get("/api/me/exportar")
+
+		self.assertEqual(response.status_code, 401)
+
+	def test_export_includes_profile_and_related_data(self):
+		from market.infrastructure.models import Publicacion
+
+		DireccionGuardada.objects.create(
+			usuario=self.user,
+			nombre="Casa",
+			direccion_texto="Calle 1",
+			latitud=6.2,
+			longitud=-75.5,
+		)
+		Publicacion.objects.create(
+			titulo="Bandeja paisa",
+			descripcion="Con todo",
+			stock=10,
+			maximo_por_venta=5,
+			precio=25000,
+			usuario=self.user,
+		)
+
+		response = self.client.get("/api/me/exportar")
+
+		self.assertEqual(response.status_code, 200)
+		data = response.json()
+		self.assertEqual(data["perfil"]["email"], self.user.email)
+		self.assertEqual(len(data["direcciones_guardadas"]), 1)
+		self.assertEqual(len(data["publicaciones"]), 1)
+		self.assertIsNone(data["repartidor_perfil"])
+		self.assertEqual(data["asignaciones_como_repartidor"], [])
+
+	def test_export_includes_repartidor_data(self):
+		from delivery.infrastructure.models import Asignacion, RepartidorPerfil
+		from market.infrastructure.models import Pedido, Publicacion
+
+		self.user.es_repartidor = True
+		self.user.save(update_fields=["es_repartidor"])
+		RepartidorPerfil.objects.create(usuario=self.user, activo=True)
+
+		seller = User(username="exp_seller@example.com", email="exp_seller@example.com", nombre="Seller")
+		seller.set_password("secret12345")
+		seller.save()
+		buyer = User(username="exp_buyer@example.com", email="exp_buyer@example.com", nombre="Buyer")
+		buyer.set_password("secret12345")
+		buyer.save()
+
+		publicacion = Publicacion.objects.create(
+			titulo="Bandeja paisa", descripcion="Con todo",
+			stock=10, maximo_por_venta=5, precio=25000, usuario=seller,
+		)
+		pedido = Pedido.objects.create(
+			telefono="3000000000", total=25000, publicacion=publicacion, usuario=buyer, estado="ACEPTADO",
+		)
+		Asignacion.objects.create(pedido=pedido, repartidor=self.user, estado="ASIGNADO")
+
+		response = self.client.get("/api/me/exportar")
+
+		self.assertEqual(response.status_code, 200)
+		data = response.json()
+		self.assertIsNotNone(data["repartidor_perfil"])
+		self.assertTrue(data["repartidor_perfil"]["activo"])
+		self.assertEqual(len(data["asignaciones_como_repartidor"]), 1)
+
+
 class RegisterTests(TestCase):
 	def setUp(self):
 		cache.clear()

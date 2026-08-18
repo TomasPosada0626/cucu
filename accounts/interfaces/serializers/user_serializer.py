@@ -33,6 +33,10 @@ class PasswordResetConfirmInputSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True, min_length=6)
 
 
+class DeleteAccountInputSerializer(serializers.Serializer):
+    password = serializers.CharField(write_only=True)
+
+
 class UserOutputSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     nombre = serializers.CharField(read_only=True)

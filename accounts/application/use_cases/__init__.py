@@ -1,3 +1,4 @@
+from .delete_account import DeleteAccountUseCase
 from .get_user_profile import GetUserProfileUseCase
 from .login_user import LoginUserUseCase
 from .refresh_access_token import RefreshAccessTokenUseCase
@@ -12,4 +13,5 @@ __all__ = [
     "RequestPasswordResetUseCase",
     "ResetPasswordUseCase",
     "GetUserProfileUseCase",
+    "DeleteAccountUseCase",
 ]

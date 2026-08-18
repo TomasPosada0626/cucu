@@ -1,4 +1,5 @@
 from django.db import IntegrityError
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import serializers, status
 from rest_framework.permissions import IsAuthenticated
@@ -9,6 +10,7 @@ from rest_framework.views import APIView
 from common.exceptions import AuthenticationError, ConflictError, ValidationError
 
 from ...application.use_cases import (
+    DeleteAccountUseCase,
     GetUserProfileUseCase,
     LoginUserUseCase,
     RefreshAccessTokenUseCase,
@@ -21,6 +23,7 @@ from ...infrastructure.external_services import DjangoEmailService
 from ...infrastructure.models import DireccionGuardada
 from ...infrastructure.repositories_impl import DjangoUserRepository
 from ..serializers.user_serializer import (
+    DeleteAccountInputSerializer,
     DireccionGuardadaSerializer,
     LoginInputSerializer,
     PasswordResetConfirmInputSerializer,
@@ -192,6 +195,31 @@ class MeAPIView(APIView):
     def get(self, request):
         user_dto = GetUserProfileUseCase().execute(user=request.user)
         return Response(UserOutputSerializer(user_dto).data, status=status.HTTP_200_OK)
+
+    @extend_schema(request=DeleteAccountInputSerializer, responses={204: None})
+    def delete(self, request):
+        serializer = DeleteAccountInputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            DeleteAccountUseCase(user_repository=_user_repository()).execute(
+                user=request.user, password=serializer.validated_data["password"]
+            )
+        except ConflictError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_409_CONFLICT)
+        except ValidationError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class MeExportAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(responses={200: OpenApiTypes.OBJECT})
+    def get(self, request):
+        data = _user_repository().export_user_data(user=request.user)
+        return Response(data, status=status.HTTP_200_OK)
 
 
 class DireccionGuardadaListCreateAPIView(APIView):

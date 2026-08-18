@@ -92,3 +92,19 @@ jobs:
           python-version: "3.12"
       - run: pip install pip-audit
       - run: pip-audit -r ${{ matrix.requirements }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [lint, django-tests, microservice-tests, dependency-audit]
+    steps:
+      # deploy.sh runs entirely on the EC2 host and already handles its own
+      # rollback on a failed health check - this job's only job is to SSH in
+      # and run it after every check above is green.
+      - uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ubuntu
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script_stop: true
+          script: cd ~/cucu && ./scripts/deploy.sh

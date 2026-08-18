@@ -64,15 +64,17 @@
     transform: translateX(14px);
   }
 </style>
-<form class="language-fab" action="/i18n/setlang/" method="post">
-  {% csrf_token %}
-  <input type="hidden" name="next" value="{{ request.get_full_path|default:'/' }}" />
-  {% get_current_language as CURRENT_LANGUAGE %}
-  <input type="hidden" name="language" value="{% if CURRENT_LANGUAGE == 'en' %}en{% else %}es{% endif %}" />
-  <label class="language-fab-toggle" aria-label="{% trans 'Idioma' %}">
-    <span>ES</span>
-    <input type="checkbox" {% if CURRENT_LANGUAGE == 'en' %}checked{% endif %} onchange="this.form.language.value = this.checked ? 'en' : 'es'; this.form.submit();" />
-    <span class="language-fab-track" aria-hidden="true"></span>
-    <span>EN</span>
-  </label>
-</form>
+<nav aria-label="{% trans 'Idioma' %}">
+  <form class="language-fab" action="/i18n/setlang/" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.get_full_path|default:'/' }}" />
+    {% get_current_language as CURRENT_LANGUAGE %}
+    <input type="hidden" name="language" value="{% if CURRENT_LANGUAGE == 'en' %}en{% else %}es{% endif %}" />
+    <label class="language-fab-toggle" aria-label="{% trans 'Idioma' %}">
+      <span>ES</span>
+      <input type="checkbox" {% if CURRENT_LANGUAGE == 'en' %}checked{% endif %} onchange="this.form.language.value = this.checked ? 'en' : 'es'; this.form.submit();" />
+      <span class="language-fab-track" aria-hidden="true"></span>
+      <span>EN</span>
+    </label>
+  </form>
+</nav>

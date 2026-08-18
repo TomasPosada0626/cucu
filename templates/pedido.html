@@ -1545,7 +1545,9 @@
   </style>
 </head>
 <body>
-  <a href="#main-content" class="skip-link">{% trans "Saltar al contenido" %}</a>
+  <nav aria-label="{% trans 'Saltar navegacion' %}">
+    <a href="#main-content" class="skip-link">{% trans "Saltar al contenido" %}</a>
+  </nav>
   {% include "partials/language_fab.html" %}
   <header class="topbar">
     <div class="shell nav">

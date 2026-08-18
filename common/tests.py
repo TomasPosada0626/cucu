@@ -1,12 +1,23 @@
 import socket
+import unittest
 from unittest import mock
 from urllib import request as url_request
 
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.core.cache import cache
 from django.test import TestCase
 
+from accounts.infrastructure.models import User
+
 from .infrastructure.adapters import HttpAllyServiceAdapter, ThirdPartyExchangeRateAdapter
 from .interfaces.api.views import ConsumeExternalJsonAPIView
+
+try:
+    from axe_playwright_python.sync_playwright import Axe
+    from playwright.sync_api import sync_playwright
+except ImportError:
+    Axe = None
+    sync_playwright = None
 
 
 class ThirdPartyExchangeRateAdapterTests(TestCase):
@@ -406,3 +417,76 @@ class AdminLoginRateLimitMiddlewareTests(TestCase):
 
         response = self._attempt(remote_addr="203.0.113.2")
         self.assertNotEqual(response.status_code, 429)
+
+
+@unittest.skipUnless(sync_playwright, "playwright/axe-playwright-python not installed - run: python -m playwright install chromium")
+class AccessibilityAxeTests(StaticLiveServerTestCase):
+    """Escaneo automatizado de accesibilidad (axe-core via Playwright) sobre
+    las pantallas reales de la app. Corre contra un servidor Django real, no
+    HTML estatico - captura lo que un lector de pantalla real vería."""
+
+    PUBLIC_PAGES = [
+        "/",
+        "/ui/login/",
+        "/ui/registro/",
+        "/ui/terminos/",
+        "/ui/privacidad/",
+        "/ui/soporte/",
+        "/ui/publicar/",
+    ]
+
+    AUTHENTICATED_PAGES = [
+        "/ui/perfil/",
+        "/ui/seguimiento/",
+    ]
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.playwright = sync_playwright().start()
+        cls.browser = cls.playwright.chromium.launch()
+        cls.axe = Axe()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.browser.close()
+        cls.playwright.stop()
+        super().tearDownClass()
+
+    def _assert_axe_clean(self, page, label):
+        results = self.axe.run(page)
+        violations = results.response["violations"]
+        if violations:
+            details = "\n".join(f"- {v['id']} ({v['impact']}): {v['help']}" for v in violations)
+            self.fail(f"Violaciones de accesibilidad en {label}:\n{details}")
+
+    def test_public_pages_have_no_axe_violations(self):
+        for path in self.PUBLIC_PAGES:
+            with self.subTest(path=path):
+                page = self.browser.new_page()
+                try:
+                    page.goto(f"{self.live_server_url}{path}")
+                    self._assert_axe_clean(page, path)
+                finally:
+                    page.close()
+
+    def test_authenticated_pages_have_no_axe_violations(self):
+        user = User(username="axe@example.com", email="axe@example.com", nombre="Axe Test")
+        user.set_password("secret12345")
+        user.save()
+
+        page = self.browser.new_page()
+        try:
+            page.goto(f"{self.live_server_url}/ui/login/")
+            page.fill('input[name="email"]', "axe@example.com")
+            page.fill('input[name="password"]', "secret12345")
+            page.click('button[type="submit"]')
+            page.wait_for_timeout(1500)
+
+            for path in self.AUTHENTICATED_PAGES:
+                with self.subTest(path=path):
+                    page.goto(f"{self.live_server_url}{path}")
+                    page.wait_for_timeout(500)
+                    self._assert_axe_clean(page, path)
+        finally:
+            page.close()

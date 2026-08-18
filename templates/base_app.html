@@ -752,7 +752,9 @@
   {% block head_extra %}{% endblock %}
 </head>
 <body>
-  <a href="#main-content" class="skip-link">{% trans "Saltar al contenido" %}</a>
+  <nav aria-label="{% trans 'Saltar navegacion' %}">
+    <a href="#main-content" class="skip-link">{% trans "Saltar al contenido" %}</a>
+  </nav>
   <header class="topbar">
     <div class="shell nav">
       <a class="brand" href="/">

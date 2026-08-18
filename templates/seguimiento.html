@@ -254,9 +254,10 @@
 {% endblock %}
 
 {% block content %}
+  <h1 class="sr-only">{% trans "Seguimiento en tiempo real" %}</h1>
   <div class="track-layout">
     <section class="card" aria-label="{% trans 'Mapa de seguimiento' %}">
-      <h3>{% trans "Mapa" %}</h3>
+      <h2>{% trans "Mapa" %}</h2>
       <div id="map" aria-label="{% trans 'Mapa de seguimiento' %}"></div>
       <p class="hint" id="geoHint"></p>
     </section>

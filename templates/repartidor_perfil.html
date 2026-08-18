@@ -174,12 +174,13 @@
 {% endblock %}
 
 {% block content %}
+  <h1 class="sr-only">{% trans "Mi perfil" %}</h1>
   <div class="profile-shell">
     <aside class="profile-card">
       <div class="profile-avatar" id="profileAvatar">RP</div>
 
       <div>
-        <h3 class="profile-name" id="profileName">{% trans "Cargando..." %}</h3>
+        <h2 class="profile-name" id="profileName">{% trans "Cargando..." %}</h2>
         <div class="profile-sub" id="profileEmail">-</div>
         <div class="profile-sub" id="profileJoined">-</div>
       </div>

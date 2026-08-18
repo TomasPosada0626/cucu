@@ -43,13 +43,20 @@ jobs:
       POSTGRES_PASSWORD: ci-test-password
       POSTGRES_HOST: localhost
       POSTGRES_PORT: 5432
+      # Playwright's sync API runs its own event loop in a background thread,
+      # which trips Django's async-context check on DB access from the
+      # LiveServerTestCase's accessibility tests - known false positive for
+      # this exact combination, not a real async DB access.
+      DJANGO_ALLOW_ASYNC_UNSAFE: "1"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
       - run: pip install -r requirements.txt
-      - run: python manage.py test
+      - run: python -m playwright install --with-deps chromium
+      - run: coverage run manage.py test
+      - run: coverage report
       - run: python manage.py spectacular --validate
 
   microservice-tests:

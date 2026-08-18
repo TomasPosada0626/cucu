@@ -161,7 +161,9 @@
   {% block extra_head %}{% endblock %}
 </head>
 <body>
-  <a href="#main-content" class="skip-link">{% trans "Saltar al contenido" %}</a>
+  <nav aria-label="{% trans 'Saltar navegacion' %}">
+    <a href="#main-content" class="skip-link">{% trans "Saltar al contenido" %}</a>
+  </nav>
   <main id="main-content" class="legal-page">
     {% block content %}{% endblock %}
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from ...domain.services import CatalogService
+from ...infrastructure.cache import invalidate_catalog_cache
 
 
 class ListPublicacionesUseCase:
@@ -24,7 +25,9 @@ class CreatePublicacionUseCase:
         self._catalog_service = catalog_service or CatalogService()
 
     def execute(self, *, user, **payload):
-        return self._catalog_service.create_publicacion(user=user, **payload)
+        publicacion = self._catalog_service.create_publicacion(user=user, **payload)
+        invalidate_catalog_cache()
+        return publicacion
 
 
 class ListPublicacionesForUserUseCase:
@@ -40,11 +43,13 @@ class UpdatePublicacionUseCase:
         self._catalog_service = catalog_service or CatalogService()
 
     def execute(self, *, user, publicacion_id: int, **changes):
-        return self._catalog_service.update_publicacion(
+        publicacion = self._catalog_service.update_publicacion(
             user=user,
             publicacion_id=publicacion_id,
             **changes,
         )
+        invalidate_catalog_cache()
+        return publicacion
 
 
 class DeletePublicacionUseCase:
@@ -52,7 +57,8 @@ class DeletePublicacionUseCase:
         self._catalog_service = catalog_service or CatalogService()
 
     def execute(self, *, user, publicacion_id: int):
-        return self._catalog_service.delete_publicacion(
+        self._catalog_service.delete_publicacion(
             user=user,
             publicacion_id=publicacion_id,
         )
+        invalidate_catalog_cache()

@@ -1,5 +1,6 @@
 import io
 
+from django.core.cache import cache
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
@@ -671,6 +672,7 @@ class PedidoBuilderTests(TestCase):
 
 class PublicacionListCreateApiTests(TestCase):
 	def setUp(self):
+		cache.clear()
 		self.client = APIClient()
 		self.seller = User(username="list_seller@example.com", email="list_seller@example.com", nombre="Seller")
 		self.seller.set_password("secret12345")
@@ -690,6 +692,36 @@ class PublicacionListCreateApiTests(TestCase):
 		response = self.client.get("/api/publicaciones")
 		self.assertEqual(response.status_code, 200)
 		self.assertGreaterEqual(len(response.json()), 1)
+
+	def test_list_publicaciones_second_call_hits_cache(self):
+		with patch(
+			"market.interfaces.api.views.ListPublicacionesUseCase.execute",
+			side_effect=lambda: list(Publicacion.objects.all()),
+		) as execute:
+			first = self.client.get("/api/publicaciones")
+			second = self.client.get("/api/publicaciones")
+
+		self.assertEqual(first.status_code, 200)
+		self.assertEqual(second.status_code, 200)
+		self.assertEqual(execute.call_count, 1)
+		self.assertEqual(first.json(), second.json())
+
+	def test_creating_publicacion_invalidates_list_cache(self):
+		before = self.client.get("/api/publicaciones").json()
+
+		with patch("market.domain.services.GeocodingService.geocode_address") as geocode_address:
+			geocode_address.return_value.latitud = "4.65"
+			geocode_address.return_value.longitud = "-74.08"
+			geocode_address.return_value.direccion_texto = "Calle 1"
+			self.client.post(
+				"/api/publicaciones",
+				{"titulo": "Nueva desde cache test", "descripcion": "Y", "precio": 1000, "direccion_texto": "Calle 1"},
+				format="json",
+			)
+
+		after = self.client.get("/api/publicaciones").json()
+		self.assertEqual(len(after), len(before) + 1)
+		self.assertIn("Nueva desde cache test", [p["titulo"] for p in after])
 
 	@patch("market.domain.services.GeocodingService.geocode_address")
 	def test_create_publicacion_geocode_failure_returns_400(self, geocode_address):

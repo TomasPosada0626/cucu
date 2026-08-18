@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import serializers, status
 from rest_framework.permissions import IsAuthenticated
@@ -7,6 +8,7 @@ from rest_framework.views import APIView
 
 from common.exceptions import NotFoundError, PermissionDeniedError, ValidationError
 
+from ...infrastructure.cache import CATALOG_CACHE_KEY, CATALOG_CACHE_TTL_SECONDS
 from ...infrastructure.models import Pedido
 
 from ...application.use_cases import (
@@ -40,11 +42,12 @@ class PublicacionListCreateAPIView(APIView):
 
     @extend_schema(responses={200: PublicacionOutputSerializer(many=True)})
     def get(self, request):
-        publicaciones = ListPublicacionesUseCase().execute()
-        return Response(
-            PublicacionOutputSerializer(publicaciones, many=True).data,
-            status=status.HTTP_200_OK,
-        )
+        data = cache.get(CATALOG_CACHE_KEY)
+        if data is None:
+            publicaciones = ListPublicacionesUseCase().execute()
+            data = PublicacionOutputSerializer(publicaciones, many=True).data
+            cache.set(CATALOG_CACHE_KEY, data, CATALOG_CACHE_TTL_SECONDS)
+        return Response(data, status=status.HTTP_200_OK)
 
     @extend_schema(request=PublicacionCreateInputSerializer, responses={201: PublicacionOutputSerializer})
     def post(self, request):

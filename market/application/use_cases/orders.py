@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from ...domain.services import AcceptOrderService, OrderService
+from ...infrastructure.cache import invalidate_catalog_cache
 
 
 class CreateOrderUseCase:
@@ -8,7 +9,11 @@ class CreateOrderUseCase:
         self._order_service = order_service or OrderService()
 
     def execute(self, *, user, **payload):
-        return self._order_service.create_order(user=user, **payload)
+        # Un pedido decrementa el stock de la publicacion - el catalogo cacheado
+        # debe reflejarlo de inmediato, no esperar a que expire el TTL.
+        pedido = self._order_service.create_order(user=user, **payload)
+        invalidate_catalog_cache()
+        return pedido
 
 
 class GetOrderForUserUseCase:

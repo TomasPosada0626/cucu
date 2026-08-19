@@ -1,3 +1,13 @@
-from .use_cases import GetUserNotificationsUseCase, MarkNotificationAsReadUseCase
+from .use_cases import (
+    GetUserNotificationsUseCase,
+    MarkNotificationAsReadUseCase,
+    SubscribePushUseCase,
+    UnsubscribePushUseCase,
+)
 
-__all__ = ["GetUserNotificationsUseCase", "MarkNotificationAsReadUseCase"]
+__all__ = [
+    "GetUserNotificationsUseCase",
+    "MarkNotificationAsReadUseCase",
+    "SubscribePushUseCase",
+    "UnsubscribePushUseCase",
+]

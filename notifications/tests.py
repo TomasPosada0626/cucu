@@ -1,15 +1,16 @@
 from unittest import mock
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from rest_framework.test import APIClient
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from accounts.infrastructure.models import User
+from common.domain.ports import WebPushExpiredError
 from common.exceptions import ConflictError, NotFoundError, ValidationError
 
 from .domain.services import NotificacionService
 from .infrastructure.factories import NotificacionFactory
-from .infrastructure.models import Notificacion
+from .infrastructure.models import Notificacion, PushSubscription
 from .tasks import enqueue_payment_notification, trigger_report_generation
 
 
@@ -119,6 +120,97 @@ class NotificationAPITests(TestCase):
     def test_marcar_leida_not_found_returns_404(self):
         response = self.client.post("/api/notificaciones/999999/leer/")
         self.assertEqual(response.status_code, 404)
+
+
+class NotificacionServiceWebPushTests(TestCase):
+    def setUp(self):
+        self.user = User(username="push_service@example.com", email="push_service@example.com", nombre="Push")
+        self.user.set_password("secret12345")
+        self.user.save()
+        self.subscription = PushSubscription.objects.create(
+            usuario=self.user, endpoint="https://push.example/1", p256dh="p", auth="a"
+        )
+
+    def test_enviar_sends_push_to_active_subscriptions(self):
+        web_push_service = mock.Mock()
+        service = NotificacionService(web_push_service=web_push_service)
+
+        service.enviar(self.user, "pedido", "Tu pedido va en camino")
+
+        web_push_service.enviar.assert_called_once()
+        called_kwargs = web_push_service.enviar.call_args.kwargs
+        self.assertEqual(called_kwargs["subscription"].id, self.subscription.id)
+
+    def test_enviar_prunes_expired_subscription(self):
+        web_push_service = mock.Mock()
+        web_push_service.enviar.side_effect = WebPushExpiredError()
+        service = NotificacionService(web_push_service=web_push_service)
+
+        service.enviar(self.user, "pedido", "Tu pedido va en camino")
+
+        self.assertFalse(PushSubscription.objects.filter(id=self.subscription.id).exists())
+
+    def test_enviar_swallows_unexpected_push_failure(self):
+        web_push_service = mock.Mock()
+        web_push_service.enviar.side_effect = RuntimeError("network down")
+        service = NotificacionService(web_push_service=web_push_service)
+
+        notificacion = service.enviar(self.user, "pedido", "Tu pedido va en camino")
+
+        self.assertTrue(Notificacion.objects.filter(id=notificacion.id).exists())
+        self.assertTrue(PushSubscription.objects.filter(id=self.subscription.id).exists())
+
+
+class PushSubscriptionAPITests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = User(username="push_api@example.com", email="push_api@example.com", nombre="PushApi")
+        self.user.set_password("secret12345")
+        self.user.save()
+        access = str(RefreshToken.for_user(self.user).access_token)
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {access}")
+
+    def test_public_key_requires_auth(self):
+        anon = APIClient()
+        response = anon.get("/api/notificaciones/push/public-key/")
+        self.assertEqual(response.status_code, 401)
+
+    def test_public_key_returns_configured_value(self):
+        with override_settings(VAPID_PUBLIC_KEY="test-public-key"):
+            response = self.client.get("/api/notificaciones/push/public-key/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["publicKey"], "test-public-key")
+
+    def test_subscribe_creates_subscription(self):
+        response = self.client.post(
+            "/api/notificaciones/push/subscribe/",
+            {"endpoint": "https://push.example/2", "keys": {"p256dh": "p", "auth": "a"}},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 204)
+        self.assertTrue(
+            PushSubscription.objects.filter(usuario=self.user, endpoint="https://push.example/2").exists()
+        )
+
+    def test_subscribe_missing_keys_returns_400(self):
+        response = self.client.post(
+            "/api/notificaciones/push/subscribe/",
+            {"endpoint": "https://push.example/3", "keys": {"p256dh": "p"}},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_unsubscribe_deletes_subscription(self):
+        PushSubscription.objects.create(usuario=self.user, endpoint="https://push.example/4", p256dh="p", auth="a")
+
+        response = self.client.post(
+            "/api/notificaciones/push/unsubscribe/",
+            {"endpoint": "https://push.example/4"},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(PushSubscription.objects.filter(endpoint="https://push.example/4").exists())
 
     def test_marcar_leida_already_leida_returns_409(self):
         notificacion = Notificacion.objects.create(usuario=self.user, tipo="pedido", mensaje="X", leida=True)

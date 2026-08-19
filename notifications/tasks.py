@@ -3,7 +3,9 @@ from __future__ import annotations
 from celery import shared_task
 from django.utils.translation import gettext as _
 
-from .infrastructure.models import Notificacion
+from accounts.infrastructure.models import User
+
+from .domain.services import NotificacionService
 
 
 @shared_task(bind=True, autoretry_for=(Exception,), retry_backoff=True, retry_kwargs={"max_retries": 3})
@@ -19,11 +21,8 @@ def enqueue_payment_notification(self, *, usuario_id: int, pago_id: int, pedido_
             "pedido_id": pedido_id,
         }
 
-    Notificacion.objects.create(
-        tipo="pago",
-        mensaje=mensaje,
-        usuario_id=usuario_id,
-    )
+    usuario = User.objects.get(id=usuario_id)
+    NotificacionService().enviar(usuario, "pago", mensaje)
 
     return {
         "ok": True,

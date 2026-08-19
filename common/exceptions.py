@@ -17,6 +17,11 @@ class ValidationError(DomainError):
 class AuthenticationError(DomainError):
     """Represents invalid credentials/authentication failure (HTTP 401)."""
 
+
+class ServiceUnavailableError(DomainError):
+    """Un servicio externo (microservicio, API de terceros) no respondió (HTTP 503)."""
+
+
 class PermissionDeniedError(Exception):
     """Excepción para denegar permisos"""
     pass

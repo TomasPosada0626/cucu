@@ -222,6 +222,7 @@
     const TXT_MEMBER_SINCE = '{% trans "Miembro desde" %}';
     const TXT_USER_FALLBACK = '{% trans "Repartidor CUCU" %}';
     const TXT_NO_DELIVERIES = '{% trans "Todavia no tienes entregas registradas." %}';
+    const TXT_LOAD_ERROR = '{% trans "No se pudo cargar. Intenta de nuevo en un momento." %}';
     const TXT_NEXT_PAYOUT = '{% trans "Proximo pago" %}';
     const TXT_ESTADOS = {
       ASIGNADO: '{% trans "Asignado" %}',
@@ -253,7 +254,10 @@
 
     async function loadProfile() {
       const result = await auth.authenticatedFetch('/api/me');
-      if (!result || !result.response.ok) return;
+      if (!result || !result.response.ok) {
+        document.getElementById('profileName').textContent = TXT_LOAD_ERROR;
+        return;
+      }
       const data = result.payload || {};
       const name = String(data.nombre || TXT_USER_FALLBACK).trim();
       const email = String(data.email || '-').trim();
@@ -269,7 +273,10 @@
 
     async function loadResumen() {
       const result = await auth.authenticatedFetch('/api/repartidor/resumen');
-      if (!result || !result.response.ok) return;
+      if (!result || !result.response.ok) {
+        document.getElementById('proximoPago').textContent = TXT_LOAD_ERROR;
+        return;
+      }
       const semana = result.payload?.semana || { total: 0, viajes: 0, proximo_pago: null };
       document.getElementById('semanaTotal').textContent = formatMoneyCOP(semana.total);
       document.getElementById('semanaViajes').textContent = `${semana.viajes || 0} viajes`;
@@ -282,7 +289,7 @@
       const container = document.getElementById('deliveriesHistory');
       const result = await auth.authenticatedFetch('/api/repartidor/historial');
       if (!result || !result.response.ok) {
-        container.innerHTML = `<div class="note-box">${TXT_NO_DELIVERIES}</div>`;
+        container.innerHTML = `<div class="note-box">${TXT_LOAD_ERROR}</div>`;
         return;
       }
       const data = result.payload || {};

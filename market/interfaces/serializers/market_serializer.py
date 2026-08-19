@@ -109,6 +109,8 @@ class PublicacionOutputSerializer(serializers.ModelSerializer):
     total_vendido = serializers.SerializerMethodField()
     saldo_generado = serializers.SerializerMethodField()
     image_url = serializers.SerializerMethodField()
+    vendedor_reputacion = serializers.SerializerMethodField()
+    vendedor_num_calificaciones = serializers.SerializerMethodField()
 
     class Meta:
         model = Publicacion
@@ -128,6 +130,8 @@ class PublicacionOutputSerializer(serializers.ModelSerializer):
             "distancia_km",
             "total_vendido",
             "saldo_generado",
+            "vendedor_reputacion",
+            "vendedor_num_calificaciones",
         ]
         read_only_fields = fields
 
@@ -157,6 +161,12 @@ class PublicacionOutputSerializer(serializers.ModelSerializer):
             return image.url
         except ValueError:
             return None
+
+    def get_vendedor_reputacion(self, obj) -> float:
+        return round(float(getattr(obj.usuario, "reputacion_promedio", 0.0) or 0.0), 1)
+
+    def get_vendedor_num_calificaciones(self, obj) -> int:
+        return int(getattr(obj.usuario, "total_calificaciones", 0) or 0)
 
 
 class PedidoItemOutputSerializer(serializers.ModelSerializer):
@@ -192,12 +202,18 @@ class PedidoOutputSerializer(serializers.ModelSerializer):
             "publicacion_id",
             "usuario_id",
             "items",
+            "calificado",
         ]
         read_only_fields = fields
 
 
 class PropinaInputSerializer(serializers.Serializer):
     propina = serializers.FloatField(min_value=0)
+
+
+class CalificarInputSerializer(serializers.Serializer):
+    puntuacion = serializers.IntegerField(min_value=1, max_value=5)
+    comentario = serializers.CharField(max_length=500, allow_blank=False, trim_whitespace=True)
 
 
 class PedidoPublicItemSerializer(serializers.ModelSerializer):

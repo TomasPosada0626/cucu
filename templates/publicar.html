@@ -931,7 +931,15 @@
         ...(options.headers || {}),
         Authorization: `Bearer ${token}`,
       };
-      const response = await fetch(url, { ...options, headers });
+      let response;
+      try {
+        response = await fetch(url, { ...options, headers });
+      } catch (networkError) {
+        // Un fallo de red real (offline, DNS, CORS) no resuelve un Response -
+        // fetch() lo lanza. Un response-like con ok:false deja que el codigo
+        // que ya revisa `if (!response.ok)` siga funcionando sin cambios.
+        return { response: { ok: false, status: 0, networkError: true }, payload: null };
+      }
       const payload = await response.json().catch(() => null);
 
       if (response.status === 401 && retry) {
@@ -941,13 +949,18 @@
           return null;
         }
 
-        const retryResponse = await fetch(url, {
-          ...options,
-          headers: {
-            ...(options.headers || {}),
-            Authorization: `Bearer ${refreshed}`,
-          },
-        });
+        let retryResponse;
+        try {
+          retryResponse = await fetch(url, {
+            ...options,
+            headers: {
+              ...(options.headers || {}),
+              Authorization: `Bearer ${refreshed}`,
+            },
+          });
+        } catch (networkError) {
+          return { response: { ok: false, status: 0, networkError: true }, payload: null };
+        }
         const retryPayload = await retryResponse.json().catch(() => null);
         if (retryResponse.status === 401) {
           redirectToLogin();

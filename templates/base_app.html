@@ -862,13 +862,23 @@
           return null;
         }
 
-        const response = await fetch(url, {
-          ...options,
-          headers: {
-            ...(options.headers || {}),
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        let response;
+        try {
+          response = await fetch(url, {
+            ...options,
+            headers: {
+              ...(options.headers || {}),
+              Authorization: `Bearer ${token}`,
+            },
+          });
+        } catch (networkError) {
+          // Un fallo de red real (offline, DNS, CORS) no es un 401/500 - fetch()
+          // lo lanza como excepcion en vez de resolver con un Response. Devolver
+          // un response-like con ok:false deja que todo el codigo existente que
+          // ya revisa `if (!response.ok)` siga funcionando sin tocar cada
+          // caller, en vez de que esto termine como promesa rechazada sin manejar.
+          return { response: { ok: false, status: 0, networkError: true }, payload: null };
+        }
         const payload = await response.json().catch(() => null);
 
         if (response.status === 401 && retry) {
@@ -878,13 +888,18 @@
             return null;
           }
 
-          const retryResponse = await fetch(url, {
-            ...options,
-            headers: {
-              ...(options.headers || {}),
-              Authorization: `Bearer ${refreshed}`,
-            },
-          });
+          let retryResponse;
+          try {
+            retryResponse = await fetch(url, {
+              ...options,
+              headers: {
+                ...(options.headers || {}),
+                Authorization: `Bearer ${refreshed}`,
+              },
+            });
+          } catch (networkError) {
+            return { response: null, payload: null, networkError };
+          }
           const retryPayload = await retryResponse.json().catch(() => null);
           if (retryResponse.status === 401) {
             redirectToLogin();

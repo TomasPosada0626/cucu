@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.views import APIView
 
-from common.exceptions import NotFoundError, PermissionDeniedError, ValidationError
+from common.exceptions import NotFoundError, PermissionDeniedError, ServiceUnavailableError, ValidationError
 
 from ...infrastructure.cache import CATALOG_CACHE_KEY, CATALOG_CACHE_TTL_SECONDS
 from ...infrastructure.models import Pedido
@@ -22,10 +22,12 @@ from ...application.use_cases import (
     ListPublicacionesForUserUseCase,
     ListPublicacionesUseCase,
     MarkOrderDeliveredUseCase,
+    RateOrderUseCase,
     SetPropinaUseCase,
     UpdatePublicacionUseCase,
 )
 from ..serializers.market_serializer import (
+    CalificarInputSerializer,
     PedidoCreateInputSerializer,
     PedidoOutputSerializer,
     PedidoPublicHistorySerializer,
@@ -157,6 +159,31 @@ class PedidoSetPropinaAPIView(APIView):
             )
         except NotFoundError as exc:
             return Response({"detail": str(exc)}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response(PedidoOutputSerializer(pedido).data, status=status.HTTP_200_OK)
+
+
+class PedidoCalificarAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(request=CalificarInputSerializer, responses={200: PedidoOutputSerializer})
+    def post(self, request, pedido_id: int):
+        serializer = CalificarInputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            pedido = RateOrderUseCase().execute(
+                user=request.user,
+                pedido_id=pedido_id,
+                puntuacion=serializer.validated_data["puntuacion"],
+                comentario=serializer.validated_data["comentario"],
+            )
+        except NotFoundError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_404_NOT_FOUND)
+        except ValidationError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+        except ServiceUnavailableError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
         return Response(PedidoOutputSerializer(pedido).data, status=status.HTTP_200_OK)
 

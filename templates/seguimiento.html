@@ -323,6 +323,7 @@
   const TXT_MISSING_POINTS = '{% trans "Faltan puntos de recogida o entrega para construir el mapa del pedido." %}';
   const TXT_COURIER_START_ERROR = '{% trans "No fue posible ubicar el punto inicial del repartidor." %}';
   const TXT_ROUTE_LOADING = '{% trans "Calculando ruta real por las calles..." %}';
+  const TXT_POLL_CONNECTION_LOST = '{% trans "No se pudo actualizar el estado del pedido - revisando tu conexion..." %}';
   const TXT_ROUTE_ERROR = '{% trans "No fue posible cargar la ruta vial del pedido. Recarga la vista para reintentar." %}';
   const TXT_MISSING_PEDIDO_ID = '{% trans "Falta pedido_id en la URL." %}';
   const TXT_DELIVERED = '{% trans "Tu pedido fue entregado" %}';
@@ -1098,9 +1099,22 @@
 
   let realStatusTimer = null;
 
+  let pollFailureCount = 0;
+
   async function pollRealStatus(pedidoId) {
     const result = await auth.authenticatedFetch(`/api/pedidos/${encodeURIComponent(String(pedidoId))}/estado-entrega`);
-    if (!result || !result.response.ok) return;
+    if (!result || !result.response.ok) {
+      pollFailureCount += 1;
+      // 3 fallos seguidos (~12s con el intervalo de 4s) antes de avisar - un
+      // solo blip de red no debe alarmar, pero una caida real no debe quedar
+      // en silencio total con el usuario mirando un estado que dejo de moverse.
+      if (pollFailureCount >= 3) geoHint.textContent = TXT_POLL_CONNECTION_LOST;
+      return;
+    }
+    if (pollFailureCount > 0 && geoHint.textContent === TXT_POLL_CONNECTION_LOST) {
+      geoHint.textContent = '';
+    }
+    pollFailureCount = 0;
     const data = result.payload || {};
 
     if (!data.estado_entrega) {

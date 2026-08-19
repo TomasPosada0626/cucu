@@ -8,6 +8,7 @@ class User(AbstractUser):
     foto_perfil_url = models.URLField(blank=True, null=True)
     fecha_registro = models.DateTimeField(auto_now_add=True)
     reputacion_promedio = models.FloatField(default=0.0)
+    total_calificaciones = models.IntegerField(default=0)
     total_ventas = models.IntegerField(default=0)
     total_compras = models.IntegerField(default=0)
     es_repartidor = models.BooleanField(default=False)

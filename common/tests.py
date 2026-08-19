@@ -9,7 +9,8 @@ from django.test import TestCase
 
 from accounts.infrastructure.models import User
 
-from .infrastructure.adapters import HttpAllyServiceAdapter, ThirdPartyExchangeRateAdapter
+from .exceptions import ServiceUnavailableError
+from .infrastructure.adapters import HttpAllyServiceAdapter, HttpSupportServiceAdapter, ThirdPartyExchangeRateAdapter
 from .interfaces.api.views import ConsumeExternalJsonAPIView
 
 try:
@@ -67,6 +68,47 @@ class HttpAllyServiceAdapterTests(TestCase):
 
         self.assertEqual(data["status"], "unknown")
         self.assertFalse(data["mocked"])
+
+
+class HttpSupportServiceAdapterTests(TestCase):
+    def test_create_rating_returns_data_on_success(self):
+        response = mock.MagicMock()
+        response.json.return_value = {"data": {"id": 1, "puntuacion": 5}}
+        client = mock.MagicMock()
+        client.__enter__.return_value = client
+        client.post.return_value = response
+
+        with mock.patch("common.infrastructure.adapters.httpx.Client", return_value=client):
+            data = HttpSupportServiceAdapter().create_rating(
+                usuario_id=1, autor_id=2, puntuacion=5, comentario="Muy bueno"
+            )
+
+        self.assertEqual(data["id"], 1)
+
+    def test_create_rating_raises_service_unavailable_on_failure(self):
+        with mock.patch("common.infrastructure.adapters.httpx.Client", side_effect=RuntimeError("timeout")):
+            with self.assertRaises(ServiceUnavailableError):
+                HttpSupportServiceAdapter().create_rating(
+                    usuario_id=1, autor_id=2, puntuacion=5, comentario="Muy bueno"
+                )
+
+    def test_list_ratings_returns_empty_list_on_failure_instead_of_raising(self):
+        with mock.patch("common.infrastructure.adapters.httpx.Client", side_effect=RuntimeError("timeout")):
+            data = HttpSupportServiceAdapter().list_ratings(usuario_id=1)
+
+        self.assertEqual(data, [])
+
+    def test_list_ratings_returns_data_on_success(self):
+        response = mock.MagicMock()
+        response.json.return_value = {"data": [{"puntuacion": 4}, {"puntuacion": 5}]}
+        client = mock.MagicMock()
+        client.__enter__.return_value = client
+        client.get.return_value = response
+
+        with mock.patch("common.infrastructure.adapters.httpx.Client", return_value=client):
+            data = HttpSupportServiceAdapter().list_ratings(usuario_id=1)
+
+        self.assertEqual(len(data), 2)
 
 
 class HealthAPIViewTests(TestCase):

@@ -45,6 +45,7 @@ class Pedido(models.Model):
     estado = models.CharField(max_length=20, default="PENDIENTE", db_index=True)
     total = models.FloatField()
     propina = models.FloatField(default=0.0)
+    calificado = models.BooleanField(default=False)
 
     publicacion = models.ForeignKey(
         "market.Publicacion",

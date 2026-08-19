@@ -3,6 +3,7 @@ from __future__ import annotations
 from math import asin, cos, radians, sin
 from typing import Callable
 
+from common.domain.ports import RatingServicePort
 from common.exceptions import NotFoundError, PermissionDeniedError, ValidationError
 from geo.domain.services import GeocodingService
 from notifications.domain.services import NotificacionService
@@ -27,6 +28,12 @@ def _default_ubicacion_repository() -> UbicacionRepository:
     from ..infrastructure.repositories_impl import DjangoUbicacionRepository
 
     return DjangoUbicacionRepository()
+
+
+def _default_rating_service() -> RatingServicePort:
+    from common.infrastructure.adapters import HttpSupportServiceAdapter
+
+    return HttpSupportServiceAdapter()
 
 
 class AcceptOrderService:
@@ -277,12 +284,14 @@ class OrderService:
         pedido_repository: PedidoRepository | None = None,
         pedido_builder_factory: Callable[[], PedidoBuilder] | None = None,
         notificacion_service: NotificacionService | None = None,
+        rating_service: RatingServicePort | None = None,
     ):
         self._pedido_repository = pedido_repository or _default_pedido_repository()
         self._pedido_builder_factory = pedido_builder_factory or (
             lambda: PedidoBuilder(pedido_repository=self._pedido_repository)
         )
         self._notificacion_service = notificacion_service or NotificacionService()
+        self._rating_service = rating_service or _default_rating_service()
 
     def create_order(
         self,
@@ -364,6 +373,61 @@ class OrderService:
 
     def list_orders_for_user(self, *, user):
         return self._pedido_repository.list_for_user(user)
+
+    def rate_order(self, *, user, pedido_id: int, puntuacion: int, comentario: str):
+        pedido = self._pedido_repository.get_for_user(user, pedido_id)
+        if pedido is None:
+            raise NotFoundError("Pedido no encontrado")
+
+        if pedido.estado != "ENTREGADO":
+            raise ValidationError("Solo se puede calificar un pedido ya entregado")
+        if pedido.calificado:
+            raise ValidationError("Ya calificaste este pedido")
+
+        puntuacion_int = int(puntuacion)
+        if puntuacion_int < 1 or puntuacion_int > 5:
+            raise ValidationError("La puntuación debe estar entre 1 y 5")
+        comentario_normalizado = str(comentario or "").strip()
+        if not comentario_normalizado:
+            raise ValidationError("El comentario es obligatorio")
+
+        vendedor = pedido.publicacion.usuario
+
+        # Si esto falla (support-service caido), la excepcion sube tal cual -
+        # a diferencia del resto del flujo de pedidos, calificar no es una
+        # accion critica del checkout, asi que preferimos un error claro al
+        # comprador antes que marcar calificado=True sobre una calificacion
+        # que en realidad nunca se guardo.
+        self._rating_service.create_rating(
+            usuario_id=vendedor.id,
+            autor_id=user.id,
+            puntuacion=puntuacion_int,
+            comentario=comentario_normalizado,
+        )
+
+        self._pedido_repository.mark_calificado(pedido)
+        self._refresh_reputacion(vendedor)
+
+        self._notificacion_service.enviar(
+            usuario=vendedor,
+            tipo="pedido",
+            mensaje=f"{user.nombre or user.email} calificó tu pedido #{pedido.id} con {puntuacion_int} estrellas",
+        )
+
+        return pedido
+
+    def _refresh_reputacion(self, vendedor) -> None:
+        # Lectura best-effort: si support-service no responde ahora mismo,
+        # la calificacion que se acaba de guardar no se pierde (ya se
+        # confirmo arriba) - el promedio mostrado solo queda un paso atras
+        # hasta la proxima calificacion o consulta exitosa.
+        ratings = self._rating_service.list_ratings(usuario_id=vendedor.id)
+        if not ratings:
+            return
+        promedio = sum(float(r.get("puntuacion", 0)) for r in ratings) / len(ratings)
+        vendedor.reputacion_promedio = round(promedio, 1)
+        vendedor.total_calificaciones = len(ratings)
+        vendedor.save(update_fields=["reputacion_promedio", "total_calificaciones"])
 
     def _resolve_delivery_coordinates(
         self,

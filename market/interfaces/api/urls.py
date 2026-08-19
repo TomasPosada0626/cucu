@@ -4,6 +4,7 @@ from .views import (
     MisPublicacionesAPIView,
     MisPedidosAPIView,
     PedidoAceptarAPIView,
+    PedidoCalificarAPIView,
     PedidoCreateAPIView,
     PedidoDetailAPIView,
     HistorialPedidosPublicAPIView,
@@ -36,6 +37,8 @@ urlpatterns = [
     path("pedidos/<int:pedido_id>/entregar/", PedidoMarkDeliveredAPIView.as_view(), name="pedidos-mark-delivered-slash"),
     path("pedidos/<int:pedido_id>/propina", PedidoSetPropinaAPIView.as_view(), name="pedidos-set-propina"),
     path("pedidos/<int:pedido_id>/propina/", PedidoSetPropinaAPIView.as_view(), name="pedidos-set-propina-slash"),
+    path("pedidos/<int:pedido_id>/calificar", PedidoCalificarAPIView.as_view(), name="pedidos-calificar"),
+    path("pedidos/<int:pedido_id>/calificar/", PedidoCalificarAPIView.as_view(), name="pedidos-calificar-slash"),
     path(
         "publicaciones/<int:publicacion_id>",
         PublicacionDetailUpdateAPIView.as_view(),

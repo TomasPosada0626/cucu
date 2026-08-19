@@ -992,6 +992,108 @@ class PedidoDetailAndDeliveryApiTests(TestCase):
 		self.assertEqual(response.status_code, 400)
 
 
+class PedidoCalificarApiTests(TestCase):
+	def setUp(self):
+		self.client = APIClient()
+		self.seller = User(username="rate_seller@example.com", email="rate_seller@example.com", nombre="Seller")
+		self.seller.set_password("secret12345")
+		self.seller.save()
+		self.buyer = User(username="rate_buyer@example.com", email="rate_buyer@example.com", nombre="Buyer")
+		self.buyer.set_password("secret12345")
+		self.buyer.save()
+		self.publicacion = Publicacion.objects.create(
+			titulo="Arepas", descripcion="X", precio=8000, usuario=self.seller,
+		)
+		access = str(RefreshToken.for_user(self.buyer).access_token)
+		self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {access}")
+
+	def _pedido(self, estado="ENTREGADO", calificado=False):
+		return Pedido.objects.create(
+			telefono="123", total=8000, publicacion=self.publicacion, usuario=self.buyer,
+			estado=estado, calificado=calificado,
+		)
+
+	@patch("common.infrastructure.adapters.HttpSupportServiceAdapter.list_ratings")
+	@patch("common.infrastructure.adapters.HttpSupportServiceAdapter.create_rating")
+	def test_calificar_success_updates_calificado_and_reputacion(self, create_rating, list_ratings):
+		create_rating.return_value = {"id": 1}
+		list_ratings.return_value = [{"puntuacion": 5}, {"puntuacion": 3}]
+		pedido = self._pedido()
+
+		response = self.client.post(
+			f"/api/pedidos/{pedido.id}/calificar",
+			{"puntuacion": 5, "comentario": "Excelente"},
+			format="json",
+		)
+
+		self.assertEqual(response.status_code, 200)
+		self.assertTrue(response.json()["calificado"])
+		pedido.refresh_from_db()
+		self.assertTrue(pedido.calificado)
+		create_rating.assert_called_once_with(
+			usuario_id=self.seller.id, autor_id=self.buyer.id, puntuacion=5, comentario="Excelente"
+		)
+		self.seller.refresh_from_db()
+		self.assertEqual(self.seller.reputacion_promedio, 4.0)
+
+	def test_calificar_not_found(self):
+		response = self.client.post(
+			"/api/pedidos/999999/calificar", {"puntuacion": 5, "comentario": "Excelente"}, format="json"
+		)
+		self.assertEqual(response.status_code, 404)
+
+	def test_calificar_rejects_pedido_not_yet_entregado(self):
+		pedido = self._pedido(estado="PENDIENTE")
+		response = self.client.post(
+			f"/api/pedidos/{pedido.id}/calificar", {"puntuacion": 5, "comentario": "Excelente"}, format="json"
+		)
+		self.assertEqual(response.status_code, 400)
+
+	def test_calificar_rejects_double_rating(self):
+		pedido = self._pedido(calificado=True)
+		response = self.client.post(
+			f"/api/pedidos/{pedido.id}/calificar", {"puntuacion": 5, "comentario": "Excelente"}, format="json"
+		)
+		self.assertEqual(response.status_code, 400)
+
+	def test_calificar_rejects_puntuacion_out_of_range(self):
+		pedido = self._pedido()
+		response = self.client.post(
+			f"/api/pedidos/{pedido.id}/calificar", {"puntuacion": 6, "comentario": "Excelente"}, format="json"
+		)
+		self.assertEqual(response.status_code, 400)
+
+	def test_calificar_rejects_blank_comentario(self):
+		pedido = self._pedido()
+		response = self.client.post(
+			f"/api/pedidos/{pedido.id}/calificar", {"puntuacion": 5, "comentario": ""}, format="json"
+		)
+		self.assertEqual(response.status_code, 400)
+
+	@patch("common.infrastructure.adapters.HttpSupportServiceAdapter.create_rating")
+	def test_calificar_returns_503_and_does_not_mark_calificado_when_support_service_down(self, create_rating):
+		from common.exceptions import ServiceUnavailableError
+
+		create_rating.side_effect = ServiceUnavailableError("no se pudo guardar")
+		pedido = self._pedido()
+
+		response = self.client.post(
+			f"/api/pedidos/{pedido.id}/calificar", {"puntuacion": 5, "comentario": "Excelente"}, format="json"
+		)
+
+		self.assertEqual(response.status_code, 503)
+		pedido.refresh_from_db()
+		self.assertFalse(pedido.calificado)
+
+	def test_calificar_requires_authentication(self):
+		self.client.credentials()
+		pedido = self._pedido()
+		response = self.client.post(
+			f"/api/pedidos/{pedido.id}/calificar", {"puntuacion": 5, "comentario": "Excelente"}, format="json"
+		)
+		self.assertEqual(response.status_code, 401)
+
+
 class PedidoCreateEdgeCasesApiTests(TestCase):
 	def setUp(self):
 		self.client = APIClient()
@@ -1236,3 +1338,35 @@ class ValidatePublicacionImagenTests(TestCase):
 		big = SimpleUploadedFile("big.png", b"0" * (5 * 1024 * 1024 + 1), content_type="image/png")
 		with self.assertRaises(DjangoValidationError):
 			validate_publicacion_imagen(big)
+
+	def test_resizes_image_above_max_dimension(self):
+		buffer = io.BytesIO()
+		Image.new("RGB", (2000, 1200), color="blue").save(buffer, format="JPEG")
+		image = SimpleUploadedFile("big.jpg", buffer.getvalue(), content_type="image/jpeg")
+
+		validate_publicacion_imagen(image)
+
+		image.seek(0)
+		resized = Image.open(image)
+		self.assertLessEqual(max(resized.size), 1600)
+		self.assertAlmostEqual(resized.size[0] / resized.size[1], 2000 / 1200, places=2)
+
+	def test_leaves_small_image_dimensions_unchanged(self):
+		image = SimpleUploadedFile("small.png", _valid_png_bytes(), content_type="image/png")
+
+		validate_publicacion_imagen(image)
+
+		image.seek(0)
+		untouched = Image.open(image)
+		self.assertEqual(untouched.size, (2, 2))
+
+	def test_gif_is_exempt_from_resize_and_compression(self):
+		buffer = io.BytesIO()
+		Image.new("RGB", (10, 10), color="green").save(buffer, format="GIF")
+		original_bytes = buffer.getvalue()
+		image = SimpleUploadedFile("anim.gif", original_bytes, content_type="image/gif")
+
+		validate_publicacion_imagen(image)
+
+		image.seek(0)
+		self.assertEqual(image.read(), original_bytes)

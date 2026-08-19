@@ -47,6 +47,7 @@ services:
       - SECURE_HSTS_SECONDS=${SECURE_HSTS_SECONDS:-0}
       - GEO_SERVICE_URL=http://geo-service:8081
       - NOTIFICATIONS_SERVICE_URL=http://notifications-service:8082
+      - SUPPORT_SERVICE_URL=http://support-service:8085
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/1
       - PYTHONUNBUFFERED=1

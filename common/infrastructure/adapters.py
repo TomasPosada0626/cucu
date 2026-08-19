@@ -2,7 +2,8 @@ import logging
 import os
 import httpx
 from typing import Any
-from ..domain.ports import ExchangeRatePort, AllyServicePort
+from ..domain.ports import ExchangeRatePort, AllyServicePort, RatingServicePort
+from ..exceptions import ServiceUnavailableError
 
 logger = logging.getLogger(__name__)
 
@@ -49,3 +50,47 @@ class HttpAllyServiceAdapter(AllyServicePort):
                 "mocked": False,
                 "error": str(e)
             }
+
+
+class HttpSupportServiceAdapter(RatingServicePort):
+    def __init__(self):
+        # A diferencia de ALLY_SERVICE_URL (integracion externa opcional),
+        # support-service es interno al docker-compose - mismo default-que-
+        # funciona-solo que GEO_SERVICE_URL/NOTIFICATIONS_SERVICE_URL.
+        self.base_url = os.environ.get("SUPPORT_SERVICE_URL", "http://support-service:8085").rstrip("/")
+
+    def create_rating(self, *, usuario_id: int, autor_id: int, puntuacion: int, comentario: str) -> dict[str, Any]:
+        # A diferencia de list_ratings, un fallo aca NO se traga: el
+        # comprador esta esperando confirmacion de que su calificacion se
+        # guardo. Devolver éxito igual seria mentirle - mejor un 503 claro
+        # que el caller pueda mostrar, y el comprador reintenta.
+        try:
+            with httpx.Client(timeout=5.0) as client:
+                response = client.post(
+                    f"{self.base_url}/api/v3/ratings",
+                    json={
+                        "usuario": usuario_id,
+                        "autor": autor_id,
+                        "puntuacion": puntuacion,
+                        "comentario": comentario,
+                    },
+                )
+                response.raise_for_status()
+                return response.json().get("data", {})
+        except Exception as exc:
+            logger.warning("support_service_create_rating_failed for usuario=%s", usuario_id, exc_info=True)
+            raise ServiceUnavailableError("No se pudo guardar la calificación, intenta de nuevo en un momento") from exc
+
+    def list_ratings(self, *, usuario_id: int) -> list[dict[str, Any]]:
+        # Esta si degrada en silencio: alimenta un promedio informativo
+        # (reputacion_promedio), no una confirmacion que el usuario este
+        # esperando. Mejor mostrar el ultimo promedio conocido que romper
+        # la pagina de perfil por esto.
+        try:
+            with httpx.Client(timeout=5.0) as client:
+                response = client.get(f"{self.base_url}/api/v3/ratings", params={"usuario": usuario_id})
+                response.raise_for_status()
+                return response.json().get("data", [])
+        except Exception:
+            logger.warning("support_service_list_ratings_failed for usuario=%s", usuario_id, exc_info=True)
+            return []

@@ -48,6 +48,16 @@ class ListOrdersForUserUseCase:
         return self._order_service.list_orders_for_user(user=user)
 
 
+class RateOrderUseCase:
+    def __init__(self, *, order_service: OrderService | None = None):
+        self._order_service = order_service or OrderService()
+
+    def execute(self, *, user, pedido_id: int, puntuacion: int, comentario: str):
+        return self._order_service.rate_order(
+            user=user, pedido_id=pedido_id, puntuacion=puntuacion, comentario=comentario
+        )
+
+
 class AcceptOrderUseCase:
     def __init__(self, *, accept_order_service: AcceptOrderService | None = None):
         self._accept_order_service = accept_order_service or AcceptOrderService()

@@ -608,6 +608,44 @@
       line-height: 1.6;
     }
 
+    .rating-box {
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px dashed rgba(31, 36, 48, 0.12);
+      background: rgba(31, 36, 48, 0.02);
+    }
+
+    .rating-stars {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .rating-star {
+      border: none;
+      background: none;
+      font-size: 26px;
+      line-height: 1;
+      color: rgba(31, 36, 48, 0.18);
+      cursor: pointer;
+      padding: 2px;
+    }
+
+    .rating-star.is-selected {
+      color: var(--orange);
+    }
+
+    .rating-box textarea {
+      width: 100%;
+      resize: vertical;
+      border-radius: 14px;
+      border: 1px solid rgba(31, 36, 48, 0.12);
+      padding: 10px 12px;
+      font: inherit;
+      color: var(--ink);
+    }
+
     .toast {
       padding: 14px 16px;
       border-radius: 18px;
@@ -772,6 +810,15 @@
     const TXT_PRODUCTS = '{% trans "productos" %}';
     const TXT_PUBLICATION = '{% trans "Publicacion" %}';
     const TXT_ORDER_PRODUCTS = '{% trans "Productos del pedido" %}';
+    const TXT_RATE_ORDER = '{% trans "Calificar pedido" %}';
+    const TXT_RATE_STAR_LABEL = '{% trans "estrellas" %}';
+    const TXT_RATE_PLACEHOLDER = '{% trans "Contanos como fue tu experiencia" %}';
+    const TXT_RATE_SUBMIT = '{% trans "Enviar calificacion" %}';
+    const TXT_RATE_SELECT_STARS = '{% trans "Selecciona una puntuacion de 1 a 5" %}';
+    const TXT_RATE_COMMENT_REQUIRED = '{% trans "Escribe un comentario antes de enviar" %}';
+    const TXT_RATE_SUCCESS = '{% trans "Gracias por tu calificacion" %}';
+    const TXT_RATE_ERROR = '{% trans "No se pudo enviar la calificacion, intenta de nuevo en un momento." %}';
+    const TXT_ALREADY_RATED = '{% trans "Ya calificaste este pedido. Gracias!" %}';
     const TXT_TRACKING = '{% trans "Ver seguimiento" %}';
     const TXT_NO_VISIBLE_ITEMS = '{% trans "Este pedido no tiene items visibles." %}';
     const TXT_NO_PUBLICATIONS = '{% trans "Todavia no has publicado platos. Cuando publiques uno, aqui podras editar su stock, ingredientes, valor y la informacion del menu." %}';
@@ -1043,6 +1090,24 @@
           }).join('')
         : `<div class="note-box">${TXT_NO_VISIBLE_ITEMS}</div>`;
 
+      const canRate = estado === 'ENTREGADO' && !pedido.calificado;
+      const ratingHtml = canRate
+        ? `
+          <div class="rating-box" data-rating-box data-pedido-id="${pedido.id}">
+            <h3 style="font-size:18px; margin-bottom:10px;">${TXT_RATE_ORDER}</h3>
+            <div class="rating-stars" data-rating-stars role="radiogroup" aria-label="${TXT_RATE_ORDER}">
+              ${[1, 2, 3, 4, 5].map((value) => `
+                <button type="button" class="rating-star" data-rating-value="${value}" aria-label="${value} ${TXT_RATE_STAR_LABEL}" aria-pressed="false">★</button>
+              `).join('')}
+            </div>
+            <textarea data-rating-comentario maxlength="500" rows="2" placeholder="${TXT_RATE_PLACEHOLDER}"></textarea>
+            <div class="card-actions">
+              <button type="button" class="btn btn-primary" data-rating-submit>${TXT_RATE_SUBMIT}</button>
+            </div>
+          </div>
+        `
+        : (Boolean(pedido.calificado) ? `<div class="note-box">${TXT_ALREADY_RATED}</div>` : '');
+
       orderDetail.innerHTML = `
         <div class="section-head">
           <div>
@@ -1063,6 +1128,7 @@
         <div class="card-actions">
           <a class="btn btn-secondary" href="/ui/seguimiento/?pedido_id=${encodeURIComponent(String(pedido.id))}">${TXT_TRACKING}</a>
         </div>
+        ${ratingHtml}
       `;
     }
 
@@ -1283,6 +1349,59 @@
       const target = event.target.closest('[data-pedido-id]');
       if (!target) return;
       renderOrderDetail(Number(target.getAttribute('data-pedido-id')));
+    });
+
+    let selectedRatingValue = 0;
+
+    orderDetail.addEventListener('click', async (event) => {
+      const star = event.target.closest('[data-rating-value]');
+      if (star) {
+        selectedRatingValue = Number(star.getAttribute('data-rating-value')) || 0;
+        const box = star.closest('[data-rating-box]');
+        box.querySelectorAll('[data-rating-value]').forEach((el) => {
+          const isSelected = Number(el.getAttribute('data-rating-value')) <= selectedRatingValue;
+          el.classList.toggle('is-selected', isSelected);
+          el.setAttribute('aria-pressed', String(isSelected));
+        });
+        return;
+      }
+
+      const submitBtn = event.target.closest('[data-rating-submit]');
+      if (!submitBtn) return;
+
+      const box = submitBtn.closest('[data-rating-box]');
+      const pedidoId = Number(box.getAttribute('data-pedido-id'));
+      const comentario = box.querySelector('[data-rating-comentario]').value.trim();
+
+      if (!selectedRatingValue) {
+        showToast(TXT_RATE_SELECT_STARS, 'err');
+        return;
+      }
+      if (!comentario) {
+        showToast(TXT_RATE_COMMENT_REQUIRED, 'err');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      const result = await auth.authenticatedFetch(`/api/pedidos/${pedidoId}/calificar`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ puntuacion: selectedRatingValue, comentario }),
+      });
+      submitBtn.disabled = false;
+      if (!result) return;
+
+      const { response, payload } = result;
+      if (!response.ok) {
+        showToast(payload?.detail || TXT_RATE_ERROR, 'err');
+        return;
+      }
+
+      selectedRatingValue = 0;
+      const index = pedidosState.findIndex((item) => Number(item.id) === pedidoId);
+      if (index !== -1) pedidosState[index] = { ...pedidosState[index], calificado: true };
+      showToast(TXT_RATE_SUCCESS, 'ok');
+      renderOrderDetail(pedidoId);
     });
 
     ordersPagination.addEventListener('click', (event) => {

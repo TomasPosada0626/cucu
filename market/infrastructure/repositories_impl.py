@@ -15,11 +15,11 @@ from .models import Pedido, PedidoItem, Publicacion
 
 class DjangoPublicacionRepository:
     def list_all(self):
-        return Publicacion.objects.select_related("ubicacion").all().order_by("-id")
+        return Publicacion.objects.select_related("ubicacion", "usuario").all().order_by("-id")
 
     def list_active_with_location(self):
         return (
-            Publicacion.objects.select_related("ubicacion")
+            Publicacion.objects.select_related("ubicacion", "usuario")
             .filter(estado="ACTIVA", ubicacion__isnull=False)
             .order_by("-id")
         )
@@ -27,7 +27,7 @@ class DjangoPublicacionRepository:
     def list_for_user(self, user):
         line_total = F("pedido_items__cantidad") * F("pedido_items__precio_unitario")
         return (
-            Publicacion.objects.select_related("ubicacion")
+            Publicacion.objects.select_related("ubicacion", "usuario")
             .filter(usuario=user)
             .annotate(
                 total_vendido=Coalesce(Sum("pedido_items__cantidad"), 0),
@@ -37,7 +37,7 @@ class DjangoPublicacionRepository:
         )
 
     def get_by_id(self, publicacion_id: int) -> Publicacion | None:
-        return Publicacion.objects.select_related("ubicacion").filter(id=publicacion_id).first()
+        return Publicacion.objects.select_related("ubicacion", "usuario").filter(id=publicacion_id).first()
 
     def create(self, **fields: Any) -> Publicacion:
         return Publicacion.objects.create(**fields)
@@ -81,6 +81,10 @@ class DjangoPedidoRepository:
     def mark_delivered(self, pedido: Pedido) -> None:
         pedido.estado = "ENTREGADO"
         pedido.save(update_fields=["estado"])
+
+    def mark_calificado(self, pedido: Pedido) -> None:
+        pedido.calificado = True
+        pedido.save(update_fields=["calificado"])
 
     def save_estado(self, pedido: Pedido) -> None:
         pedido.save(update_fields=["estado"])

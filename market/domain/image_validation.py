@@ -1,20 +1,32 @@
 from __future__ import annotations
 
+import io
+from typing import Any
+
 from django.core.exceptions import ValidationError as DjangoValidationError
 from PIL import Image, UnidentifiedImageError
 
 ALLOWED_IMAGE_CONTENT_TYPES = {"image/jpeg", "image/png", "image/webp", "image/gif"}
 MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024  # 5MB
+MAX_IMAGE_DIMENSION_PX = 1600
+COMPRESSION_QUALITY = 82
+
+_SAVE_FORMAT_BY_CONTENT_TYPE = {
+    "image/jpeg": "JPEG",
+    "image/png": "PNG",
+    "image/webp": "WEBP",
+}
 
 
 def validate_publicacion_imagen(file) -> None:
-    """Rechaza archivos que no sean una imagen raster real.
+    """Rechaza archivos que no sean una imagen raster real, y redimensiona/
+    recomprime la que sí lo es antes de guardarla.
 
-    Sin esto, `imagen` acepta cualquier archivo (un .svg con <script>, un
-    .html, un .php) porque FileField solo valida que sea un archivo. nginx
-    sirve /media/ directo sin forzar Content-Type, asi que un SVG malicioso
-    subido como "imagen" se ejecutaria en el navegador de quien lo abra
-    (XSS almacenado via upload). El content_type del cliente se puede
+    Sin el chequeo de formato, `imagen` acepta cualquier archivo (un .svg con
+    <script>, un .html, un .php) porque FileField solo valida que sea un
+    archivo. nginx sirve /media/ directo sin forzar Content-Type, asi que un
+    SVG malicioso subido como "imagen" se ejecutaria en el navegador de quien
+    lo abra (XSS almacenado via upload). El content_type del cliente se puede
     falsificar, por eso Image.verify() es el chequeo real: solo un archivo
     que Pillow pueda decodificar como imagen pasa.
     """
@@ -35,3 +47,47 @@ def validate_publicacion_imagen(file) -> None:
         raise DjangoValidationError("El archivo no es una imagen valida") from exc
     finally:
         file.seek(0)
+
+    # GIF queda exento: podria ser animado, y una pasada de resize/recompresion
+    # con Pillow aplana la animacion a un solo frame.
+    if content_type != "image/gif":
+        _resize_and_compress_in_place(file, content_type=content_type)
+
+
+def _resize_and_compress_in_place(file, *, content_type: str) -> None:
+    """Redimensiona (si el lado mas largo supera MAX_IMAGE_DIMENSION_PX) y
+    recomprime la imagen ya validada arriba, reemplazando los bytes del
+    archivo antes de que Django lo guarde.
+
+    Se corre despues de `image.verify()` en el caller - verify() invalida el
+    objeto Image de Pillow para cualquier uso posterior, por eso esto reabre
+    la imagen desde cero en vez de reutilizar la que ya se valido.
+    """
+    file.seek(0)
+    original_size = file.size
+    image: Image.Image = Image.open(file)
+
+    if max(image.size) > MAX_IMAGE_DIMENSION_PX:
+        image.thumbnail((MAX_IMAGE_DIMENSION_PX, MAX_IMAGE_DIMENSION_PX), Image.Resampling.LANCZOS)
+
+    save_format = _SAVE_FORMAT_BY_CONTENT_TYPE[content_type]
+    save_kwargs: dict[str, Any] = {"optimize": True}
+    if save_format in ("JPEG", "WEBP"):
+        save_kwargs["quality"] = COMPRESSION_QUALITY
+    if save_format == "JPEG" and image.mode not in ("RGB", "L"):
+        image = image.convert("RGB")
+
+    buffer = io.BytesIO()
+    image.save(buffer, format=save_format, **save_kwargs)
+    new_bytes = buffer.getvalue()
+
+    if len(new_bytes) >= original_size:
+        # No downgradear: una imagen ya muy comprimida y sin necesidad de
+        # resize puede recodificar mas pesada que el original - en ese caso
+        # se deja el archivo tal cual en vez de empeorarlo.
+        file.seek(0)
+        return
+
+    file.file = io.BytesIO(new_bytes)
+    file.size = len(new_bytes)
+    file.seek(0)

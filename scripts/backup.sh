@@ -1,18 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Backs up the monolith's Postgres database, every microservice's SQLite
-# database, and user-uploaded media, all while the stack stays live.
-# Postgres uses pg_dump (a consistent snapshot without an offline step);
-# the SQLite services use SQLite's own online .backup API instead of `cp`
-# - `cp` on an open database can copy a mid-write, corrupt snapshot.
+# Backs up the shared Postgres database (monolith + every microservice's
+# own schema) and user-uploaded media, all while the stack stays live.
+# pg_dump takes a consistent snapshot without needing an offline step.
 #
-# geo-service has no database of its own (see Arquitectura wiki page) so
-# it's not included. auth-service, payment-service, notifications-service,
-# and support-service moved from SQLite to their own schema in the shared
-# Postgres database (see Migracion-a-Microservicios wiki page) - they're
-# covered by the pg_dump step below, not a separate backup_sqlite call.
-# market-service is the only one still on SQLite.
+# geo-service has no database of its own (see Arquitectura wiki page).
+# Every other microservice - auth, payment, notifications, support, and
+# market - has moved off SQLite onto its own schema in this same Postgres
+# instance (see Migracion-a-Microservicios wiki page), so one pg_dump
+# covers all of them; there's no more SQLite-specific backup step.
 #
 # Usage (run from the repo root, with `docker compose up -d` already running):
 #   ./scripts/backup.sh
@@ -32,21 +29,6 @@ log() {
   echo "[$(date -Iseconds)] $*"
 }
 
-backup_sqlite() {
-  local service="$1" db_path="$2" out_name="$3"
-  docker compose exec -T "$service" python3 -c "
-import sqlite3
-src = sqlite3.connect('$db_path')
-dst = sqlite3.connect('/tmp/$out_name')
-src.backup(dst)
-dst.close()
-src.close()
-"
-  docker compose cp "$service:/tmp/$out_name" "$BACKUP_DIR/$out_name"
-  docker compose exec -T "$service" rm -f "/tmp/$out_name"
-  log "  $out_name ($(du -h "$BACKUP_DIR/$out_name" | cut -f1))"
-}
-
 backup_postgres() {
   local out_name="postgres_cucu.sql.gz"
   # --clean --if-exists: the dump includes DROP-IF-EXISTS before each CREATE,
@@ -58,11 +40,7 @@ backup_postgres() {
 
 log "Starting backup to $BACKUP_DIR"
 
-# Monolith: Postgres now, not SQLite - pg_dump takes a consistent snapshot
-# without needing an offline copy step (same "safe against a live DB" property
-# .backup() gave us before).
 backup_postgres
-backup_sqlite market-service      /app/data/market.db        market.db
 
 # Media (user-uploaded images) - not a database, just archive the directory.
 docker compose exec -T django tar czf /tmp/media.tar.gz -C /app media

@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 from .errors import NotFoundError, ValidationError
-from .repositories.market_repository import SQLiteMarketRepository
+from .repositories.market_repository import PostgresMarketRepository
 
 
 class MarketService:
-    def __init__(self, *, repository: SQLiteMarketRepository) -> None:
+    def __init__(self, *, repository: PostgresMarketRepository) -> None:
         self.repository = repository
 
     def create_publication(self, *, autor_id: int, titulo: str, descripcion: str, precio: float, direccion_texto: str):

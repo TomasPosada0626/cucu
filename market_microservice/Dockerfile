@@ -2,7 +2,6 @@ FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-ENV MARKET_DATABASE_PATH=/app/data/market.db
 
 WORKDIR /app
 
@@ -12,8 +11,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app ./app
 COPY run.py .
 
-RUN mkdir -p /app/data \
-	&& useradd -m -u 1000 appuser \
+RUN useradd -m -u 1000 appuser \
 	&& chown -R appuser:appuser /app
 USER appuser
 

@@ -101,11 +101,11 @@ Los microservicios Flask (`/api/v2/`, `/api/v3/`) todavía no tienen spec OpenAP
 El monolito (Postgres) y los 5 microservicios con persistencia propia (SQLite) — más `media/` — se pueden respaldar en caliente, sin parar el stack:
 
 ```bash
-./scripts/backup.sh                              # backups/<timestamp>/postgres_cucu.sql.gz + *.db + media.tar.gz
-./scripts/restore.sh <servicio> <backup_dir>      # restaura uno, con confirmación explícita
+./scripts/backup.sh                # backups/<timestamp>/postgres_cucu.sql.gz + media.tar.gz
+./scripts/restore.sh <backup_dir>  # restaura la base compartida completa, con confirmación explícita
 ```
 
-`backup.sh` usa `pg_dump --clean` para el monolito y el `.backup` nativo de SQLite para los microservicios (seguro contra una base abierta/en uso — a diferencia de `cp`), guarda un directorio timestamped por corrida, y retiene los últimos 14 días. Ver el header de cada script para el detalle y la línea de crontab sugerida para automatizarlo en producción.
+`backup.sh` usa `pg_dump --clean` sobre la base de Postgres compartida (monolito + el schema propio de cada microservicio: auth, payment, notifications, support, market), guarda un directorio timestamped por corrida, y retiene los últimos 14 días. `geo-service` no tiene base de datos propia. Ver el header de cada script para el detalle y la línea de crontab sugerida para automatizarlo en producción.
 
 ## Pruebas de APIs con cURL
 

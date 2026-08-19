@@ -353,6 +353,14 @@ NOTIFICATIONS_SERVICE_TIMEOUT_SECONDS = float(os.environ.get("NOTIFICATIONS_SERV
 DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "no-reply@cucu.local")
 EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
 EMAIL_VERIFICATION_CODE_TTL_MINUTES = int(os.environ.get("EMAIL_VERIFICATION_CODE_TTL_MINUTES", "10"))
+REPARTIDOR_RADIO_PEDIDOS_CERCANOS_KM = float(os.environ.get("REPARTIDOR_RADIO_PEDIDOS_CERCANOS_KM", "8.0"))
+
+# Web Push (notificaciones nativas del navegador) - vacio desactiva el envio
+# sin romper nada (NotificacionService sigue guardando la Notificacion en BD,
+# solo no intenta el push).
+VAPID_PUBLIC_KEY = os.environ.get("VAPID_PUBLIC_KEY", "").strip()
+VAPID_PRIVATE_KEY = os.environ.get("VAPID_PRIVATE_KEY", "").strip()
+VAPID_ADMIN_EMAIL = os.environ.get("VAPID_ADMIN_EMAIL", "no-reply@cucu.local").strip()
 
 # Aun no existe un sistema real de repartidores (ver roadmap). Mientras tanto,
 # esto permite mostrar el flujo completo de seguimiento para demos/sustentacion

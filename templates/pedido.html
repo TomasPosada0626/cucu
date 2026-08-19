@@ -1766,7 +1766,7 @@
         <div class="detail-grid">
           <div>
             <div class="detail-photo">
-              <img id="detailImage" src="" alt="" />
+              <img id="detailImage" alt="" loading="lazy" />
             </div>
 
             <div class="detail-copy">
@@ -1913,16 +1913,18 @@
         const imageUrl = String(publicacion.image_url).trim();
         // Si es una ruta relativa /media/..., asegurar que sea accesible
         if (imageUrl && (imageUrl.startsWith('/') || imageUrl.startsWith('http'))) {
-          return imageUrl;
+          const thumbUrl = String(publicacion.image_thumb_url || '').trim();
+          return { full: imageUrl, thumb: thumbUrl || imageUrl };
         }
       }
       // Fallback a diccionario por título
       const title = String(publicacion?.titulo || '').trim();
       if (IMAGE_BY_TITLE[title]) {
-        return IMAGE_BY_TITLE[title];
+        return { full: IMAGE_BY_TITLE[title], thumb: IMAGE_BY_TITLE[title] };
       }
       // Fallback al pool de imágenes default
-      return IMAGE_POOL[index % IMAGE_POOL.length];
+      const pooled = IMAGE_POOL[index % IMAGE_POOL.length];
+      return { full: pooled, thumb: pooled };
     }
 
     const searchInput = document.getElementById('searchInput');
@@ -2364,9 +2366,11 @@
       const maximoPorVenta = Math.max(1, Math.floor(Number(publicacion.maximo_por_venta || 5)));
       const effectiveMaxUnits = Math.max(0, Math.min(maximoPorVenta, realStock));
         const availableNow = String(publicacion.estado || 'ACTIVA').trim().toUpperCase() === 'ACTIVA' && effectiveMaxUnits > 0;
+      const imagenes = imageForPublicacion(publicacion, index);
       return {
         ...publicacion,
-        image: imageForPublicacion(publicacion, index),
+        image: imagenes.full,
+        imageThumb: imagenes.thumb,
         category: inferCategory(publicacion),
         seller: sellerName(publicacion),
         rating: Number(publicacion.vendedor_reputacion || 0),
@@ -2867,7 +2871,13 @@
           <article class="food-card ${publicacion.availableNow ? '' : 'is-unavailable'}" data-pub-id="${publicacion.id}" tabindex="0" aria-label="Ver detalle de ${escapeHtml(publicacion.titulo)}">
             <div class="food-photo">
               <span class="food-badge ${publicacion.availableNow ? '' : 'is-unavailable'}">${escapeHtml(publicacion.statusLabel)}</span>
-              <img src="${escapeHtml(publicacion.image)}" alt="${escapeHtml(publicacion.titulo)}" />
+              <img
+                src="${escapeHtml(publicacion.image)}"
+                srcset="${escapeHtml(publicacion.imageThumb)} 480w, ${escapeHtml(publicacion.image)} 1600w"
+                sizes="(max-width: 640px) 45vw, 220px"
+                loading="lazy"
+                alt="${escapeHtml(publicacion.titulo)}"
+              />
             </div>
             <div class="food-body">
               <h3 class="food-title">${escapeHtml(publicacion.titulo)}</h3>

@@ -316,9 +316,14 @@
   };
 
   function imageForCartItem(publicacion, index, id) {
-    if (publicacion?.image_url) return String(publicacion.image_url);
+    if (publicacion?.image_url) {
+      const full = String(publicacion.image_url);
+      const thumb = String(publicacion.image_thumb_url || '').trim();
+      return { full, thumb: thumb || full };
+    }
     const title = String(publicacion?.titulo || '').trim();
-    return IMAGE_BY_TITLE[title] || IMAGE_POOL[(id + index) % IMAGE_POOL.length];
+    const fallback = IMAGE_BY_TITLE[title] || IMAGE_POOL[(id + index) % IMAGE_POOL.length];
+    return { full: fallback, thumb: fallback };
   }
 
   const emptyState = document.getElementById('emptyState');
@@ -510,7 +515,14 @@
       return `
         <article class="cart-card" data-cart-id="${id}">
           <div class="cart-row">
-            <img class="cart-thumb" src="${image}" alt="${escapeHtml(title)}" loading="lazy" />
+            <img
+              class="cart-thumb"
+              src="${image.full}"
+              srcset="${image.thumb} 480w, ${image.full} 1600w"
+              sizes="92px"
+              alt="${escapeHtml(title)}"
+              loading="lazy"
+            />
             <div>
               <h3 class="cart-title">${escapeHtml(title)}</h3>
               <div class="cart-meta">

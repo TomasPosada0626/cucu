@@ -109,6 +109,7 @@ class PublicacionOutputSerializer(serializers.ModelSerializer):
     total_vendido = serializers.SerializerMethodField()
     saldo_generado = serializers.SerializerMethodField()
     image_url = serializers.SerializerMethodField()
+    image_thumb_url = serializers.SerializerMethodField()
     vendedor_reputacion = serializers.SerializerMethodField()
     vendedor_num_calificaciones = serializers.SerializerMethodField()
 
@@ -121,6 +122,7 @@ class PublicacionOutputSerializer(serializers.ModelSerializer):
             "categoria",
             "ingredientes",
             "image_url",
+            "image_thumb_url",
             "stock",
             "maximo_por_venta",
             "precio",
@@ -161,6 +163,15 @@ class PublicacionOutputSerializer(serializers.ModelSerializer):
             return image.url
         except ValueError:
             return None
+
+    def get_image_thumb_url(self, obj) -> str | None:
+        thumb = getattr(obj, "imagen_thumb", None)
+        if thumb:
+            try:
+                return thumb.url
+            except ValueError:
+                pass
+        return self.get_image_url(obj)
 
     def get_vendedor_reputacion(self, obj) -> float:
         return round(float(getattr(obj.usuario, "reputacion_promedio", 0.0) or 0.0), 1)

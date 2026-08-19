@@ -153,6 +153,7 @@ class CatalogService:
             categoria=self._clean_categoria(categoria),
             ingredientes=self._clean_ingredientes(ingredientes),
             imagen=imagen,
+            imagen_thumb=getattr(imagen, "imagen_thumb_content", None),
             stock=int(stock if stock is not None else 10),
             maximo_por_venta=max(1, int(maximo_por_venta if maximo_por_venta is not None else 5)),
             precio=float(precio),

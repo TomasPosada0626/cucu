@@ -11,6 +11,7 @@ class Publicacion(models.Model):
     imagen = models.FileField(
         upload_to="publicaciones/", null=True, blank=True, validators=[validate_publicacion_imagen]
     )
+    imagen_thumb = models.FileField(upload_to="publicaciones/thumbs/", null=True, blank=True)
     stock = models.PositiveIntegerField(default=10)
     maximo_por_venta = models.PositiveIntegerField(default=5)
     precio = models.FloatField()

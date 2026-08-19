@@ -254,6 +254,8 @@ class PublicacionGeoTests(TestCase):
 		data = response.json()
 		self.assertTrue(data["image_url"])
 		self.assertIn("publicaciones/", data["image_url"])
+		self.assertTrue(data["image_thumb_url"])
+		self.assertIn("publicaciones/thumbs/", data["image_thumb_url"])
 
 	@patch("market.domain.services.GeocodingService.geocode_address")
 	def test_create_publicacion_rejects_file_disguised_as_image(self, geocode_address):
@@ -1370,3 +1372,25 @@ class ValidatePublicacionImagenTests(TestCase):
 
 		image.seek(0)
 		self.assertEqual(image.read(), original_bytes)
+
+	def test_attaches_thumbnail_content_for_resized_image(self):
+		buffer = io.BytesIO()
+		Image.new("RGB", (2000, 1200), color="blue").save(buffer, format="JPEG")
+		image = SimpleUploadedFile("big.jpg", buffer.getvalue(), content_type="image/jpeg")
+
+		validate_publicacion_imagen(image)
+
+		thumb_content = getattr(image, "imagen_thumb_content", None)
+		self.assertIsNotNone(thumb_content)
+		thumb = Image.open(thumb_content)
+		self.assertLessEqual(max(thumb.size), 480)
+		self.assertAlmostEqual(thumb.size[0] / thumb.size[1], 2000 / 1200, places=2)
+
+	def test_gif_does_not_get_a_thumbnail(self):
+		buffer = io.BytesIO()
+		Image.new("RGB", (10, 10), color="green").save(buffer, format="GIF")
+		image = SimpleUploadedFile("anim.gif", buffer.getvalue(), content_type="image/gif")
+
+		validate_publicacion_imagen(image)
+
+		self.assertIsNone(getattr(image, "imagen_thumb_content", None))

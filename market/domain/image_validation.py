@@ -4,11 +4,13 @@ import io
 from typing import Any
 
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.core.files.base import ContentFile
 from PIL import Image, UnidentifiedImageError
 
 ALLOWED_IMAGE_CONTENT_TYPES = {"image/jpeg", "image/png", "image/webp", "image/gif"}
 MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024  # 5MB
 MAX_IMAGE_DIMENSION_PX = 1600
+THUMBNAIL_MAX_DIMENSION_PX = 480
 COMPRESSION_QUALITY = 82
 
 _SAVE_FORMAT_BY_CONTENT_TYPE = {
@@ -57,7 +59,11 @@ def validate_publicacion_imagen(file) -> None:
 def _resize_and_compress_in_place(file, *, content_type: str) -> None:
     """Redimensiona (si el lado mas largo supera MAX_IMAGE_DIMENSION_PX) y
     recomprime la imagen ya validada arriba, reemplazando los bytes del
-    archivo antes de que Django lo guarde.
+    archivo antes de que Django lo guarde. Tambien genera una miniatura
+    (THUMBNAIL_MAX_DIMENSION_PX) y la deja en `file.imagen_thumb_content`
+    para que el caller (create_publicacion) la use para poblar
+    Publicacion.imagen_thumb - la miniatura es para grillas (catalogo,
+    carrito), donde `srcset` ahorra banda real.
 
     Se corre despues de `image.verify()` en el caller - verify() invalida el
     objeto Image de Pillow para cualquier uso posterior, por eso esto reabre
@@ -67,15 +73,23 @@ def _resize_and_compress_in_place(file, *, content_type: str) -> None:
     original_size = file.size
     image: Image.Image = Image.open(file)
 
-    if max(image.size) > MAX_IMAGE_DIMENSION_PX:
-        image.thumbnail((MAX_IMAGE_DIMENSION_PX, MAX_IMAGE_DIMENSION_PX), Image.Resampling.LANCZOS)
-
     save_format = _SAVE_FORMAT_BY_CONTENT_TYPE[content_type]
     save_kwargs: dict[str, Any] = {"optimize": True}
     if save_format in ("JPEG", "WEBP"):
         save_kwargs["quality"] = COMPRESSION_QUALITY
     if save_format == "JPEG" and image.mode not in ("RGB", "L"):
         image = image.convert("RGB")
+
+    thumb = image.copy()
+    thumb.thumbnail((THUMBNAIL_MAX_DIMENSION_PX, THUMBNAIL_MAX_DIMENSION_PX), Image.Resampling.LANCZOS)
+    thumb_buffer = io.BytesIO()
+    thumb.save(thumb_buffer, format=save_format, **save_kwargs)
+    file.imagen_thumb_content = ContentFile(
+        thumb_buffer.getvalue(), name=f"thumb.{save_format.lower()}"
+    )
+
+    if max(image.size) > MAX_IMAGE_DIMENSION_PX:
+        image.thumbnail((MAX_IMAGE_DIMENSION_PX, MAX_IMAGE_DIMENSION_PX), Image.Resampling.LANCZOS)
 
     buffer = io.BytesIO()
     image.save(buffer, format=save_format, **save_kwargs)
@@ -84,7 +98,8 @@ def _resize_and_compress_in_place(file, *, content_type: str) -> None:
     if len(new_bytes) >= original_size:
         # No downgradear: una imagen ya muy comprimida y sin necesidad de
         # resize puede recodificar mas pesada que el original - en ese caso
-        # se deja el archivo tal cual en vez de empeorarlo.
+        # se deja el archivo tal cual en vez de empeorarlo. La miniatura ya
+        # generada arriba se conserva de todas formas.
         file.seek(0)
         return
 

@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 from .errors import NotFoundError, ValidationError
-from .repositories.support_repository import SQLiteSupportRepository
+from .repositories.support_repository import PostgresSupportRepository
 
 
 class SupportService:
-    def __init__(self, *, repository: SQLiteSupportRepository) -> None:
+    def __init__(self, *, repository: PostgresSupportRepository) -> None:
         self.repository = repository
 
     def create_rating(self, *, usuario_id: int, autor_id: int, puntuacion: int, comentario: str) -> dict:

@@ -7,8 +7,11 @@ import pytest
 
 
 @pytest.fixture
-def worker_env(tmp_path, monkeypatch):
-    monkeypatch.setenv("NOTIFICATIONS_DATABASE_PATH", str(tmp_path / "worker.db"))
+def worker_env(monkeypatch):
+    from .conftest import TEST_SCHEMA, _truncate
+
+    monkeypatch.setenv("NOTIFICATIONS_POSTGRES_SCHEMA", TEST_SCHEMA)
+    _truncate()
 
 
 def _run_main_and_capture_callback(monkeypatch):
@@ -86,10 +89,11 @@ def test_on_message_creates_notification_for_payment_processed(worker_env, monke
 
     channel.basic_ack.assert_called_once_with(delivery_tag=4)
 
-    from app.repositories.notification_repository import SQLiteNotificationRepository
-    import os
+    from app.repositories.notification_repository import PostgresNotificationRepository
 
-    repo = SQLiteNotificationRepository(os.environ["NOTIFICATIONS_DATABASE_PATH"])
+    from .conftest import TEST_SCHEMA, _test_dsn
+
+    repo = PostgresNotificationRepository(_test_dsn(), schema=TEST_SCHEMA)
     items = repo.list_by_user(usuario_id=1)
     assert len(items) == 1
     assert "77" in items[0].mensaje

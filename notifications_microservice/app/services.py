@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 from .errors import ConflictError, NotFoundError, ValidationError
-from .repositories.notification_repository import SQLiteNotificationRepository
+from .repositories.notification_repository import PostgresNotificationRepository
 
 
 class NotificationService:
     ALLOWED_TYPES = {"pedido", "pago", "cerca", "sistema"}
 
-    def __init__(self, *, repository: SQLiteNotificationRepository) -> None:
+    def __init__(self, *, repository: PostgresNotificationRepository) -> None:
         self.repository = repository
 
     def create_notification(self, *, usuario_id: int, tipo: str, mensaje: str):

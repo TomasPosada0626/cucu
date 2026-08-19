@@ -1,25 +1,26 @@
 from __future__ import annotations
 
-import sqlite3
-from pathlib import Path
+import psycopg
+from psycopg.rows import dict_row
 
 from ..models import Payment
 
 
-class SQLitePaymentRepository:
-    def __init__(self, database_path: str) -> None:
-        self.database_path = Path(database_path)
-        self.database_path.parent.mkdir(parents=True, exist_ok=True)
+class PostgresPaymentRepository:
+    def __init__(self, dsn: str, *, schema: str = "payment_service") -> None:
+        self.dsn = dsn
+        self.schema = schema
 
     def initialize(self) -> None:
         with self._connect() as connection:
+            connection.execute(f'CREATE SCHEMA IF NOT EXISTS "{self.schema}"')
             connection.execute(
-                """
-                CREATE TABLE IF NOT EXISTS payments (
+                f"""
+                CREATE TABLE IF NOT EXISTS "{self.schema}".payments (
                     id TEXT PRIMARY KEY,
                     pedido_id TEXT NOT NULL,
                     usuario_id INTEGER NOT NULL,
-                    monto REAL NOT NULL,
+                    monto DOUBLE PRECISION NOT NULL,
                     moneda TEXT NOT NULL,
                     metodo_pago TEXT NOT NULL,
                     estado TEXT NOT NULL,
@@ -34,20 +35,12 @@ class SQLitePaymentRepository:
     def create(self, payment: Payment) -> Payment:
         with self._connect() as connection:
             connection.execute(
-                """
-                INSERT INTO payments (
-                    id,
-                    pedido_id,
-                    usuario_id,
-                    monto,
-                    moneda,
-                    metodo_pago,
-                    estado,
-                    mensaje_estado,
-                    creado_en,
-                    actualizado_en
+                f"""
+                INSERT INTO "{self.schema}".payments (
+                    id, pedido_id, usuario_id, monto, moneda,
+                    metodo_pago, estado, mensaje_estado, creado_en, actualizado_en
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """,
                 (
                     payment.id,
@@ -68,28 +61,16 @@ class SQLitePaymentRepository:
     def get_by_id(self, payment_id: str) -> Payment | None:
         with self._connect() as connection:
             row = connection.execute(
-                """
-                SELECT
-                    id,
-                    pedido_id,
-                    usuario_id,
-                    monto,
-                    moneda,
-                    metodo_pago,
-                    estado,
-                    mensaje_estado,
-                    creado_en,
-                    actualizado_en
-                FROM payments
-                WHERE id = ?
+                f"""
+                SELECT id, pedido_id, usuario_id, monto, moneda,
+                    metodo_pago, estado, mensaje_estado, creado_en, actualizado_en
+                FROM "{self.schema}".payments
+                WHERE id = %s
                 """,
                 (payment_id,),
             ).fetchone()
 
-        if row is None:
-            return None
-
-        return self._map_row(row)
+        return self._map_row(row) if row else None
 
     def update_status(
         self,
@@ -101,10 +82,10 @@ class SQLitePaymentRepository:
     ) -> Payment | None:
         with self._connect() as connection:
             cursor = connection.execute(
-                """
-                UPDATE payments
-                SET estado = ?, mensaje_estado = ?, actualizado_en = ?
-                WHERE id = ?
+                f"""
+                UPDATE "{self.schema}".payments
+                SET estado = %s, mensaje_estado = %s, actualizado_en = %s
+                WHERE id = %s
                 """,
                 (estado, mensaje_estado, actualizado_en, payment_id),
             )
@@ -115,13 +96,11 @@ class SQLitePaymentRepository:
 
         return self.get_by_id(payment_id)
 
-    def _connect(self) -> sqlite3.Connection:
-        connection = sqlite3.connect(self.database_path)
-        connection.row_factory = sqlite3.Row
-        return connection
+    def _connect(self) -> psycopg.Connection:
+        return psycopg.connect(self.dsn, row_factory=dict_row)
 
     @staticmethod
-    def _map_row(row: sqlite3.Row) -> Payment:
+    def _map_row(row: dict) -> Payment:
         return Payment(
             id=row["id"],
             pedido_id=row["pedido_id"],

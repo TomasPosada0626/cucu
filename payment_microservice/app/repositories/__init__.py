@@ -1,3 +1,3 @@
-from .payment_repository import SQLitePaymentRepository
+from .payment_repository import PostgresPaymentRepository
 
-__all__ = ["SQLitePaymentRepository"]
+__all__ = ["PostgresPaymentRepository"]

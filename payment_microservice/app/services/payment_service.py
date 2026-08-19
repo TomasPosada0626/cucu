@@ -5,11 +5,11 @@ from uuid import uuid4
 
 from ..errors import NotFoundError
 from ..models import Payment
-from ..repositories.payment_repository import SQLitePaymentRepository
+from ..repositories.payment_repository import PostgresPaymentRepository
 
 
 class PaymentService:
-    def __init__(self, *, repository: SQLitePaymentRepository, event_publisher=None) -> None:
+    def __init__(self, *, repository: PostgresPaymentRepository, event_publisher=None) -> None:
         self.repository = repository
         self.event_publisher = event_publisher
 

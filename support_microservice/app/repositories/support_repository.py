@@ -1,23 +1,25 @@
 from __future__ import annotations
 
-import sqlite3
 from datetime import datetime, timezone
-from pathlib import Path
+
+import psycopg
+from psycopg.rows import dict_row
 
 from ..models import Certificate, Rating, Transaction
 
 
-class SQLiteSupportRepository:
-    def __init__(self, database_path: str) -> None:
-        self.database_path = Path(database_path)
-        self.database_path.parent.mkdir(parents=True, exist_ok=True)
+class PostgresSupportRepository:
+    def __init__(self, dsn: str, *, schema: str = "support_service") -> None:
+        self.dsn = dsn
+        self.schema = schema
 
     def initialize(self) -> None:
         with self._connect() as connection:
+            connection.execute(f'CREATE SCHEMA IF NOT EXISTS "{self.schema}"')
             connection.execute(
-                """
-                CREATE TABLE IF NOT EXISTS ratings (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                f"""
+                CREATE TABLE IF NOT EXISTS "{self.schema}".ratings (
+                    id SERIAL PRIMARY KEY,
                     usuario_id INTEGER NOT NULL,
                     autor_id INTEGER NOT NULL,
                     puntuacion INTEGER NOT NULL,
@@ -27,61 +29,50 @@ class SQLiteSupportRepository:
                 """
             )
             connection.execute(
-                """
-                CREATE TABLE IF NOT EXISTS certificates (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                f"""
+                CREATE TABLE IF NOT EXISTS "{self.schema}".certificates (
+                    id SERIAL PRIMARY KEY,
                     usuario_id INTEGER NOT NULL UNIQUE,
                     archivo_url TEXT NOT NULL,
                     fecha_emision TEXT NOT NULL,
-                    estado_verificacion INTEGER NOT NULL DEFAULT 0
+                    estado_verificacion BOOLEAN NOT NULL DEFAULT FALSE
                 )
                 """
             )
             connection.execute(
-                """
-                CREATE TABLE IF NOT EXISTS transactions (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                f"""
+                CREATE TABLE IF NOT EXISTS "{self.schema}".transactions (
+                    id SERIAL PRIMARY KEY,
                     pedido_id INTEGER NOT NULL UNIQUE,
                     fecha_cierre TEXT,
                     estado TEXT NOT NULL,
-                    distancia_validacion_metros REAL NOT NULL DEFAULT 0
+                    distancia_validacion_metros DOUBLE PRECISION NOT NULL DEFAULT 0
                 )
                 """
             )
-            self._ensure_schema_compatibility(connection)
             connection.commit()
-
-    def _ensure_schema_compatibility(self, connection: sqlite3.Connection) -> None:
-        transaction_columns = self._get_columns(connection, "transactions")
-        if "fecha_cierre" not in transaction_columns:
-            connection.execute("ALTER TABLE transactions ADD COLUMN fecha_cierre TEXT")
-
-    @staticmethod
-    def _get_columns(connection: sqlite3.Connection, table_name: str) -> set[str]:
-        rows = connection.execute(f"PRAGMA table_info({table_name})").fetchall()
-        return {str(row[1]) for row in rows}
 
     def create_rating(self, *, usuario_id: int, autor_id: int, puntuacion: int, comentario: str) -> Rating:
         now = datetime.now(timezone.utc).isoformat()
         with self._connect() as connection:
-            cursor = connection.execute(
-                """
-                INSERT INTO ratings (usuario_id, autor_id, puntuacion, comentario, fecha)
-                VALUES (?, ?, ?, ?, ?)
+            row = connection.execute(
+                f"""
+                INSERT INTO "{self.schema}".ratings (usuario_id, autor_id, puntuacion, comentario, fecha)
+                VALUES (%s, %s, %s, %s, %s)
+                RETURNING id, usuario_id, autor_id, puntuacion, comentario, fecha
                 """,
                 (usuario_id, autor_id, puntuacion, comentario, now),
-            )
+            ).fetchone()
             connection.commit()
-            rating_id = int(cursor.lastrowid)
-        return self.get_rating(rating_id)
+        return self._map_rating(row)
 
     def list_ratings_for_user(self, *, usuario_id: int) -> list[Rating]:
         with self._connect() as connection:
             rows = connection.execute(
-                """
+                f"""
                 SELECT id, usuario_id, autor_id, puntuacion, comentario, fecha
-                FROM ratings
-                WHERE usuario_id = ?
+                FROM "{self.schema}".ratings
+                WHERE usuario_id = %s
                 ORDER BY fecha DESC, id DESC
                 """,
                 (usuario_id,),
@@ -91,16 +82,14 @@ class SQLiteSupportRepository:
     def get_rating(self, rating_id: int) -> Rating | None:
         with self._connect() as connection:
             row = connection.execute(
-                """
+                f"""
                 SELECT id, usuario_id, autor_id, puntuacion, comentario, fecha
-                FROM ratings
-                WHERE id = ?
+                FROM "{self.schema}".ratings
+                WHERE id = %s
                 """,
                 (rating_id,),
             ).fetchone()
-        if row is None:
-            return None
-        return self._map_rating(row)
+        return self._map_rating(row) if row else None
 
     def upsert_certificate(
         self,
@@ -112,15 +101,15 @@ class SQLiteSupportRepository:
     ) -> Certificate:
         with self._connect() as connection:
             connection.execute(
-                """
-                INSERT INTO certificates (usuario_id, archivo_url, fecha_emision, estado_verificacion)
-                VALUES (?, ?, ?, ?)
-                ON CONFLICT(usuario_id) DO UPDATE SET
-                    archivo_url=excluded.archivo_url,
-                    fecha_emision=excluded.fecha_emision,
-                    estado_verificacion=excluded.estado_verificacion
+                f"""
+                INSERT INTO "{self.schema}".certificates (usuario_id, archivo_url, fecha_emision, estado_verificacion)
+                VALUES (%s, %s, %s, %s)
+                ON CONFLICT (usuario_id) DO UPDATE SET
+                    archivo_url = EXCLUDED.archivo_url,
+                    fecha_emision = EXCLUDED.fecha_emision,
+                    estado_verificacion = EXCLUDED.estado_verificacion
                 """,
-                (usuario_id, archivo_url, fecha_emision, 1 if estado_verificacion else 0),
+                (usuario_id, archivo_url, fecha_emision, estado_verificacion),
             )
             connection.commit()
         return self.get_certificate_by_user(usuario_id)
@@ -128,16 +117,14 @@ class SQLiteSupportRepository:
     def get_certificate_by_user(self, usuario_id: int) -> Certificate | None:
         with self._connect() as connection:
             row = connection.execute(
-                """
+                f"""
                 SELECT id, usuario_id, archivo_url, fecha_emision, estado_verificacion
-                FROM certificates
-                WHERE usuario_id = ?
+                FROM "{self.schema}".certificates
+                WHERE usuario_id = %s
                 """,
                 (usuario_id,),
             ).fetchone()
-        if row is None:
-            return None
-        return self._map_certificate(row)
+        return self._map_certificate(row) if row else None
 
     def upsert_transaction(
         self,
@@ -148,58 +135,37 @@ class SQLiteSupportRepository:
         distancia_validacion_metros: float,
     ) -> Transaction:
         with self._connect() as connection:
-            existing = connection.execute(
-                "SELECT id FROM transactions WHERE pedido_id = ?",
-                (pedido_id,),
-            ).fetchone()
-            if existing:
-                connection.execute(
-                    """
-                    UPDATE transactions
-                    SET fecha_cierre = ?, estado = ?, distancia_validacion_metros = ?
-                    WHERE pedido_id = ?
-                    """,
-                    (fecha_cierre, estado, distancia_validacion_metros, pedido_id),
-                )
-            else:
-                now = datetime.now(timezone.utc).isoformat()
-                columns = self._get_columns(connection, "transactions")
-                insert_columns: list[str] = ["pedido_id", "estado", "distancia_validacion_metros"]
-                values: list[object] = [pedido_id, estado, distancia_validacion_metros]
-                if "fecha_cierre" in columns:
-                    insert_columns.append("fecha_cierre")
-                    values.append(fecha_cierre)
-                if "created_at" in columns:
-                    insert_columns.append("created_at")
-                    values.append(now)
-
-                placeholders = ", ".join(["?"] * len(insert_columns))
-                sql = f"INSERT INTO transactions ({', '.join(insert_columns)}) VALUES ({placeholders})"
-                connection.execute(sql, values)
+            connection.execute(
+                f"""
+                INSERT INTO "{self.schema}".transactions (pedido_id, fecha_cierre, estado, distancia_validacion_metros)
+                VALUES (%s, %s, %s, %s)
+                ON CONFLICT (pedido_id) DO UPDATE SET
+                    fecha_cierre = EXCLUDED.fecha_cierre,
+                    estado = EXCLUDED.estado,
+                    distancia_validacion_metros = EXCLUDED.distancia_validacion_metros
+                """,
+                (pedido_id, fecha_cierre, estado, distancia_validacion_metros),
+            )
             connection.commit()
         return self.get_transaction_by_order(pedido_id)
 
     def get_transaction_by_order(self, pedido_id: int) -> Transaction | None:
         with self._connect() as connection:
             row = connection.execute(
-                """
+                f"""
                 SELECT id, pedido_id, fecha_cierre, estado, distancia_validacion_metros
-                FROM transactions
-                WHERE pedido_id = ?
+                FROM "{self.schema}".transactions
+                WHERE pedido_id = %s
                 """,
                 (pedido_id,),
             ).fetchone()
-        if row is None:
-            return None
-        return self._map_transaction(row)
+        return self._map_transaction(row) if row else None
 
-    def _connect(self) -> sqlite3.Connection:
-        conn = sqlite3.connect(self.database_path)
-        conn.row_factory = sqlite3.Row
-        return conn
+    def _connect(self) -> psycopg.Connection:
+        return psycopg.connect(self.dsn, row_factory=dict_row)
 
     @staticmethod
-    def _map_rating(row: sqlite3.Row) -> Rating:
+    def _map_rating(row: dict) -> Rating:
         return Rating(
             id=int(row["id"]),
             usuario_id=int(row["usuario_id"]),
@@ -210,7 +176,7 @@ class SQLiteSupportRepository:
         )
 
     @staticmethod
-    def _map_certificate(row: sqlite3.Row) -> Certificate:
+    def _map_certificate(row: dict) -> Certificate:
         return Certificate(
             id=int(row["id"]),
             usuario_id=int(row["usuario_id"]),
@@ -220,7 +186,7 @@ class SQLiteSupportRepository:
         )
 
     @staticmethod
-    def _map_transaction(row: sqlite3.Row) -> Transaction:
+    def _map_transaction(row: dict) -> Transaction:
         return Transaction(
             id=int(row["id"]),
             pedido_id=int(row["pedido_id"]),

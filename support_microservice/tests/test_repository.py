@@ -1,14 +1,24 @@
-import sqlite3
-
 import pytest
 
-from app.repositories.support_repository import SQLiteSupportRepository
+from app.repositories.support_repository import PostgresSupportRepository
+
+from .conftest import TEST_SCHEMA, _test_dsn
 
 
 @pytest.fixture
-def repo(tmp_path):
-    repository = SQLiteSupportRepository(str(tmp_path / "support.db"))
+def repo():
+    dsn = _test_dsn()
+    repository = PostgresSupportRepository(dsn, schema=TEST_SCHEMA)
     repository.initialize()
+
+    import psycopg
+
+    with psycopg.connect(dsn) as connection:
+        connection.execute(f'TRUNCATE TABLE "{TEST_SCHEMA}".ratings RESTART IDENTITY')
+        connection.execute(f'TRUNCATE TABLE "{TEST_SCHEMA}".certificates RESTART IDENTITY')
+        connection.execute(f'TRUNCATE TABLE "{TEST_SCHEMA}".transactions RESTART IDENTITY')
+        connection.commit()
+
     return repository
 
 
@@ -75,56 +85,3 @@ def test_initialize_is_idempotent(repo):
     repo.initialize()
     rating = repo.create_rating(usuario_id=1, autor_id=2, puntuacion=5, comentario="A")
     assert repo.get_rating(rating.id) is not None
-
-
-def test_schema_compatibility_adds_fecha_cierre_when_missing(tmp_path):
-    db_path = tmp_path / "legacy_tx.db"
-    with sqlite3.connect(db_path) as connection:
-        connection.execute(
-            """
-            CREATE TABLE transactions (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                pedido_id INTEGER NOT NULL UNIQUE,
-                estado TEXT NOT NULL,
-                distancia_validacion_metros REAL NOT NULL DEFAULT 0
-            )
-            """
-        )
-        connection.execute(
-            "INSERT INTO transactions (pedido_id, estado, distancia_validacion_metros) VALUES (1, 'ABIERTA', 0)"
-        )
-        connection.commit()
-
-    repository = SQLiteSupportRepository(str(db_path))
-    repository.initialize()
-
-    tx = repository.get_transaction_by_order(1)
-    assert tx is not None
-    assert tx.fecha_cierre is None
-
-    # Tambien ejercita la rama de upsert que NO inserta fecha_cierre porque ya
-    # existia la fila (branch de UPDATE, no de INSERT con created_at).
-    updated = repository.upsert_transaction(
-        pedido_id=1, fecha_cierre="2026-01-01T00:00:00", estado="CERRADA", distancia_validacion_metros=5.0
-    )
-    assert updated.fecha_cierre == "2026-01-01T00:00:00"
-
-
-def test_upsert_transaction_insert_uses_created_at_when_present(tmp_path):
-    """Si la tabla ya tiene columna created_at (esquema compartido con el
-    monolito), el INSERT inicial de upsert_transaction debe rellenarla."""
-    db_path = tmp_path / "shared_tx.db"
-    repository = SQLiteSupportRepository(str(db_path))
-    repository.initialize()
-
-    with sqlite3.connect(db_path) as connection:
-        connection.execute("ALTER TABLE transactions ADD COLUMN created_at TEXT")
-        connection.commit()
-
-    repository.upsert_transaction(
-        pedido_id=1, fecha_cierre=None, estado="ABIERTA", distancia_validacion_metros=0.0
-    )
-
-    with sqlite3.connect(db_path) as connection:
-        row = connection.execute("SELECT created_at FROM transactions WHERE pedido_id = 1").fetchone()
-    assert row[0] is not None

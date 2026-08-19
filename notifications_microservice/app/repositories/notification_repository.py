@@ -1,34 +1,36 @@
 from __future__ import annotations
 
-import sqlite3
 from datetime import datetime, timezone
-from pathlib import Path
+
+import psycopg
+from psycopg.rows import dict_row
 
 from ..models import Notification
 
 
-class SQLiteNotificationRepository:
-    def __init__(self, database_path: str) -> None:
-        self.database_path = Path(database_path)
-        self.database_path.parent.mkdir(parents=True, exist_ok=True)
+class PostgresNotificationRepository:
+    def __init__(self, dsn: str, *, schema: str = "notifications_service") -> None:
+        self.dsn = dsn
+        self.schema = schema
 
     def initialize(self) -> None:
         with self._connect() as connection:
+            connection.execute(f'CREATE SCHEMA IF NOT EXISTS "{self.schema}"')
             connection.execute(
-                """
-                CREATE TABLE IF NOT EXISTS notifications (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                f"""
+                CREATE TABLE IF NOT EXISTS "{self.schema}".notifications (
+                    id SERIAL PRIMARY KEY,
                     usuario_id INTEGER NOT NULL,
                     tipo TEXT NOT NULL,
                     mensaje TEXT NOT NULL,
                     fecha_envio TEXT NOT NULL,
-                    leida INTEGER NOT NULL DEFAULT 0
+                    leida BOOLEAN NOT NULL DEFAULT FALSE
                 )
                 """
             )
             connection.execute(
-                """
-                CREATE TABLE IF NOT EXISTS processed_events (
+                f"""
+                CREATE TABLE IF NOT EXISTS "{self.schema}".processed_events (
                     event_id TEXT PRIMARY KEY,
                     processed_at TEXT NOT NULL
                 )
@@ -40,9 +42,10 @@ class SQLiteNotificationRepository:
         timestamp = datetime.now(timezone.utc).isoformat()
         with self._connect() as connection:
             cursor = connection.execute(
-                """
-                INSERT OR IGNORE INTO processed_events (event_id, processed_at)
-                VALUES (?, ?)
+                f"""
+                INSERT INTO "{self.schema}".processed_events (event_id, processed_at)
+                VALUES (%s, %s)
+                ON CONFLICT (event_id) DO NOTHING
                 """,
                 (event_id, timestamp),
             )
@@ -52,24 +55,24 @@ class SQLiteNotificationRepository:
     def create(self, *, usuario_id: int, tipo: str, mensaje: str) -> Notification:
         timestamp = datetime.now(timezone.utc).isoformat()
         with self._connect() as connection:
-            cursor = connection.execute(
-                """
-                INSERT INTO notifications (usuario_id, tipo, mensaje, fecha_envio, leida)
-                VALUES (?, ?, ?, ?, 0)
+            row = connection.execute(
+                f"""
+                INSERT INTO "{self.schema}".notifications (usuario_id, tipo, mensaje, fecha_envio, leida)
+                VALUES (%s, %s, %s, %s, FALSE)
+                RETURNING id, usuario_id, tipo, mensaje, fecha_envio, leida
                 """,
                 (usuario_id, tipo, mensaje, timestamp),
-            )
+            ).fetchone()
             connection.commit()
-            notification_id = int(cursor.lastrowid)
-        return self.get_by_id(notification_id)
+        return self._map_row(row)
 
     def list_by_user(self, *, usuario_id: int) -> list[Notification]:
         with self._connect() as connection:
             rows = connection.execute(
-                """
+                f"""
                 SELECT id, usuario_id, tipo, mensaje, fecha_envio, leida
-                FROM notifications
-                WHERE usuario_id = ?
+                FROM "{self.schema}".notifications
+                WHERE usuario_id = %s
                 ORDER BY fecha_envio DESC, id DESC
                 """,
                 (usuario_id,),
@@ -79,30 +82,29 @@ class SQLiteNotificationRepository:
     def get_by_id(self, notification_id: int) -> Notification | None:
         with self._connect() as connection:
             row = connection.execute(
-                """
+                f"""
                 SELECT id, usuario_id, tipo, mensaje, fecha_envio, leida
-                FROM notifications
-                WHERE id = ?
+                FROM "{self.schema}".notifications
+                WHERE id = %s
                 """,
                 (notification_id,),
             ).fetchone()
-        if row is None:
-            return None
-        return self._map_row(row)
+        return self._map_row(row) if row else None
 
     def mark_as_read(self, notification_id: int) -> Notification | None:
         with self._connect() as connection:
-            connection.execute("UPDATE notifications SET leida = 1 WHERE id = ?", (notification_id,))
+            connection.execute(
+                f'UPDATE "{self.schema}".notifications SET leida = TRUE WHERE id = %s',
+                (notification_id,),
+            )
             connection.commit()
         return self.get_by_id(notification_id)
 
-    def _connect(self) -> sqlite3.Connection:
-        conn = sqlite3.connect(self.database_path)
-        conn.row_factory = sqlite3.Row
-        return conn
+    def _connect(self) -> psycopg.Connection:
+        return psycopg.connect(self.dsn, row_factory=dict_row)
 
     @staticmethod
-    def _map_row(row: sqlite3.Row) -> Notification:
+    def _map_row(row: dict) -> Notification:
         return Notification(
             id=int(row["id"]),
             usuario_id=int(row["usuario_id"]),

@@ -105,16 +105,21 @@ services:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
       - SENTRY_DSN=${SENTRY_DSN:-}
-      - PAYMENTS_DATABASE_PATH=/app/data/payments.db
+      - POSTGRES_USER=${POSTGRES_USER:-cucu}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=${POSTGRES_DB:-cucu}
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_PORT=5672
       - RABBITMQ_USER=${RABBITMQ_USER}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
       - RABBITMQ_PAYMENTS_QUEUE=payments.events
     depends_on:
-      - rabbitmq
-    volumes:
-      - payment_data:/app/data
+      rabbitmq:
+        condition: service_started
+      postgres:
+        condition: service_healthy
     expose:
       - "8080"
     healthcheck:
@@ -134,16 +139,21 @@ services:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
       - SENTRY_DSN=${SENTRY_DSN:-}
-      - NOTIFICATIONS_DATABASE_PATH=/app/data/notifications.db
+      - POSTGRES_USER=${POSTGRES_USER:-cucu}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=${POSTGRES_DB:-cucu}
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_PORT=5672
       - RABBITMQ_USER=${RABBITMQ_USER}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
       - RABBITMQ_PAYMENTS_QUEUE=payments.events
     depends_on:
-      - rabbitmq
-    volumes:
-      - notifications_data:/app/data
+      rabbitmq:
+        condition: service_started
+      postgres:
+        condition: service_healthy
     expose:
       - "8082"
     healthcheck:
@@ -215,9 +225,14 @@ services:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
       - SENTRY_DSN=${SENTRY_DSN:-}
-      - SUPPORT_DATABASE_PATH=/app/data/support.db
-    volumes:
-      - support_data:/app/data
+      - POSTGRES_USER=${POSTGRES_USER:-cucu}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=${POSTGRES_DB:-cucu}
+    depends_on:
+      postgres:
+        condition: service_healthy
     expose:
       - "8085"
     healthcheck:
@@ -271,17 +286,23 @@ services:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
       - SENTRY_DSN=${SENTRY_DSN:-}
-      - NOTIFICATIONS_DATABASE_PATH=/app/data/notifications.db
+      - POSTGRES_USER=${POSTGRES_USER:-cucu}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=${POSTGRES_DB:-cucu}
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_PORT=5672
       - RABBITMQ_USER=${RABBITMQ_USER}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
       - RABBITMQ_PAYMENTS_QUEUE=payments.events
     depends_on:
-      - rabbitmq
-      - notifications-service
-    volumes:
-      - notifications_data:/app/data
+      rabbitmq:
+        condition: service_started
+      notifications-service:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
     restart: unless-stopped
 
   rabbitmq:
@@ -337,9 +358,6 @@ services:
 
 volumes:
   postgres_data:
-  payment_data:
-  notifications_data:
   market_data:
-  support_data:
   staticfiles_volume:
   media_volume:

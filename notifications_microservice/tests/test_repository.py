@@ -1,12 +1,15 @@
 import pytest
 
-from app.repositories.notification_repository import SQLiteNotificationRepository
+from app.repositories.notification_repository import PostgresNotificationRepository
+
+from .conftest import TEST_SCHEMA, _test_dsn, _truncate
 
 
 @pytest.fixture
-def repo(tmp_path):
-    repository = SQLiteNotificationRepository(str(tmp_path / "notif.db"))
+def repo():
+    repository = PostgresNotificationRepository(_test_dsn(), schema=TEST_SCHEMA)
     repository.initialize()
+    _truncate()
     return repository
 
 

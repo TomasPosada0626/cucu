@@ -71,10 +71,11 @@ jobs:
           - notifications_microservice
           - payment_microservice
           - support_microservice
-    # Only auth_microservice needs Postgres so far (migrated off SQLite as
-    # the pilot for the other 5) - an idle service container costs nothing
-    # for the rest of the matrix, and this is the shape the other 5 will
-    # reuse once they migrate too.
+    # auth_microservice, payment_microservice, notifications_microservice,
+    # and support_microservice have all moved off SQLite onto their own
+    # schema in this shared Postgres. Only market_microservice is still on
+    # SQLite - an idle service container in that leg of the matrix costs
+    # nothing while it's the odd one out.
     services:
       postgres:
         image: postgres:16-alpine

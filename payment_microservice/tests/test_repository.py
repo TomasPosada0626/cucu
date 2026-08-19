@@ -1,13 +1,22 @@
+import psycopg
 import pytest
 
 from app.models import Payment
-from app.repositories.payment_repository import SQLitePaymentRepository
+from app.repositories.payment_repository import PostgresPaymentRepository
+
+from .conftest import TEST_SCHEMA, _test_dsn
 
 
 @pytest.fixture
-def repo(tmp_path):
-    repository = SQLitePaymentRepository(str(tmp_path / "payments.db"))
+def repo():
+    dsn = _test_dsn()
+    repository = PostgresPaymentRepository(dsn, schema=TEST_SCHEMA)
     repository.initialize()
+
+    with psycopg.connect(dsn) as connection:
+        connection.execute(f'TRUNCATE TABLE "{TEST_SCHEMA}".payments')
+        connection.commit()
+
     return repository
 
 

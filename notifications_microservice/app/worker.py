@@ -3,24 +3,21 @@ from __future__ import annotations
 import json
 import logging
 import os
-from pathlib import Path
 
 import pika
 from pika.exceptions import AMQPError
 
-from .repositories.notification_repository import SQLiteNotificationRepository
+from .factory import postgres_dsn
+from .repositories.notification_repository import PostgresNotificationRepository
 from .services import NotificationService
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 LOGGER = logging.getLogger(__name__)
 
 
-def _build_notification_service() -> tuple[NotificationService, SQLiteNotificationRepository]:
-    database_path = os.getenv(
-        "NOTIFICATIONS_DATABASE_PATH",
-        str(Path(__file__).resolve().parent.parent / "data" / "notifications.db"),
-    )
-    repository = SQLiteNotificationRepository(database_path)
+def _build_notification_service() -> tuple[NotificationService, PostgresNotificationRepository]:
+    schema = os.getenv("NOTIFICATIONS_POSTGRES_SCHEMA", "notifications_service")
+    repository = PostgresNotificationRepository(postgres_dsn(), schema=schema)
     repository.initialize()
     service = NotificationService(repository=repository)
     return service, repository

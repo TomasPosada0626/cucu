@@ -3,7 +3,7 @@ from __future__ import annotations
 from django.utils import timezone
 
 from ..domain.rules import haversine_meters
-from .models import Asignacion, RepartidorPerfil
+from .models import Asignacion, PedidoRechazo, RepartidorPerfil
 
 
 class DjangoRepartidorRepository:
@@ -50,10 +50,11 @@ class DjangoAsignacionRepository:
         asignacion.salio_en = timezone.now()
         asignacion.save(update_fields=["estado", "salio_en"])
 
-    def mark_llego_entrega(self, asignacion: Asignacion) -> None:
+    def mark_llego_entrega(self, asignacion: Asignacion, *, distancia_metros: float = 0.0) -> None:
         asignacion.estado = Asignacion.LLEGO_ENTREGA
         asignacion.llego_entrega_en = timezone.now()
-        asignacion.save(update_fields=["estado", "llego_entrega_en"])
+        asignacion.distancia_validacion_metros = distancia_metros
+        asignacion.save(update_fields=["estado", "llego_entrega_en", "distancia_validacion_metros"])
 
     def mark_finalizado(self, asignacion: Asignacion) -> None:
         asignacion.estado = Asignacion.FINALIZADO
@@ -69,13 +70,22 @@ class DjangoAsignacionRepository:
 
 
 class DjangoPedidoDeliveryRepository:
-    def list_pending_near(self, *, latitud: float, longitud: float, radius_km: float) -> list:
+    def list_pending_near(
+        self,
+        *,
+        latitud: float,
+        longitud: float,
+        radius_km: float,
+        excluded_pedido_ids: set[int] | None = None,
+    ) -> list:
         from market.infrastructure.models import Pedido
 
         candidatos = (
             Pedido.objects.select_related("publicacion", "publicacion__ubicacion", "usuario")
             .filter(estado="ACEPTADO", asignacion__isnull=True)
         )
+        if excluded_pedido_ids:
+            candidatos = candidatos.exclude(id__in=excluded_pedido_ids)
 
         cercanos = []
         for pedido in candidatos:
@@ -107,3 +117,11 @@ class DjangoPedidoDeliveryRepository:
     def mark_entregado(self, pedido) -> None:
         pedido.estado = "ENTREGADO"
         pedido.save(update_fields=["estado"])
+
+
+class DjangoPedidoRechazoRepository:
+    def registrar(self, *, pedido_id: int, repartidor) -> None:
+        PedidoRechazo.objects.get_or_create(pedido_id=pedido_id, repartidor=repartidor)
+
+    def ids_rechazados_por(self, repartidor) -> set[int]:
+        return set(PedidoRechazo.objects.filter(repartidor=repartidor).values_list("pedido_id", flat=True))

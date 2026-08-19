@@ -18,7 +18,7 @@ from .domain.rules import (
     validate_can_mark_finalizado,
     validate_can_mark_salio,
 )
-from .infrastructure.models import Asignacion, RepartidorPerfil
+from .infrastructure.models import Asignacion, PedidoRechazo, RepartidorPerfil
 
 RECOGIDA_LAT = 4.653332
 RECOGIDA_LNG = -74.083652
@@ -294,6 +294,51 @@ class AceptarPedidoAPITests(DeliveryAPITestBase):
         segundo = self.create_pedido(estado="ACEPTADO")
         response = self.client.post(f"/api/repartidor/pedidos/{segundo.id}/aceptar")
         self.assertEqual(response.status_code, 400)
+
+
+class RechazarPedidoAPITests(DeliveryAPITestBase):
+    def test_reject_success_persists_and_excludes_from_cercanos(self):
+        self.auth_as(self.repartidor)
+        self.client.post(
+            "/api/repartidor/ubicacion", {"latitud": RECOGIDA_LAT, "longitud": RECOGIDA_LNG}, format="json"
+        )
+        pedido = self.create_pedido(estado="ACEPTADO")
+
+        response = self.client.post(f"/api/repartidor/pedidos/{pedido.id}/rechazar")
+        self.assertEqual(response.status_code, 204)
+        self.assertTrue(PedidoRechazo.objects.filter(pedido=pedido, repartidor=self.repartidor).exists())
+
+        response = self.client.get("/api/repartidor/pedidos-cercanos")
+        self.assertEqual(response.json()["items"], [])
+
+    def test_reject_does_not_hide_order_for_other_repartidor(self):
+        self.auth_as(self.repartidor)
+        self.client.post(
+            "/api/repartidor/ubicacion", {"latitud": RECOGIDA_LAT, "longitud": RECOGIDA_LNG}, format="json"
+        )
+        pedido = self.create_pedido(estado="ACEPTADO")
+        self.client.post(f"/api/repartidor/pedidos/{pedido.id}/rechazar")
+
+        otro = self.other_repartidor()
+        self.auth_as(otro)
+        self.client.post(
+            "/api/repartidor/ubicacion", {"latitud": RECOGIDA_LAT, "longitud": RECOGIDA_LNG}, format="json"
+        )
+        response = self.client.get("/api/repartidor/pedidos-cercanos")
+        self.assertEqual(len(response.json()["items"]), 1)
+
+    def test_reject_not_found_returns_404(self):
+        self.auth_as(self.repartidor)
+        response = self.client.post("/api/repartidor/pedidos/999999/rechazar")
+        self.assertEqual(response.status_code, 404)
+
+    def test_reject_conflict_when_already_taken(self):
+        self.auth_as(self.repartidor)
+        pedido = self.create_pedido(estado="ACEPTADO")
+        Asignacion.objects.create(pedido=pedido, repartidor=self.other_repartidor())
+
+        response = self.client.post(f"/api/repartidor/pedidos/{pedido.id}/rechazar")
+        self.assertEqual(response.status_code, 409)
 
 
 class UbicacionAPITests(DeliveryAPITestBase):

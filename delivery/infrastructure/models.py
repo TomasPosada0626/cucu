@@ -49,5 +49,30 @@ class Asignacion(models.Model):
     llego_entrega_en = models.DateTimeField(null=True, blank=True)
     finalizado_en = models.DateTimeField(null=True, blank=True)
 
+    # Distancia real (geocerca) entre el repartidor y la direccion de entrega
+    # en el momento en que se registro LLEGO_ENTREGA - se usa para poblar
+    # transactions.Transaccion.distancia_validacion_metros al finalizar.
+    distancia_validacion_metros = models.FloatField(default=0.0)
+
     def __str__(self):
         return f"Asignacion pedido={self.pedido_id} repartidor={self.repartidor_id} ({self.estado})"
+
+
+class PedidoRechazo(models.Model):
+    pedido = models.ForeignKey(
+        "market.Pedido",
+        on_delete=models.CASCADE,
+        related_name="rechazos",
+    )
+    repartidor = models.ForeignKey(
+        "accounts.User",
+        on_delete=models.CASCADE,
+        related_name="pedidos_rechazados",
+    )
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("pedido", "repartidor")
+
+    def __str__(self):
+        return f"Rechazo pedido={self.pedido_id} repartidor={self.repartidor_id}"

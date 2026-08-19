@@ -1,11 +1,18 @@
 from __future__ import annotations
 
+from common.domain.ports import TransactionServicePort
 from common.exceptions import ConflictError, NotFoundError, PermissionDeniedError, ValidationError
 from notifications.domain.services import NotificacionService
 
+from django.conf import settings
 from django.utils import timezone
 
-from .repositories import AsignacionRepository, PedidoDeliveryRepository, RepartidorRepository
+from .repositories import (
+    AsignacionRepository,
+    PedidoDeliveryRepository,
+    PedidoRechazoRepository,
+    RepartidorRepository,
+)
 from .rules import (
     LLEGO_ENTREGA,
     LLEGO_RECOGIDA,
@@ -34,6 +41,18 @@ def _default_pedido_repo() -> PedidoDeliveryRepository:
     return DjangoPedidoDeliveryRepository()
 
 
+def _default_transaction_service() -> TransactionServicePort:
+    from common.infrastructure.adapters import HttpSupportServiceAdapter
+
+    return HttpSupportServiceAdapter()
+
+
+def _default_rechazo_repo() -> PedidoRechazoRepository:
+    from ..infrastructure.repositories_impl import DjangoPedidoRechazoRepository
+
+    return DjangoPedidoRechazoRepository()
+
+
 class DeliveryService:
     def __init__(
         self,
@@ -42,11 +61,15 @@ class DeliveryService:
         asignacion_repo: AsignacionRepository | None = None,
         pedido_repo: PedidoDeliveryRepository | None = None,
         notificacion_service: NotificacionService | None = None,
+        transaction_service: TransactionServicePort | None = None,
+        rechazo_repo: PedidoRechazoRepository | None = None,
     ):
         self._repartidor_repo = repartidor_repo or _default_repartidor_repo()
         self._asignacion_repo = asignacion_repo or _default_asignacion_repo()
         self._pedido_repo = pedido_repo or _default_pedido_repo()
         self._notificacion_service = notificacion_service or NotificacionService()
+        self._transaction_service = transaction_service or _default_transaction_service()
+        self._rechazo_repo = rechazo_repo or _default_rechazo_repo()
 
     def set_disponibilidad(self, *, usuario, activo: bool):
         perfil = self._repartidor_repo.get_or_create_perfil(usuario)
@@ -58,8 +81,20 @@ class DeliveryService:
         if perfil.latitud is None or perfil.longitud is None:
             raise ValidationError("Necesitamos tu ubicación para mostrarte pedidos cercanos")
         return self._pedido_repo.list_pending_near(
-            latitud=float(perfil.latitud), longitud=float(perfil.longitud), radius_km=8.0
+            latitud=float(perfil.latitud),
+            longitud=float(perfil.longitud),
+            radius_km=settings.REPARTIDOR_RADIO_PEDIDOS_CERCANOS_KM,
+            excluded_pedido_ids=self._rechazo_repo.ids_rechazados_por(usuario),
         )
+
+    def rechazar_pedido(self, *, usuario, pedido_id: int):
+        pedido = self._pedido_repo.get_by_id(pedido_id)
+        if pedido is None:
+            raise NotFoundError("Pedido no encontrado")
+        if self._asignacion_repo.get_by_pedido_id(pedido_id) is not None:
+            raise ConflictError("Este pedido ya fue tomado por otro repartidor")
+
+        self._rechazo_repo.registrar(pedido_id=pedido_id, repartidor=usuario)
 
     def aceptar_pedido(self, *, usuario, pedido_id: int):
         existing_active = self._asignacion_repo.get_active_for_repartidor(usuario)

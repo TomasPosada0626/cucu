@@ -49,6 +49,7 @@
     const TXT_ACCEPT = '{% trans "Aceptar" %}';
     const TXT_REJECT = '{% trans "Rechazar" %}';
     const TXT_ACCEPT_ERROR = '{% trans "No se pudo aceptar el pedido (puede que ya lo tomara otro repartidor)." %}';
+    const TXT_REJECT_ERROR = '{% trans "No se pudo rechazar el pedido." %}';
     const TXT_KM = 'km';
     const TXT_TO_PICKUP_SUFFIX = '{% trans "a recogida" %}';
     const TXT_ROUTE_SUFFIX = '{% trans "de recorrido" %}';
@@ -129,7 +130,16 @@
       window.location.href = `/ui/repartidor/entrega/?pedido_id=${encodeURIComponent(pedidoId)}`;
     }
 
-    function rechazarPedido(pedidoId, row) {
+    async function rechazarPedido(pedidoId, row, btn) {
+      btn.disabled = true;
+      const result = await auth.authenticatedFetch(`/api/repartidor/pedidos/${encodeURIComponent(pedidoId)}/rechazar`, {
+        method: 'POST',
+      });
+      if (!result || !result.response.ok) {
+        btn.disabled = false;
+        alert((result && result.payload && result.payload.detail) || TXT_REJECT_ERROR);
+        return;
+      }
       dismissed.add(pedidoId);
       row.remove();
     }
@@ -183,7 +193,7 @@
         btn.addEventListener('click', () => aceptarPedido(btn.dataset.id, btn));
       });
       list.querySelectorAll('button.rechazar').forEach((btn) => {
-        btn.addEventListener('click', () => rechazarPedido(btn.dataset.id, btn.closest('.notif')));
+        btn.addEventListener('click', () => rechazarPedido(btn.dataset.id, btn.closest('.notif'), btn));
       });
     }
 

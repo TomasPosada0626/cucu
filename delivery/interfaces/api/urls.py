@@ -9,6 +9,7 @@ from .views import (
     MarcarFinalizadoAPIView,
     MarcarSalioAPIView,
     PedidosCercanosAPIView,
+    RechazarPedidoAPIView,
     ResumenRepartidorAPIView,
     UbicacionAPIView,
 )
@@ -18,6 +19,7 @@ urlpatterns = [
     path("repartidor/pedidos-cercanos", PedidosCercanosAPIView.as_view(), name="repartidor-pedidos-cercanos"),
     path("repartidor/asignacion-activa", AsignacionActivaAPIView.as_view(), name="repartidor-asignacion-activa"),
     path("repartidor/pedidos/<int:pedido_id>/aceptar", AceptarPedidoAPIView.as_view(), name="repartidor-aceptar"),
+    path("repartidor/pedidos/<int:pedido_id>/rechazar", RechazarPedidoAPIView.as_view(), name="repartidor-rechazar"),
     path("repartidor/ubicacion", UbicacionAPIView.as_view(), name="repartidor-ubicacion"),
     path("repartidor/pedidos/<int:pedido_id>/salio", MarcarSalioAPIView.as_view(), name="repartidor-salio"),
     path("repartidor/pedidos/<int:pedido_id>/finalizar", MarcarFinalizadoAPIView.as_view(), name="repartidor-finalizar"),

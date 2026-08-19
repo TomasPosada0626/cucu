@@ -27,6 +27,14 @@ class AceptarPedidoUseCase:
         return self._service.aceptar_pedido(usuario=usuario, pedido_id=pedido_id)
 
 
+class RechazarPedidoUseCase:
+    def __init__(self, *, service: DeliveryService | None = None):
+        self._service = service or DeliveryService()
+
+    def execute(self, *, usuario, pedido_id: int):
+        return self._service.rechazar_pedido(usuario=usuario, pedido_id=pedido_id)
+
+
 class ActualizarUbicacionUseCase:
     def __init__(self, *, service: DeliveryService | None = None):
         self._service = service or DeliveryService()

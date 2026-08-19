@@ -15,6 +15,7 @@ from ...application import (
     ListarPedidosCercanosUseCase,
     MarcarFinalizadoUseCase,
     MarcarSalioUseCase,
+    RechazarPedidoUseCase,
     ResumenRepartidorUseCase,
     SetDisponibilidadUseCase,
 )
@@ -84,6 +85,21 @@ class AceptarPedidoAPIView(APIView):
             return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(AsignacionOutputSerializer(asignacion).data, status=status.HTTP_201_CREATED)
+
+
+class RechazarPedidoAPIView(APIView):
+    permission_classes = [IsAuthenticated, IsRepartidor]
+
+    @extend_schema(request=None, responses={204: None})
+    def post(self, request, pedido_id: int):
+        try:
+            RechazarPedidoUseCase().execute(usuario=request.user, pedido_id=pedido_id)
+        except NotFoundError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_404_NOT_FOUND)
+        except ConflictError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_409_CONFLICT)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class UbicacionAPIView(APIView):

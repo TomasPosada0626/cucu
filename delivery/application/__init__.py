@@ -7,6 +7,7 @@ from .use_cases import (
     ListarPedidosCercanosUseCase,
     MarcarFinalizadoUseCase,
     MarcarSalioUseCase,
+    RechazarPedidoUseCase,
     ResumenRepartidorUseCase,
     SetDisponibilidadUseCase,
 )
@@ -20,6 +21,7 @@ __all__ = [
     "ListarPedidosCercanosUseCase",
     "MarcarFinalizadoUseCase",
     "MarcarSalioUseCase",
+    "RechazarPedidoUseCase",
     "ResumenRepartidorUseCase",
     "SetDisponibilidadUseCase",
 ]

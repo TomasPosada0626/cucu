@@ -50,6 +50,14 @@ gunzip -c "$SRC" | docker compose exec -T postgres sh -c 'psql -U "$POSTGRES_USE
 # shellcheck disable=SC2086
 docker compose start $SERVICES
 
-echo "Restored the shared Postgres database from $SRC and restarted: $SERVICES"
+# nginx caches each upstream's container IP when it starts. django (and the
+# microservices) get a new IP on restart, so without this nginx keeps
+# routing to the old address and every request 502s until it's restarted -
+# confirmed by hand while testing this script. Same root cause as the
+# nginx.conf bind-mount quirk documented in README_DEPLOY_AWS.md, different
+# trigger (container IP, not config content).
+docker compose restart nginx
+
+echo "Restored the shared Postgres database from $SRC and restarted: $SERVICES nginx"
 # shellcheck disable=SC2086
-echo "Verify everything came back healthy: docker compose ps $SERVICES"
+echo "Verify everything came back healthy: docker compose ps $SERVICES nginx"

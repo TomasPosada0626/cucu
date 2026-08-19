@@ -105,3 +105,52 @@ despliegue en AWS. Detalle completo en la Wiki (`Entregable1`, `Entregable2`).
 - **Removed:** dos carpetas `notifications/api/`/`payments/api/` que solo
   tenían un `.pyc` huérfano — el código ya se había borrado (ver la entrada
   del 13 de agosto), pero el `__pycache__` nunca se limpió del disco local.
+
+## 2026-08-16 — Sentry y accesibilidad
+
+- **Added:** Sentry para tracking de errores en Django y los 6 microservicios
+  Flask, opt-in vía la variable `SENTRY_DSN` (si no está seteada, no hace
+  nada).
+- **Added:** primera pasada de accesibilidad — skip links y hit-targets de
+  al menos 44px en los controles interactivos.
+
+## 2026-08-17 — Deploy, datos personales, cache, accesibilidad
+
+- **Added:** job de deploy automático a EC2 wireado a CI (falta setear los
+  secrets `DEPLOY_HOST`/`DEPLOY_SSH_KEY` en el repo para que dispare).
+- **Added:** borrado de cuenta autogestionado y exportación de datos
+  personales (derecho de acceso y de supresión, Ley 1581) — bloquea el
+  borrado si el usuario tiene pedidos o entregas activos.
+- **Added:** cache en Redis del listado público del catálogo.
+- **Fixed:** `SECURE_HSTS_SECONDS` estaba declarado en `settings.py` pero
+  nunca llegaba al contenedor de Django — HSTS no se estaba aplicando.
+- **Added:** testing de accesibilidad automatizado con axe-core sobre
+  páginas públicas y autenticadas, wireado a CI; se corrigieron los
+  hallazgos que encontró.
+- **Changed:** `auth_microservice` migrado de SQLite a Postgres, como
+  piloto del resto de los microservicios.
+
+## 2026-08-18 — Postgres en los 6 microservicios
+
+- **Changed:** `payment`, `notifications` y `support` microservices
+  migrados a Postgres.
+- **Changed:** `market_microservice` migrado a Postgres, el último de los
+  6 — con esto el monolito y los 6 microservicios corren todos sobre
+  Postgres.
+
+## 2026-08-19 — Ratings reales y compresión de imágenes
+
+- **Fixed:** dos excepciones de servicios externos en
+  `common/infrastructure/adapters.py` se tragaban el error en silencio en
+  vez de loguearlo (mismo tipo de bug ya corregido en otros dos lugares el
+  15 de agosto).
+- **Added:** calificaciones entre comprador y vendedor conectadas de
+  verdad al `support_microservice` — `pedido.html` ya no muestra un rating
+  simulado, y `reputacion_promedio`/`total_calificaciones` del vendedor se
+  recalculan en cada calificación nueva.
+- **Added:** las imágenes de publicaciones se redimensionan (máx. 1600px)
+  y recomprimen al subir (JPEG/WEBP calidad 82, PNG optimize), salvo GIF.
+- **Fixed:** el estado real de la migración a microservicios (Strangler
+  Pattern) documentado en el README — `geo`/`notifications` microservices
+  están construidos y testeados pero sin tráfico real todavía; es una
+  decisión de alcance, no trabajo pendiente.

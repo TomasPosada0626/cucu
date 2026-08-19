@@ -5,12 +5,19 @@ from urllib import request as url_request
 
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.core.cache import cache
-from django.test import TestCase
+from django.test import TestCase, override_settings
+from pywebpush import WebPushException
 
 from accounts.infrastructure.models import User
 
+from .domain.ports import WebPushExpiredError
 from .exceptions import ServiceUnavailableError
-from .infrastructure.adapters import HttpAllyServiceAdapter, HttpSupportServiceAdapter, ThirdPartyExchangeRateAdapter
+from .infrastructure.adapters import (
+    HttpAllyServiceAdapter,
+    HttpSupportServiceAdapter,
+    PywebpushWebPushAdapter,
+    ThirdPartyExchangeRateAdapter,
+)
 from .interfaces.api.views import ConsumeExternalJsonAPIView
 
 try:
@@ -109,6 +116,47 @@ class HttpSupportServiceAdapterTests(TestCase):
             data = HttpSupportServiceAdapter().list_ratings(usuario_id=1)
 
         self.assertEqual(len(data), 2)
+
+
+class PywebpushWebPushAdapterTests(TestCase):
+    def _subscription(self):
+        return mock.Mock(endpoint="https://push.example/1", p256dh="p256dh-value", auth="auth-value")
+
+    @override_settings(VAPID_PUBLIC_KEY="", VAPID_PRIVATE_KEY="")
+    def test_noop_when_vapid_keys_not_configured(self):
+        with mock.patch("common.infrastructure.adapters.webpush") as webpush_mock:
+            PywebpushWebPushAdapter().enviar(subscription=self._subscription(), titulo="T", mensaje="M")
+        webpush_mock.assert_not_called()
+
+    @override_settings(VAPID_PUBLIC_KEY="pub", VAPID_PRIVATE_KEY="priv", VAPID_ADMIN_EMAIL="ops@cucu.local")
+    def test_calls_webpush_with_subscription_info_when_configured(self):
+        with mock.patch("common.infrastructure.adapters.webpush") as webpush_mock:
+            PywebpushWebPushAdapter().enviar(subscription=self._subscription(), titulo="T", mensaje="M")
+
+        webpush_mock.assert_called_once()
+        kwargs = webpush_mock.call_args.kwargs
+        self.assertEqual(kwargs["subscription_info"]["endpoint"], "https://push.example/1")
+        self.assertEqual(kwargs["subscription_info"]["keys"]["p256dh"], "p256dh-value")
+        self.assertEqual(kwargs["vapid_claims"]["sub"], "mailto:ops@cucu.local")
+
+    @override_settings(VAPID_PUBLIC_KEY="pub", VAPID_PRIVATE_KEY="priv")
+    def test_raises_expired_error_on_410(self):
+        response = mock.Mock(status_code=410)
+        with mock.patch(
+            "common.infrastructure.adapters.webpush",
+            side_effect=WebPushException("gone", response=response),
+        ):
+            with self.assertRaises(WebPushExpiredError):
+                PywebpushWebPushAdapter().enviar(subscription=self._subscription(), titulo="T", mensaje="M")
+
+    @override_settings(VAPID_PUBLIC_KEY="pub", VAPID_PRIVATE_KEY="priv")
+    def test_swallows_non_expiry_webpush_errors(self):
+        response = mock.Mock(status_code=500)
+        with mock.patch(
+            "common.infrastructure.adapters.webpush",
+            side_effect=WebPushException("boom", response=response),
+        ):
+            PywebpushWebPushAdapter().enviar(subscription=self._subscription(), titulo="T", mensaje="M")
 
 
 class HealthAPIViewTests(TestCase):

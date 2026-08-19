@@ -9,6 +9,7 @@ Pillow>=12.3,<13.0
 celery>=5.4,<6.0
 redis>=5.0,<6.0
 httpx>=0.28,<1.0
+pywebpush>=2.0,<3.0
 gunicorn>=23.0,<24.0
 coverage>=7.6,<8.0
 playwright>=1.48,<2.0

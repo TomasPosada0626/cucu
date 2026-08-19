@@ -76,6 +76,8 @@ Cada app del monolito Django (`accounts`, `market`, `delivery`, `geo`, `notifica
 
 Ver [Arquitectura](../../wiki/Arquitectura) en la wiki para el detalle completo, incluida la migración a microservicios (Strangler Pattern).
 
+**Estado real de la migración (2026-08-18):** `payment`, `auth`, `market`, `support` y `notifications`/`geo` tienen microservicio Flask propio, pero solo `payment` está integrado de punta a punta. `geo_microservice` y `notifications_microservice` existen, están testeados y corren en `/api/v2/*`/`/api/v3/*`, pero **nada los llama todavía** — el monolito sigue resolviendo `geo`/`notifications` internamente (con Google Maps Platform, no con Nominatim, que es lo que usa la copia del microservicio). Es una decisión de scope deliberada, no trabajo olvidado: integrarlos hoy exigiría primero migrar el geocodificador del microservicio a Google Maps y diseñar una migración de datos para `notifications` (tiene su propia tabla Postgres, separada de la del monolito). Detalle completo en `ROADMAP.local.md`.
+
 ## Pruebas
 
 ```bash

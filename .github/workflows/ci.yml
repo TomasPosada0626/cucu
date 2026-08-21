@@ -134,7 +134,7 @@ jobs:
       # deploy.sh runs entirely on the EC2 host and already handles its own
       # rollback on a failed health check - this job's only job is to SSH in
       # and run it after every check above is green.
-      - uses: appleboy/ssh-action@v1.2.0
+      - uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ubuntu
